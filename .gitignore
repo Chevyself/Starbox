@@ -1,2 +1,5 @@
-# Project exclude paths
-/core/target/
+.idea/*
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+target/
+*.iml
