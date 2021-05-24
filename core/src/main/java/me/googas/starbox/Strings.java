@@ -169,6 +169,10 @@ public class Strings {
     return (longerLength - Strings.editDistance(longer, shorter)) / longerLength;
   }
 
+  public static float similarityIgnoreCase(@NonNull String longer, @NonNull String shorter) {
+    return similarity(longer.toLowerCase(), shorter.toLowerCase());
+  }
+
   private static int editDistance(String longer, String shorter) {
     longer = longer.toLowerCase();
     shorter = shorter.toLowerCase();
