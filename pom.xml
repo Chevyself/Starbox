@@ -46,6 +46,8 @@
 
     <modules>
         <module>core</module>
+        <module>bukkit</module>
+        <module>reflect</module>
     </modules>
 
     <dependencies>
