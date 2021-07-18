@@ -231,7 +231,7 @@ public class Time implements TemporalAmount {
   /**
    * Format this time in the given formatter
    *
-   * @see me.googas.utility.time.formatter.HhMmSsFormatter
+   * @see me.googas.starbox.time.formatter.HhMmSsFormatter
    * @see TimeFormatter#format(Time)
    * @param formatter the time formatter to format this time
    * @return the formatted {@link String}
