@@ -23,8 +23,10 @@ public class BookMetaBuilder extends ItemMetaBuilder {
   private static final WrappedMethod SET_GENERATION =
       BookMetaBuilder.BOOK_META.getMethod(
           "setGeneration", WrappedBookMetaGeneration.GENERATION.getClazz());
+
   @NonNull @Getter private final List<String> pages = new ArrayList<>();
   @NonNull @Getter private String author = "Unknown";
+
   @NonNull @Getter
   private WrappedBookMetaGeneration wrappedGeneration = WrappedBookMetaGeneration.ORIGINAL;
 
