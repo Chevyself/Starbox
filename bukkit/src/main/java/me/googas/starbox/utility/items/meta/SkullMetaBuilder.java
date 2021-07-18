@@ -2,11 +2,11 @@ package me.googas.starbox.utility.items.meta;
 
 import java.util.UUID;
 import lombok.NonNull;
-import me.googas.starbox.reflect.APIVersion;
-import me.googas.starbox.reflect.WrappedClass;
-import me.googas.starbox.reflect.WrappedMethod;
-import me.googas.starbox.reflect.wrappers.profile.WrappedGameProfile;
-import me.googas.starbox.reflect.wrappers.properties.WrappedProperty;
+import me.googas.reflect.APIVersion;
+import me.googas.reflect.WrappedClass;
+import me.googas.reflect.WrappedMethod;
+import me.googas.reflect.wrappers.profile.WrappedGameProfile;
+import me.googas.reflect.wrappers.properties.WrappedProperty;
 import me.googas.starbox.utility.Versions;
 import me.googas.starbox.utility.items.ItemBuilder;
 import org.bukkit.OfflinePlayer;

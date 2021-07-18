@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.starbox.annotations.TimeAmount;
+import me.googas.annotations.TimeAmount;
 import me.googas.starbox.time.formatter.TimeFormatter;
 import me.googas.starbox.time.unit.StarboxUnit;
 import me.googas.starbox.time.unit.Unit;
