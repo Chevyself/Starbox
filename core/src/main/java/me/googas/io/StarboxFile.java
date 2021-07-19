@@ -341,6 +341,27 @@ public class StarboxFile {
     throw new IllegalStateException(this + " does not exist");
   }
 
+  /**
+   * Deletes this file and if it is a directory it will delete everything inside of it
+   *
+   * @return whether the file or directory has been deleted
+   */
+  public boolean deleteAll() {
+    StarboxFile[] files = this.listFiles();
+    boolean deleted = false;
+    if (files != null) {
+      for (StarboxFile file : files) {
+        if (file.deleteAll()) {
+          deleted = true;
+        }
+      }
+    }
+    if (this.exists() && this.delete()) {
+      deleted = true;
+    }
+    return deleted;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
