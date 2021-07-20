@@ -28,7 +28,7 @@ import me.googas.starbox.time.unit.Unit;
 public class Time implements TemporalAmount {
 
   /** A constant for a duration of 0 milliseconds */
-  @NonNull private static final Time ZERO = new Time(0, Unit.MILLIS);
+  @NonNull public static final Time ZERO = new Time(0, Unit.MILLIS);
 
   @Getter private final double value;
   @NonNull @Getter private final StarboxUnit unit;
