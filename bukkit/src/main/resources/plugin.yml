@@ -2,6 +2,3 @@ main: me.googas.starbox.StarboxPlugin
 name: Starbox
 version: ${project.version}
 api-version: 1.17
-softdepend:
-  - PlaceholderAPI
-  - Vault
