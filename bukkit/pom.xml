@@ -13,6 +13,39 @@
     <artifactId>bukkit</artifactId>
     <version>1.0.0</version>
 
+    <build>
+        <plugins>
+            <!-- Maven jar shade plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                </filter>
+                            </filters>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <artifactSet>
+                                <includes>
+                                    <include>me.googas.starbox:core</include>
+                                    <include>com.github.Chevyself.Starbox-Commands:bukkit</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <repositories>
         <!-- Spigot -->
         <repository>
@@ -27,6 +60,28 @@
             <groupId>me.googas.starbox</groupId>
             <artifactId>core</artifactId>
             <version>1.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.code.gson</groupId>
+                    <artifactId>gson</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- Command Framework -->
+        <dependency>
+            <groupId>com.github.Chevyself.Starbox-Commands</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>6b32e7f4e5</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.Chevyself.Starbox</groupId>
+                    <artifactId>core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.spigotmc</groupId>
+                    <artifactId>spigot-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Spigot -->
         <dependency>
