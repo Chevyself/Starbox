@@ -3,11 +3,15 @@ package me.googas.io;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -360,6 +364,35 @@ public class StarboxFile {
       deleted = true;
     }
     return deleted;
+  }
+
+  @NonNull
+  public StarboxFile copyDirectory(@NonNull StarboxFile source) throws IOException {
+    String[] list = source.list();
+    if (source.isDirectory() && list != null) {
+      if (!this.exists() && !this.mkdir()) throw new IOException(this + " could not be created");
+      for (String string : list) {
+        StarboxFile sourceFile = new StarboxFile(source, string);
+        StarboxFile destinationFile = new StarboxFile(this, string);
+        destinationFile.copyDirectory(sourceFile);
+      }
+    } else {
+      this.copy(source);
+    }
+    return this;
+  }
+
+  @NonNull
+  public StarboxFile copy(@NonNull StarboxFile source) throws IOException {
+    try (InputStream input = new FileInputStream(source.getFile());
+        OutputStream output = new FileOutputStream(this.getFile())) {
+      byte[] buffer = new byte[1024];
+      int length;
+      while ((length = input.read(buffer)) > 0) {
+        output.write(buffer, 0, length);
+      }
+    }
+    return this;
   }
 
   @Override
