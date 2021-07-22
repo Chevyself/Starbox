@@ -6,6 +6,7 @@ import java.time.temporal.TemporalUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.annotations.TimeAmount;
@@ -241,6 +242,21 @@ public class Time implements TemporalAmount {
     return formatter.format(this);
   }
 
+  /**
+   * Get this amount of time in a different {@link StarboxUnit}
+   *
+   * @param unit the unit to convert the time to
+   * @return a new time instance with the new unit
+   */
+  @NonNull
+  public Time getAs(@NonNull StarboxUnit unit) {
+    return new Time(this.toMillis() / unit.getMillis(), unit);
+  }
+
+  public long getValueRound() {
+    return Math.round(this.value);
+  }
+
   @Override
   public long get(TemporalUnit temporalUnit) {
     if (temporalUnit == this.unit) {
@@ -286,5 +302,18 @@ public class Time implements TemporalAmount {
       }
     }
     return builder.toString();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || this.getClass() != o.getClass()) return false;
+    Time time = (Time) o;
+    return Double.compare(time.value, value) == 0 && Objects.equals(unit, time.unit);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(value, unit);
   }
 }
