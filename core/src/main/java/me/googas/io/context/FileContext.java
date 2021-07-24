@@ -1,6 +1,7 @@
 package me.googas.io.context;
 
 import java.net.URL;
+import java.util.Optional;
 import lombok.NonNull;
 import me.googas.io.StarboxFile;
 
@@ -23,10 +24,11 @@ public interface FileContext<O> {
    * @param file the file to read the object from
    * @param type the type to return when the file is read
    * @param <T> the type of object to return
-   * @return the object if the file was read correctly or null if the file does not exist or it
-   *     could not be read correctly
+   * @return a {@link Optional} instance wrapping the read object or null if it could not be read
+   *     correctly
    */
-  <T> T read(@NonNull StarboxFile file, @NonNull Class<T> type);
+  @NonNull
+  <T> Optional<T> read(@NonNull StarboxFile file, @NonNull Class<T> type);
 
   /**
    * Write the object to the given file
@@ -43,24 +45,29 @@ public interface FileContext<O> {
    * @param resource the resource to read the object from
    * @param type the type to return when the file is ready
    * @param <T> the type of the object to return
-   * @return the object if the file was read correctly or null if the file does not exist or it
-   *     could not be read correctly
+   * @return a {@link Optional} instance wrapping the read object or null if it could not be read
+   *     correctly
    */
-  <T> T read(@NonNull URL resource, @NonNull Class<T> type);
+  @NonNull
+  <T> Optional<T> read(@NonNull URL resource, @NonNull Class<T> type);
 
   /**
    * Read the default object given by the context from a {@link java.io.File}
    *
    * @param file the file to read the object from
-   * @return the object read from the file or null if it could not be read
+   * @return a {@link Optional} instance wrapping the read object or null if it could not be read
+   *     correctly
    */
-  O read(@NonNull StarboxFile file);
+  @NonNull
+  Optional<O> read(@NonNull StarboxFile file);
 
   /**
    * Read the default object given by the context from a {@link URL}
    *
    * @param resource the resource to read the object from
-   * @return the object read from the resource or null if it could not be read
+   * @return a {@link Optional} instance wrapping the read object or null if it could not be read
+   *     correctly
    */
-  O read(@NonNull URL resource);
+  @NonNull
+  Optional<O> read(@NonNull URL resource);
 }

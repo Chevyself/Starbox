@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Optional;
 import lombok.NonNull;
 import me.googas.io.StarboxFile;
 
@@ -21,7 +22,8 @@ public class Txt implements FileContext<String> {
    * @param reader the reader to read the string from
    * @return the read string or null if it could not be read
    */
-  public String read(@NonNull BufferedReader reader) {
+  @NonNull
+  public Optional<String> read(@NonNull BufferedReader reader) {
     StringBuilder builder = new StringBuilder();
     String line = null;
     try {
@@ -36,7 +38,7 @@ public class Txt implements FileContext<String> {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return builder.length() == 0 ? null : builder.toString();
+    return Optional.ofNullable(builder.length() == 0 ? null : builder.toString());
   }
 
   /**
@@ -64,25 +66,27 @@ public class Txt implements FileContext<String> {
   }
 
   @Override
-  public @NonNull String read(@NonNull StarboxFile file) {
-    if (!file.exists()) return null;
+  public @NonNull Optional<String> read(@NonNull StarboxFile file) {
+    if (!file.exists()) return Optional.empty();
     return this.read(file.getBufferedReader());
   }
 
   @Override
-  public String read(@NonNull URL resource) {
+  @NonNull
+  public Optional<String> read(@NonNull URL resource) {
     try {
       return this.read(new BufferedReader(new InputStreamReader(resource.openStream())));
     } catch (IOException e) {
       e.printStackTrace();
-      return null;
+      return Optional.empty();
     }
   }
 
   @Override
-  public <T> T read(@NonNull StarboxFile file, @NonNull Class<T> type) {
+  @NonNull
+  public <T> Optional<T> read(@NonNull StarboxFile file, @NonNull Class<T> type) {
     if (type.equals(String.class)) {
-      return type.cast(this.read(file));
+      return this.read(file).map(type::cast);
     }
     throw new UnsupportedOperationException("Read has not been implemented for '.txt' files");
   }
@@ -98,9 +102,10 @@ public class Txt implements FileContext<String> {
   }
 
   @Override
-  public <T> T read(@NonNull URL stream, @NonNull Class<T> type) {
+  @NonNull
+  public <T> Optional<T> read(@NonNull URL resource, @NonNull Class<T> type) {
     if (type.equals(String.class)) {
-      return type.cast(this.read(stream));
+      return this.read(resource).map(type::cast);
     }
     throw new UnsupportedOperationException("Read has not been implemented for '.txt' files");
   }

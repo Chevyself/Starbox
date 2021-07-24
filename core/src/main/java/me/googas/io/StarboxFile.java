@@ -16,6 +16,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.NonNull;
@@ -124,9 +125,10 @@ public class StarboxFile {
    * @param context the context to read the file with
    * @param clazz the clazz of the object that the {@link FileContext} must return upon read
    * @param <T> the type of the object to return
-   * @return the object from the file or null if the file does not exist
+   * @return an optional wrapping the object or null if it could not be read
    */
-  public <T> T read(@NonNull FileContext<?> context, @NonNull Class<T> clazz) {
+  @NonNull
+  public <T> Optional<T> read(@NonNull FileContext<?> context, @NonNull Class<T> clazz) {
     return context.read(this, clazz);
   }
 
@@ -142,9 +144,9 @@ public class StarboxFile {
    * @return the object from the file or the default object if null
    */
   @NonNull
+  @Deprecated
   public <T> T readOr(@NonNull FileContext<?> context, @NonNull Class<T> clazz, T def) {
-    T read = this.read(context, clazz);
-    return read == null ? def : read;
+    return this.read(context, clazz).orElse(def);
   }
 
   /**
@@ -161,16 +163,15 @@ public class StarboxFile {
   @NonNull
   public <T> T readOr(
       @NonNull FileContext<?> context, @NonNull Class<T> clazz, @NonNull URL resource) {
-    return Objects.requireNonNull(
-        this.readOrGet(
-            context,
-            clazz,
-            () -> {
-              T read = context.read(resource, clazz);
-              this.copy(resource);
-              return read;
-            }),
-        "Could not provide a non-null object");
+    return this.read(context, clazz)
+        .orElseGet(
+            () ->
+                context
+                    .read(resource, clazz)
+                    .orElseThrow(
+                        () ->
+                            new IllegalStateException(
+                                "Could not provide a non-null object from resource")));
   }
 
   /**
@@ -183,10 +184,10 @@ public class StarboxFile {
    * @param <T> the type of the object to return
    * @return the object from the file or the default supplied if null
    */
+  @Deprecated
   public <T> T readOrGet(
       @NonNull FileContext<?> context, @NonNull Class<T> clazz, @NonNull Supplier<T> supplier) {
-    T read = this.read(context, clazz);
-    return read == null ? supplier.get() : read;
+    return this.read(context, clazz).orElseGet(supplier);
   }
 
   /**
@@ -195,9 +196,10 @@ public class StarboxFile {
    * <p>// TODO example
    *
    * @param context the context to read the file with
-   * @return the object from the file or null if the file does not exist
+   * @return an optional wrapping the object or null if it could not be read
    */
-  public <O> O read(@NonNull FileContext<O> context) {
+  @NonNull
+  public <O> Optional<O> read(@NonNull FileContext<O> context) {
     return context.read(this);
   }
 
@@ -210,9 +212,9 @@ public class StarboxFile {
    * @return the object from the file or the default object if the object read from the file is null
    */
   @NonNull
+  @Deprecated
   public <O> O readOr(@NonNull FileContext<O> context, @NonNull O def) {
-    O read = context.read(this);
-    return read == null ? def : read;
+    return context.read(this).orElse(def);
   }
 
   /**
@@ -225,12 +227,15 @@ public class StarboxFile {
    */
   @NonNull
   public <O> O readOr(@NonNull FileContext<O> context, @NonNull URL resource) {
-    return this.readOrGet(
-        context,
-        () -> {
-          boolean copy = this.copy(resource);
-          return context.read(resource);
-        });
+    return this.read(context)
+        .orElseGet(
+            () ->
+                context
+                    .read(resource)
+                    .orElseThrow(
+                        () ->
+                            new IllegalStateException(
+                                "Could not provide a non-null object from resource")));
   }
 
   /**
@@ -241,9 +246,9 @@ public class StarboxFile {
    * @param supplier the supplier to get the object from
    * @return the object from the file or the default object from the supplier
    */
+  @Deprecated
   public <O> O readOrGet(@NonNull FileContext<O> context, @NonNull Supplier<O> supplier) {
-    O read = context.read(this);
-    return read == null ? supplier.get() : read;
+    return context.read(this).orElseGet(supplier);
   }
 
   /**

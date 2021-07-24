@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.Properties;
 import lombok.NonNull;
 import me.googas.io.StarboxFile;
@@ -40,7 +41,7 @@ public class PropertiesContext implements FileContext<Properties> {
   }
 
   @Override
-  public @NonNull Properties read(@NonNull StarboxFile file) {
+  public @NonNull Optional<Properties> read(@NonNull StarboxFile file) {
     Properties properties = new Properties();
     BufferedReader reader = file.getBufferedReader();
     try {
@@ -53,22 +54,24 @@ public class PropertiesContext implements FileContext<Properties> {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return properties;
+    return Optional.of(properties);
   }
 
   @Override
-  public Properties read(@NonNull URL resource) {
+  @NonNull
+  public Optional<Properties> read(@NonNull URL resource) {
     Properties properties = new Properties();
     try {
       properties.load(resource.openStream());
     } catch (IOException e) {
       throw new IllegalArgumentException("Could not read Properties from InputStream", e);
     }
-    return properties;
+    return Optional.of(properties);
   }
 
   @Override
-  public <T> T read(@NonNull StarboxFile file, @NonNull Class<T> type) {
+  @NonNull
+  public <T> Optional<T> read(@NonNull StarboxFile file, @NonNull Class<T> type) {
     throw new UnsupportedOperationException(
         "Read has not been implemented for '.properties' files");
   }
@@ -80,7 +83,8 @@ public class PropertiesContext implements FileContext<Properties> {
   }
 
   @Override
-  public <T> T read(@NonNull URL resource, @NonNull Class<T> type) {
+  @NonNull
+  public <T> Optional<T> read(@NonNull URL resource, @NonNull Class<T> type) {
     throw new UnsupportedOperationException(
         "Read has not been implemented for '.properties' files");
   }

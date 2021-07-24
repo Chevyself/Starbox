@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -29,16 +30,17 @@ public class Json implements FileContext<Object> {
   }
 
   @Override
-  public <T> T read(@NonNull StarboxFile file, @NonNull Class<T> type) {
-    if (!file.exists()) return null;
+  @NonNull
+  public <T> Optional<T> read(@NonNull StarboxFile file, @NonNull Class<T> type) {
+    if (!file.exists()) return Optional.empty();
     BufferedReader reader = file.getBufferedReader();
-    T t = this.gson.fromJson(reader, type);
+    Optional<T> optional = Optional.ofNullable(this.gson.fromJson(reader, type));
     try {
       reader.close();
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return t;
+    return optional;
   }
 
   @Override
@@ -54,13 +56,14 @@ public class Json implements FileContext<Object> {
   }
 
   @Override
-  public <T> T read(@NonNull URL resource, @NonNull Class<T> type) {
+  @NonNull
+  public <T> Optional<T> read(@NonNull URL resource, @NonNull Class<T> type) {
     InputStreamReader reader = null;
     try {
       reader = new InputStreamReader(resource.openStream());
     } catch (IOException e) {
       e.printStackTrace();
-      return null;
+      return Optional.empty();
     }
     T t = this.gson.fromJson(reader, type);
     try {
@@ -68,16 +71,18 @@ public class Json implements FileContext<Object> {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return t;
+    return Optional.ofNullable(t);
   }
 
   @Override
-  public Object read(@NonNull StarboxFile file) {
-    return this.read(file, Object.class);
+  @NonNull
+  public Optional<Object> read(@NonNull StarboxFile file) {
+    return Optional.ofNullable(this.read(file, Object.class));
   }
 
   @Override
-  public Object read(@NonNull URL resource) {
-    return this.read(resource, Object.class);
+  @NonNull
+  public Optional<Object> read(@NonNull URL resource) {
+    return Optional.ofNullable(this.read(resource, Object.class));
   }
 }
