@@ -1,18 +1,17 @@
 package me.googas.net.cache;
 
 import java.lang.ref.SoftReference;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.NonNull;
 import me.googas.starbox.time.Time;
-import me.googas.starbox.time.unit.Unit;
 
 /**
  * An object which represents a way to manage cache. This stores the catchables objects and the time
@@ -26,7 +25,7 @@ public interface Cache extends Runnable {
    * @return the copy of the current cache
    */
   @NonNull
-  default Collection<SoftReference<Catchable>> copy() {
+  default Collection<SoftReference<Catchable>> keySetCopy() {
     return new HashSet<>(this.getMap().keySet());
   }
 
@@ -37,10 +36,33 @@ public interface Cache extends Runnable {
    * @param clazz the clazz of the catchable for casting
    * @param predicate the predicate to match the catchable
    * @param <T> the type of the catchable
-   * @return the catchable if found else null
+   * @return a {@link Optional} instance containing the catchable if found else null
    */
-  default <T extends Catchable> T get(@NonNull Class<T> clazz, @NonNull Predicate<T> predicate) {
+  @NonNull
+  default <T extends Catchable> Optional<T> get(
+      @NonNull Class<T> clazz, @NonNull Predicate<T> predicate) {
     return this.get(clazz, predicate, true);
+  }
+
+  /**
+   * Create a {@link Stream} of filtered {@link Catchable} using the predicate
+   *
+   * @param clazz the class of catchables to get
+   * @param predicate the predicate to filter the catchables
+   * @param <T> the type of the catchable
+   * @return the {@link Stream} of filtered catchables
+   */
+  @NonNull
+  default <T extends Catchable> Stream<T> filter(
+      @NonNull Class<T> clazz, @NonNull Predicate<T> predicate) {
+    return this.keySetCopy().stream()
+        .filter(
+            reference -> {
+              Catchable catchable = reference.get();
+              return catchable != null && clazz.isAssignableFrom(catchable.getClass());
+            })
+        .map(reference -> clazz.cast(reference.get()))
+        .filter(predicate);
   }
 
   /**
@@ -51,21 +73,14 @@ public interface Cache extends Runnable {
    * @param refresh whether to refresh the object. By refreshing means that the time of the object
    *     inside the cache will be extended to its initial value
    * @param <T> the type of the catchable
-   * @return the catchable if found else null
+   * @return a {@link Optional} instance containing the catchable if found else null
    */
-  default <T extends Catchable> T get(
+  @NonNull
+  default <T extends Catchable> Optional<T> get(
       @NonNull Class<T> clazz, @NonNull Predicate<T> predicate, boolean refresh) {
-    for (SoftReference<Catchable> reference : this.copy()) {
-      Catchable catchable = reference.get();
-      if (catchable != null && clazz.isAssignableFrom(catchable.getClass())) {
-        T cast = clazz.cast(catchable);
-        if (predicate.test(cast)) {
-          if (refresh) this.refresh(catchable);
-          return cast;
-        }
-      }
-    }
-    return null;
+    Optional<T> optional = this.filter(clazz, predicate).findFirst();
+    if (refresh) optional.ifPresent(this::refresh);
+    return optional;
   }
 
   /**
@@ -79,11 +94,10 @@ public interface Cache extends Runnable {
    * @return the catchable if found else the default value
    */
   @NonNull
+  @Deprecated
   default <T extends Catchable> T getOr(
       @NonNull Class<T> clazz, @NonNull T def, @NonNull Predicate<T> predicate) {
-    T t = this.get(clazz, predicate);
-    if (t != null) return t;
-    return def;
+    return this.get(clazz, predicate).orElse(def);
   }
 
   /**
@@ -96,11 +110,10 @@ public interface Cache extends Runnable {
    * @param <T> the type of the catchable
    * @return the catchable if found else the default value provided by the supplier
    */
+  @Deprecated
   default <T extends Catchable> T getOrSupply(
       @NonNull Class<T> clazz, @NonNull Predicate<T> predicate, @NonNull Supplier<T> supplier) {
-    T t = this.get(clazz, predicate);
-    if (t != null) return t;
-    return Objects.requireNonNull(supplier.get(), "Supplier returned a null instance of T");
+    return this.get(clazz, predicate).orElseGet(supplier);
   }
 
   /**
@@ -115,17 +128,7 @@ public interface Cache extends Runnable {
   @NonNull
   default <T extends Catchable> Collection<T> getMany(
       @NonNull Class<T> clazz, @NonNull Predicate<T> predicate) {
-    List<T> list = new ArrayList<>();
-    for (SoftReference<Catchable> reference : this.copy()) {
-      Catchable catchable = reference.get();
-      if (catchable != null && clazz.isAssignableFrom(catchable.getClass())) {
-        T cast = clazz.cast(catchable);
-        if (predicate.test(cast)) {
-          list.add(cast);
-        }
-      }
-    }
-    return list;
+    return this.filter(clazz, predicate).collect(Collectors.toList());
   }
 
   /**
@@ -135,8 +138,11 @@ public interface Cache extends Runnable {
    * @return true if the object is inside the cache
    */
   default boolean contains(@NonNull Catchable catchable) {
-    for (SoftReference<Catchable> reference : this.copy()) {
-      if (catchable.equals(reference.get())) {
+    for (SoftReference<Catchable> reference : this.keySetCopy()) {
+      Catchable referencedCatchable = reference.get();
+      if (catchable.equals(referencedCatchable)
+          || (referencedCatchable != null
+              && catchable.hashCode() == referencedCatchable.hashCode())) {
         return true;
       }
     }
@@ -166,17 +172,15 @@ public interface Cache extends Runnable {
    */
   @NonNull
   default Time getTimeLeft(@NonNull Catchable catchable) {
-    for (SoftReference<Catchable> reference : this.copy()) {
-      Catchable referenceCatchable = reference.get();
-      if (catchable.equals(referenceCatchable)) {
-        long toRemove = this.getMap().getOrDefault(reference, -1L);
-        long millis = toRemove - System.currentTimeMillis();
-        if (millis > 0) {
-          return Time.ofMillis(toRemove - System.currentTimeMillis(), false);
-        }
-      }
-    }
-    return Time.of(0, Unit.SECONDS);
+    return this.getMapCopy().entrySet().stream()
+        .filter(entry -> catchable.equals(entry.getKey().get()))
+        .map(
+            entry -> {
+              long millis = entry.getValue() - System.currentTimeMillis();
+              return Time.ofMillis(millis > 0 ? 0 : millis, false);
+            })
+        .findFirst()
+        .orElse(Time.ZERO);
   }
 
   /**
@@ -186,11 +190,14 @@ public interface Cache extends Runnable {
    * @return whether the object was removed from cache
    */
   default boolean remove(@NonNull Catchable catchable) {
-    if (this.contains(catchable)) {
-      return this.getMap().keySet().removeIf(reference -> catchable.equals(reference.get()));
-    } else {
-      return false;
-    }
+    return this.getMap()
+            .keySet()
+            .removeIf(
+                    reference -> {
+                      Catchable stored = reference.get();
+                      return catchable.equals(stored)
+                              || (stored != null && catchable.hashCode() == stored.hashCode());
+                    });
   }
 
   /**
@@ -223,7 +230,7 @@ public interface Cache extends Runnable {
    * @return a copy of the map
    */
   @NonNull
-  default Map<SoftReference<Catchable>, Long> copyMap() {
+  default Map<SoftReference<Catchable>, Long> getMapCopy() {
     return new HashMap<>(this.getMap());
   }
 
@@ -239,12 +246,12 @@ public interface Cache extends Runnable {
   @Override
   default void run() {
     // Get a copy of the map to avoid concurrent modification exception
-    this.copyMap()
+    this.getMapCopy()
         .forEach(
             (reference, time) -> {
               if (reference == null) return;
               Catchable catchable = reference.get();
-              if (catchable != null && (time == null) || System.currentTimeMillis() >= time) {
+              if (catchable != null && (time == null || System.currentTimeMillis() >= time)) {
                 try {
                   catchable.onRemove();
                 } catch (Throwable throwable) {

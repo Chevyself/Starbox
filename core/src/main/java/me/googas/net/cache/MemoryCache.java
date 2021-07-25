@@ -14,6 +14,7 @@ public class MemoryCache extends TimerTask implements Cache {
   @NonNull @Delegate
   private final Map<SoftReference<Catchable>, Long> map = new ConcurrentHashMap<>();
 
+  @NonNull
   public MemoryCache register(@NonNull Timer timer) {
     timer.schedule(this, 1000, 1000);
     return this;
