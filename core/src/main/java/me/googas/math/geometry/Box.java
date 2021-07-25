@@ -1,13 +1,12 @@
 package me.googas.math.geometry;
 
-import lombok.NonNull;
-import lombok.Setter;
-import me.googas.math.MathUtils;
-
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import lombok.NonNull;
+import lombok.Setter;
+import me.googas.math.MathUtils;
 
 /** A box */
 public class Box implements Shape {

@@ -1,12 +1,11 @@
 package me.googas.math.geometry;
 
+import java.util.Optional;
+import java.util.Random;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import me.googas.math.MathUtils;
-
-import java.util.Optional;
-import java.util.Random;
 
 /** A sphere */
 public class Sphere implements Shape {

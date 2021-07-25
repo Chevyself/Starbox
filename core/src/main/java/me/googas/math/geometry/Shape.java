@@ -1,13 +1,12 @@
 package me.googas.math.geometry;
 
-import lombok.NonNull;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import lombok.NonNull;
 
 /** An object that represents a 3 dimensional shape */
 public interface Shape {
