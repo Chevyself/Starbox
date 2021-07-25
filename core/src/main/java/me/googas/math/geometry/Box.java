@@ -1,11 +1,13 @@
 package me.googas.math.geometry;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
 import lombok.NonNull;
 import lombok.Setter;
 import me.googas.math.MathUtils;
+
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
 
 /** A box */
 public class Box implements Shape {
@@ -81,8 +83,8 @@ public class Box implements Shape {
     return this.getWidth() * this.getLength() * this.getHeight();
   }
 
-  public String getId() {
-    return this.id;
+  public Optional<String> getId() {
+    return Optional.ofNullable(this.id);
   }
 
   @NonNull

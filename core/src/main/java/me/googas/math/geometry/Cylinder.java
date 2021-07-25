@@ -1,10 +1,12 @@
 package me.googas.math.geometry;
 
-import java.util.Random;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import me.googas.math.MathUtils;
+
+import java.util.Optional;
+import java.util.Random;
 
 /** A cylinder */
 public class Cylinder implements Shape {
@@ -59,8 +61,8 @@ public class Cylinder implements Shape {
   }
 
   @Override
-  public String getId() {
-    return this.id;
+  public Optional<String> getId() {
+    return Optional.ofNullable(this.id);
   }
 
   @Override
