@@ -1,4 +1,4 @@
-package me.googas.net.sockets;
+package me.googas.net.api;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,9 +6,6 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import lombok.NonNull;
-import me.googas.net.sockets.api.Messenger;
-import me.googas.net.sockets.api.MessengerListenFailException;
-import me.googas.net.sockets.api.Server;
 
 public class RequestBuilder<T> {
 
@@ -48,9 +45,9 @@ public class RequestBuilder<T> {
     return new Request<>(this.clazz, this.method, this.parameters);
   }
 
-  public T send(Messenger messenger) throws MessengerListenFailException {
-    if (messenger == null) return null;
-    return messenger.sendRequest(this.build());
+  @NonNull
+  public Optional<T> send(Messenger messenger) throws MessengerListenFailException {
+    return messenger == null ? Optional.empty() : messenger.sendRequest(this.build());
   }
 
   public void send(Messenger messenger, @NonNull Consumer<Optional<T>> consumer) {
@@ -66,9 +63,8 @@ public class RequestBuilder<T> {
   }
 
   @NonNull
-  public Map<Messenger, T> send(Server server) {
-    if (server == null) return new HashMap<>();
-    return server.sendRequest(this.build());
+  public Map<Messenger, Optional<T>> send(Server server) {
+    return server == null ? new HashMap<>() : server.sendRequest(this.build());
   }
 
   public void send(Server server, @NonNull BiConsumer<Messenger, Optional<T>> consumer) {

@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.net.Socket;
 import java.util.Arrays;
@@ -21,21 +20,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import lombok.NonNull;
-import me.googas.net.sockets.AwaitingRequest;
-import me.googas.net.sockets.Error;
-import me.googas.net.sockets.IRequest;
-import me.googas.net.sockets.ReceivedRequest;
-import me.googas.net.sockets.Request;
-import me.googas.net.sockets.Response;
-import me.googas.net.sockets.ThrowableHandler;
-import me.googas.net.sockets.api.Message;
-import me.googas.net.sockets.api.Messenger;
-import me.googas.net.sockets.api.MessengerListenFailException;
+import me.googas.net.api.AwaitingRequest;
+import me.googas.net.api.Error;
+import me.googas.net.api.Message;
+import me.googas.net.api.Messenger;
+import me.googas.net.api.MessengerListenFailException;
+import me.googas.net.api.Request;
+import me.googas.net.api.Response;
+import me.googas.net.api.StarboxRequest;
 import me.googas.net.sockets.json.exception.JsonCommunicationException;
 import me.googas.net.sockets.json.exception.JsonExternalCommunicationException;
 import me.googas.net.sockets.json.exception.JsonInternalCommunicationException;
-import me.googas.net.sockets.json.reflect.JsonReceptor;
 import me.googas.net.sockets.json.reflect.JsonReceptorParameter;
+import me.googas.net.sockets.json.reflect.ReflectJsonReceptor;
 import me.googas.net.sockets.json.server.JsonClientThread;
 
 /** A {@link Messenger} that works with json messages */
@@ -56,13 +53,11 @@ public interface JsonMessenger extends Messenger, Runnable {
    * @param uuid the uuid to match
    * @return the matched request
    */
-  default AwaitingRequest<?> getRequest(@NonNull UUID uuid) {
-    for (AwaitingRequest<?> request : this.getRequests().keySet()) {
-      if (request.getRequest().getId().equals(uuid)) {
-        return request;
-      }
-    }
-    return null;
+  @NonNull
+  default Optional<AwaitingRequest<?>> getRequest(@NonNull UUID uuid) {
+    return this.getRequests().keySet().stream()
+        .filter(awaiting -> awaiting.getRequest().getId().equals(uuid))
+        .findFirst();
   }
 
   /**
@@ -71,7 +66,8 @@ public interface JsonMessenger extends Messenger, Runnable {
    * @param request the request that needs a receptor
    * @return the receptor if found else null
    */
-  default JsonReceptor getReceptor(@NonNull IRequest request) {
+  @NonNull
+  default Optional<JsonReceptor> getReceptor(@NonNull StarboxRequest request) {
     return this.getReceptor(request.getMethod());
   }
 
@@ -81,13 +77,11 @@ public interface JsonMessenger extends Messenger, Runnable {
    * @param method the method to match
    * @return the receptor if one with the method is found, null otherwise
    */
-  default JsonReceptor getReceptor(@NonNull String method) {
-    for (JsonReceptor receptor : this.getReceptors()) {
-      if (receptor.getRequestMethod().equalsIgnoreCase(method)) {
-        return receptor;
-      }
-    }
-    return null;
+  @NonNull
+  default Optional<JsonReceptor> getReceptor(@NonNull String method) {
+    return this.getReceptors().stream()
+        .filter(receptor -> receptor.getRequestMethod().equalsIgnoreCase(method))
+        .findFirst();
   }
 
   /**
@@ -95,25 +89,25 @@ public interface JsonMessenger extends Messenger, Runnable {
    *
    * @param request the request to be accepted
    */
-  default void acceptRequest(@NonNull ReceivedRequest request) {
+  default void acceptRequest(@NonNull ReceivedJsonRequest request) {
     CompletableFuture.runAsync(
         () -> {
-          JsonReceptor receptor = this.getReceptor(request);
+          Optional<JsonReceptor> optional = this.getReceptor(request);
           Response<?> response;
-          if (receptor != null) {
+          if (optional.isPresent()) {
             try {
+              JsonReceptor receptor = optional.get();
               response =
                   new Response<>(
                       request.getId(), receptor.invoke(this.getParameters(receptor, request)));
               response.setError(false);
-            } catch (InvocationTargetException
-                | IllegalAccessException
-                | JsonCommunicationException e) {
+            } catch (JsonCommunicationException e) {
               if (e instanceof JsonExternalCommunicationException) {
                 response = new Response<>(request.getId(), new Error(e.getMessage()));
               } else {
-                response = new Response<>(request.getId(), new Error("Internal Error"));
-                this.getThrowableHandler().handle(e);
+                response =
+                    new Response<>(request.getId(), new Error("Internal Error: " + e.getMessage()));
+                this.getThrowableHandler().accept(e);
               }
             }
           } else {
@@ -133,7 +127,8 @@ public interface JsonMessenger extends Messenger, Runnable {
    * @throws JsonCommunicationException in case something goes wrong while providing the objects
    */
   @NonNull
-  default Object[] getParameters(@NonNull JsonReceptor receptor, @NonNull ReceivedRequest request)
+  default Object[] getParameters(
+      @NonNull JsonReceptor receptor, @NonNull ReceivedJsonRequest request)
       throws JsonCommunicationException {
     if (receptor.getParameters().isEmpty()) {
       return new Object[0];
@@ -159,6 +154,18 @@ public interface JsonMessenger extends Messenger, Runnable {
         }
       }
       return objects;
+    }
+  }
+
+  /**
+   * Adds the parsed receptors from the given object. This will get the receptors from the object
+   * using {@link ReflectJsonReceptor#getReceptors(Object)} and add them to the set
+   *
+   * @param objects the objects to add as receptors
+   */
+  default void addReceptors(@NonNull Object... objects) {
+    for (Object object : objects) {
+      this.addReceptors(ReflectJsonReceptor.getReceptors(object));
     }
   }
 
@@ -260,54 +267,6 @@ public interface JsonMessenger extends Messenger, Runnable {
   @NonNull
   Gson getGson();
 
-  /**
-   * Get the throwable handler that this messenger uses in case of a wrong request
-   *
-   * @return the throwable handler
-   */
-  @NonNull
-  ThrowableHandler getThrowableHandler();
-
-  /**
-   * Set the millis of the last message sent
-   *
-   * @param millis the millis of the last message sent
-   */
-  void setLastMessage(long millis);
-
-  /**
-   * Get the socket that this messenger is on
-   *
-   * @return the messenger
-   */
-  @NonNull
-  Socket getSocket();
-
-  @Override
-  default void run() {
-    while (true) {
-      try {
-        if (this.isClosed()) {
-          break;
-        } else {
-          this.listen();
-        }
-      } catch (MessengerListenFailException e) {
-        this.getThrowableHandler().handle(e);
-        this.close();
-        break;
-      }
-    }
-  }
-
-  /**
-   * Get the string builder that the messenger can use
-   *
-   * @return the string builder
-   */
-  @NonNull
-  StringBuilder getBuilder();
-
   /** Checks if there's request that can are taking too low. if so timeout */
   default void checkTimeout() {
     Set<AwaitingRequest<?>> toRemove = new HashSet<>();
@@ -328,8 +287,54 @@ public interface JsonMessenger extends Messenger, Runnable {
           }
         });
     if (!toRemove.isEmpty()) {
-      for (AwaitingRequest<?> request : toRemove) {
-        this.getRequests().remove(request);
+      toRemove.forEach(request -> this.getRequests().remove(request));
+    }
+  }
+
+  /**
+   * Set the millis of the last message sent
+   *
+   * @param millis the millis of the last message sent
+   */
+  void setLastMessage(long millis);
+
+  /**
+   * Get the socket that this messenger is on
+   *
+   * @return the messenger
+   */
+  @NonNull
+  Socket getSocket();
+
+  /**
+   * Get the throwable handler that this messenger uses in case of a wrong request
+   *
+   * @return the throwable handler
+   */
+  @NonNull
+  Consumer<Throwable> getThrowableHandler();
+
+  /**
+   * Get the string builder that the messenger can use
+   *
+   * @return the string builder
+   */
+  @NonNull
+  StringBuilder getBuilder();
+
+  @Override
+  default void run() {
+    while (true) {
+      try {
+        if (this.isClosed()) {
+          break;
+        } else {
+          this.listen();
+        }
+      } catch (MessengerListenFailException e) {
+        this.getThrowableHandler().accept(e);
+        this.close();
+        break;
       }
     }
   }
@@ -370,7 +375,7 @@ public interface JsonMessenger extends Messenger, Runnable {
           break;
         }
         if (line.startsWith("Invalid Message:")) {
-          this.getThrowableHandler().handle(new JsonCommunicationException(line));
+          this.getThrowableHandler().accept(new JsonCommunicationException(line));
           builder.setLength(0);
           break;
         }
@@ -386,12 +391,13 @@ public interface JsonMessenger extends Messenger, Runnable {
         String json = builder.toString();
         try {
           Message message = gson.fromJson(json, Message.class);
-          if (message instanceof ReceivedRequest) {
-            this.acceptRequest((ReceivedRequest) message);
+          if (message instanceof ReceivedJsonRequest) {
+            this.acceptRequest((ReceivedJsonRequest) message);
           } else if (message instanceof Response) {
-            AwaitingRequest<?> awaitingRequest = this.getRequest(message.getId());
+            Optional<AwaitingRequest<?>> optional = this.getRequest(message.getId());
             JsonObject object = gson.fromJson(json, JsonObject.class);
-            if (awaitingRequest != null) {
+            if (optional.isPresent()) {
+              AwaitingRequest<?> awaitingRequest = optional.get();
               if (((Response<?>) message).isError()) {
                 if (!object.get("object").isJsonNull()) {
                   awaitingRequest
@@ -421,7 +427,7 @@ public interface JsonMessenger extends Messenger, Runnable {
           if (this instanceof JsonClientThread) {
             this.printLine("Invalid Message: " + e.getMessage());
           } else {
-            this.getThrowableHandler().handle(e);
+            this.getThrowableHandler().accept(e);
           }
         }
       }
@@ -431,7 +437,8 @@ public interface JsonMessenger extends Messenger, Runnable {
   }
 
   @Override
-  default <T> T sendRequest(@NonNull Request<T> request) throws MessengerListenFailException {
+  default <T> Optional<T> sendRequest(@NonNull Request<T> request)
+      throws MessengerListenFailException {
     long start = System.currentTimeMillis();
     AtomicReference<T> reference = new AtomicReference<>();
     AtomicReference<Throwable> throwable = new AtomicReference<>();
@@ -455,6 +462,6 @@ public interface JsonMessenger extends Messenger, Runnable {
     if (throwable.get() != null) {
       throw new MessengerListenFailException(null, throwable.get());
     }
-    return reference.get();
+    return Optional.ofNullable(reference.get());
   }
 }

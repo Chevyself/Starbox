@@ -14,12 +14,6 @@ public interface Catchable {
    */
   default void onRemove() throws Throwable {}
 
-  @NonNull
-  default Catchable refresh() {
-
-    return this;
-  }
-
   /**
    * Get the time for the object to be removed from cache
    *

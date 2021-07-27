@@ -191,13 +191,13 @@ public interface Cache extends Runnable {
    */
   default boolean remove(@NonNull Catchable catchable) {
     return this.getMap()
-            .keySet()
-            .removeIf(
-                    reference -> {
-                      Catchable stored = reference.get();
-                      return catchable.equals(stored)
-                              || (stored != null && catchable.hashCode() == stored.hashCode());
-                    });
+        .keySet()
+        .removeIf(
+            reference -> {
+              Catchable stored = reference.get();
+              return catchable.equals(stored)
+                  || (stored != null && catchable.hashCode() == stored.hashCode());
+            });
   }
 
   /**

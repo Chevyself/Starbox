@@ -1,4 +1,4 @@
-package me.googas.net.sockets.utility;
+package me.googas.reflect.utility;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

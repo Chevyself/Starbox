@@ -1,8 +1,9 @@
-package me.googas.net.sockets;
+package me.googas.net.api;
 
+import java.util.Optional;
 import java.util.UUID;
+import lombok.Getter;
 import lombok.NonNull;
-import me.googas.net.sockets.api.Message;
 
 /**
  * This object represents the message to send a client when it is waiting for a {@link Response}
@@ -12,13 +13,13 @@ import me.googas.net.sockets.api.Message;
 public class Response<T> implements Message {
 
   /** The id of the message */
-  @NonNull private final UUID id;
+  @NonNull @Getter private final UUID id;
 
   /** The object which this is responding with */
   private T object;
 
   /** Whether the response ended with an error */
-  private boolean error = true;
+  @Getter private boolean error = true;
 
   /**
    * Create the response
@@ -50,8 +51,10 @@ public class Response<T> implements Message {
    *
    * @param object the new object given by the response
    */
-  public void setObject(T object) {
+  @NonNull
+  public Response<T> setObject(T object) {
     this.object = object;
+    return this;
   }
 
   /**
@@ -66,29 +69,11 @@ public class Response<T> implements Message {
   /**
    * Get the object which was given by the response
    *
-   * @return the object given by the response
+   * @return an {@link Optional} instance containing the object from the response or empty
    */
-  public T getObject() {
-    return this.object;
-  }
-
-  /**
-   * Get whether the response is an error
-   *
-   * @return true if the response is an error
-   */
-  public boolean isError() {
-    return this.error;
-  }
-
-  /**
-   * Get the unique id of the message
-   *
-   * @return the unique id of the message
-   */
-  @Override
-  public @NonNull UUID getId() {
-    return this.id;
+  @NonNull
+  public Optional<T> getObject() {
+    return Optional.ofNullable(this.object);
   }
 
   @Override

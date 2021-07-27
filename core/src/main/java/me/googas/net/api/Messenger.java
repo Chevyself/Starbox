@@ -1,10 +1,8 @@
-package me.googas.net.sockets.api;
+package me.googas.net.api;
 
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import lombok.NonNull;
-import me.googas.net.sockets.Request;
 
 /** This object is used to give and receive {@link Message} */
 public interface Messenger {
@@ -19,7 +17,7 @@ public interface Messenger {
   void close();
 
   /**
-   * Sends a request to this messenger
+   * Sends a request to this messenger asynchronously
    *
    * @param request the request that was send and must be processed by this messenger
    * @param consumer the consumer to provide the object when the request gets a response
@@ -32,13 +30,9 @@ public interface Messenger {
    *
    * @param request the request that was send and must provided the object
    * @param <T> the type of the object
-   * @return the provided object
+   * @return the provided object wrapped in a {@link Optional} instance
    * @throws MessengerListenFailException if the request times out
    */
-  <T> T sendRequest(@NonNull Request<T> request) throws MessengerListenFailException;
-
-  default <T> void sendRequest(
-      @NonNull Request<T> request, @NonNull BiConsumer<Messenger, Optional<T>> consumer) {
-    this.sendRequest(request, optional -> consumer.accept(this, optional));
-  }
+  @NonNull
+  <T> Optional<T> sendRequest(@NonNull Request<T> request) throws MessengerListenFailException;
 }

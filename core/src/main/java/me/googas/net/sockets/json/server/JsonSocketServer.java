@@ -12,34 +12,35 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import lombok.Getter;
 import lombok.NonNull;
-import me.googas.net.sockets.Request;
-import me.googas.net.sockets.ThrowableHandler;
-import me.googas.net.sockets.api.Messenger;
-import me.googas.net.sockets.api.MessengerListenFailException;
-import me.googas.net.sockets.api.Server;
-import me.googas.net.sockets.json.reflect.JsonReceptor;
+import me.googas.net.api.Authenticator;
+import me.googas.net.api.MessengerListenFailException;
+import me.googas.net.api.Request;
+import me.googas.net.api.Server;
+import me.googas.net.sockets.json.JsonReceptor;
 
 /** An implementation for socket servers for guido */
-public class JsonSocketServer extends Thread implements Server {
+public class JsonSocketServer extends Thread implements Server<JsonClientThread> {
 
   /** The actual server socket */
   @NonNull private final ServerSocket server;
 
   /** The set of clients that are connected to the server */
-  @NonNull private final Set<JsonClientThread> clients = new HashSet<>();
+  @NonNull @Getter private final Set<JsonClientThread> clients = new HashSet<>();
 
   /** The receptors to accept requests */
-  @NonNull private final Set<JsonReceptor> receptors;
+  @NonNull @Getter private final Set<JsonReceptor> receptors;
 
   /** To handle exceptions thrown */
-  @NonNull private final ThrowableHandler throwableHandler;
+  @NonNull @Getter private final Consumer<Throwable> throwableHandler;
   /** the gson instance for the server and clients deserialization */
-  @NonNull private final Gson gson;
+  @NonNull @Getter private final Gson gson;
   /** The time to timeout requests */
-  private final long timeout;
+  @Getter private final long timeout;
   /** The authenticator for the requests */
-  private Authenticator authenticator;
+  private Authenticator<JsonClientThread> authenticator;
 
   /**
    * Creates the guido socket server
@@ -55,8 +56,8 @@ public class JsonSocketServer extends Thread implements Server {
   public JsonSocketServer(
       int port,
       @NonNull Set<JsonReceptor> receptors,
-      @NonNull ThrowableHandler throwableHandler,
-      Authenticator authenticator,
+      @NonNull Consumer<Throwable> throwableHandler,
+      Authenticator<JsonClientThread> authenticator,
       @NonNull Gson gson,
       long timeout)
       throws IOException {
@@ -80,8 +81,8 @@ public class JsonSocketServer extends Thread implements Server {
    */
   public JsonSocketServer(
       int port,
-      @NonNull ThrowableHandler throwableHandler,
-      Authenticator authenticator,
+      @NonNull Consumer<Throwable> throwableHandler,
+      Authenticator<JsonClientThread> authenticator,
       @NonNull Gson gson,
       long timeout)
       throws IOException {
@@ -126,69 +127,22 @@ public class JsonSocketServer extends Thread implements Server {
     System.out.println(client + " got connected");
   }
 
-  /**
-   * Adds the parsed receptors from the given object. This will get the receptors from the object
-   * using {@link JsonReceptor#getReceptors(Object)} and add them to the set
-   *
-   * @param objects the objects to add as receptors
-   */
-  public void addReceptors(@NonNull Object... objects) {
-    for (Object object : objects) {
-      this.receptors.addAll(JsonReceptor.getReceptors(object));
-    }
-  }
-
-  /**
-   * Get the authenticator for request
-   *
-   * @return the authenticator or null if not set
-   */
-  public Authenticator getAuthenticator() {
-    return this.authenticator;
-  }
-
-  /**
-   * Set the authenticator for request
-   *
-   * @param authenticator the new authenticator
-   */
-  public void setAuthenticator(Authenticator authenticator) {
-    this.authenticator = authenticator;
-  }
-
-  /**
-   * Get the gson instance that the server and clients are using
-   *
-   * @return the gson instance
-   */
+  @Override
   @NonNull
-  public Gson getGson() {
-    return this.gson;
-  }
-
-  /**
-   * Get the receptors to accept requests
-   *
-   * @return the receptors for requests
-   */
-  @NonNull
-  public Set<JsonReceptor> getReceptors() {
-    return this.receptors;
-  }
-
-  /**
-   * Get the way to handle thrown exceptions
-   *
-   * @return the throwable handler
-   */
-  @NonNull
-  public ThrowableHandler getThrowableHandler() {
-    return this.throwableHandler;
+  public Optional<Authenticator<JsonClientThread>> getAuthenticator() {
+    return Optional.ofNullable(this.authenticator);
   }
 
   @Override
-  public boolean requiresAuthentication() {
+  public boolean hasAuthentication() {
     return this.authenticator != null;
+  }
+
+  @Override
+  public @NonNull JsonSocketServer setAuthenticator(
+      @NonNull Authenticator<JsonClientThread> authenticator) {
+    this.authenticator = authenticator;
+    return this;
   }
 
   @Override
@@ -202,12 +156,6 @@ public class JsonSocketServer extends Thread implements Server {
   }
 
   @Override
-  public void setRequiresAuthentication(boolean bol) {
-    throw new UnsupportedOperationException(
-        "If you wish to remove authentication use #setAuthenticator");
-  }
-
-  @Override
   public void run() {
     while (true) {
       try {
@@ -217,42 +165,37 @@ public class JsonSocketServer extends Thread implements Server {
         this.clients.add(client);
         this.onConnection(client);
       } catch (IOException e) {
-        this.throwableHandler.handle(e);
+        this.throwableHandler.accept(e);
         break;
       }
     }
   }
 
-  /**
-   * Get the clients that are connected to the server
-   *
-   * @return the set of clients connected to the server
-   */
-  @NonNull
-  @Override
-  public Set<JsonClientThread> getClients() {
-    return this.clients;
-  }
-
   @Override
   public <T> void sendRequest(
-      @NonNull Request<T> request, BiConsumer<Messenger, Optional<T>> consumer) {
-    for (JsonClientThread client : this.clients) {
-      client.sendRequest(request, consumer);
-    }
+      @NonNull Request<T> request, BiConsumer<JsonClientThread, Optional<T>> consumer) {
+    this.clients.forEach(
+        client -> {
+          try {
+            consumer.accept(client, client.sendRequest(request));
+          } catch (MessengerListenFailException e) {
+            this.throwableHandler.accept(e);
+          }
+        });
   }
 
   @Override
   @NonNull
-  public <T> Map<Messenger, T> sendRequest(@NonNull Request<T> request) {
-    HashMap<Messenger, T> responses = new HashMap<>();
-    for (JsonClientThread client : this.clients) {
-      try {
-        responses.put(client, client.sendRequest(request));
-      } catch (MessengerListenFailException e) {
-        this.throwableHandler.handle(e);
-      }
-    }
+  public <T> Map<JsonClientThread, Optional<T>> sendRequest(@NonNull Request<T> request) {
+    Map<JsonClientThread, Optional<T>> responses = new HashMap<>();
+    this.clients.forEach(
+        client -> {
+          try {
+            responses.put(client, client.sendRequest(request));
+          } catch (MessengerListenFailException e) {
+            this.throwableHandler.accept(e);
+          }
+        });
     return responses;
   }
 }

@@ -7,16 +7,19 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.NonNull;
-import me.googas.net.sockets.json.JsonMessenger;
+import me.googas.net.sockets.json.JsonReceptor;
 import me.googas.net.sockets.json.ParamName;
 import me.googas.net.sockets.json.Receptor;
-import me.googas.net.sockets.utility.ReflectUtil;
+import me.googas.net.sockets.json.exception.JsonExternalCommunicationException;
+import me.googas.net.sockets.json.exception.JsonInternalCommunicationException;
+import me.googas.reflect.utility.ReflectUtil;
 
 /**
- * This object represents the {@link Receptor} registered inside a {@link JsonMessenger} this means
- * that this is the object after reflection was made
+ * This object represents the {@link me.googas.net.sockets.json.JsonReceptor} registered inside a
+ * {@link me.googas.net.sockets.json.JsonMessenger} this means that this is the object after
+ * reflection was made
  */
-public class JsonReceptor {
+public class ReflectJsonReceptor implements JsonReceptor {
 
   /** The method which request must use to invoke this receptor */
   @NonNull private final String requestMethod;
@@ -24,7 +27,7 @@ public class JsonReceptor {
   /** The object required to invoke the method */
   @NonNull private final Object object;
 
-  /** The method to invoke. This is the annotated method with {@link Receptor} */
+  /** The method to invoke. This is the annotated method with {@link JsonReceptor} */
   @NonNull private final Method method;
 
   /** The parameters that the receptor requires to be executed */
@@ -38,7 +41,7 @@ public class JsonReceptor {
    * @param method the method to invoke
    * @param parameters the parameters that the receptor requires to be executed
    */
-  public JsonReceptor(
+  public ReflectJsonReceptor(
       @NonNull String requestMethod,
       @NonNull Object object,
       @NonNull Method method,
@@ -71,7 +74,7 @@ public class JsonReceptor {
           }
           parameters.add(new JsonReceptorParameter<>(name, params[i].getType()));
         }
-        receptors.add(new JsonReceptor(annotation.value(), object, method, parameters));
+        receptors.add(new ReflectJsonReceptor(annotation.value(), object, method, parameters));
       }
     }
     return receptors;
@@ -86,8 +89,14 @@ public class JsonReceptor {
    * @throws IllegalAccessException if the method is private
    */
   public Object invoke(@NonNull Object... objects)
-      throws InvocationTargetException, IllegalAccessException {
-    return this.method.invoke(this.object, objects);
+      throws JsonInternalCommunicationException, JsonExternalCommunicationException {
+    try {
+      return this.method.invoke(this.object, objects);
+    } catch (IllegalAccessException e) {
+      throw new JsonInternalCommunicationException(e);
+    } catch (InvocationTargetException e) {
+      throw new JsonExternalCommunicationException(e);
+    }
   }
 
   /**

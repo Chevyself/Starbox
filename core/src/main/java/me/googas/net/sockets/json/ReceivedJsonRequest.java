@@ -1,23 +1,26 @@
-package me.googas.net.sockets;
+package me.googas.net.sockets.json;
 
 import com.google.gson.JsonElement;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import lombok.Getter;
 import lombok.NonNull;
-import me.googas.net.sockets.api.Messenger;
+import me.googas.net.api.Messenger;
+import me.googas.net.api.StarboxRequest;
 
 /** This object represents a request that is being read by a {@link Messenger} */
-public class ReceivedRequest implements IRequest {
+public class ReceivedJsonRequest implements StarboxRequest {
 
   /** The id of the request/response */
-  @NonNull private final UUID id;
+  @NonNull @Getter private final UUID id;
 
   /** The method which should match one from a receptor */
-  @NonNull private final String method;
+  @NonNull @Getter private final String method;
 
   /** The parameters provided by the messenger */
-  @NonNull private final Map<String, JsonElement> parameters;
+  @NonNull @Getter private final Map<String, JsonElement> parameters;
 
   /**
    * Create the request
@@ -26,7 +29,7 @@ public class ReceivedRequest implements IRequest {
    * @param method the method to get the receptor
    * @param parameters the parameters for the receptor
    */
-  public ReceivedRequest(
+  public ReceivedJsonRequest(
       @NonNull UUID id, @NonNull String method, @NonNull Map<String, JsonElement> parameters) {
     this.id = id;
     this.method = method;
@@ -34,28 +37,13 @@ public class ReceivedRequest implements IRequest {
   }
 
   /** @deprecated this must be used only by gson */
-  public ReceivedRequest() {
+  public ReceivedJsonRequest() {
     this(UUID.randomUUID(), "", new HashMap<>());
   }
 
   @Override
-  public @NonNull UUID getId() {
-    return this.id;
-  }
-
-  @Override
-  public @NonNull String getMethod() {
-    return this.method;
-  }
-
-  @Override
-  public @NonNull Map<String, JsonElement> getParameters() {
-    return this.parameters;
-  }
-
-  @Override
   public String toString() {
-    return "ReceivedRequest{"
+    return "ReceivedJsonRequest{"
         + "id="
         + this.id
         + ", method='"
@@ -64,5 +52,18 @@ public class ReceivedRequest implements IRequest {
         + ", parameters="
         + this.parameters
         + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || this.getClass() != o.getClass()) return false;
+    ReceivedJsonRequest that = (ReceivedJsonRequest) o;
+    return id.equals(that.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 }

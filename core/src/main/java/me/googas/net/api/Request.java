@@ -1,28 +1,30 @@
-package me.googas.net.sockets;
+package me.googas.net.api;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import lombok.Getter;
 import lombok.NonNull;
-import me.googas.net.sockets.json.reflect.JsonReceptor;
+import me.googas.net.sockets.json.JsonReceptor;
 
 /**
  * This object represents a request which is a message that makes the client which sent it wait for
  * a {@link Response}
  */
-public class Request<T> implements IRequest {
+public class Request<T> implements StarboxRequest {
 
   /** The class that is being requested */
-  @NonNull private final transient Class<T> clazz;
+  @NonNull @Getter private final transient Class<T> clazz;
 
   /** The id of the request */
-  @NonNull private final UUID id;
+  @NonNull @Getter private final UUID id;
 
   /** The method which must match a {@link JsonReceptor} to give a response */
-  @NonNull private final String method;
+  @NonNull @Getter private final String method;
 
   /** The parameters that the {@link JsonReceptor} requires to give a response */
-  @NonNull private final Map<String, ?> parameters;
+  @NonNull @Getter private final Map<String, ?> parameters;
 
   /**
    * Create the request
@@ -65,30 +67,9 @@ public class Request<T> implements IRequest {
     this(clazz, UUID.randomUUID(), method, new HashMap<>());
   }
 
+  @NonNull
   public static <T> RequestBuilder<T> builder(@NonNull Class<T> clazz, @NonNull String method) {
     return new RequestBuilder<>(clazz, method);
-  }
-
-  /**
-   * Get the class that is being requested
-   *
-   * @return the class that is being requested
-   */
-  @NonNull
-  public Class<T> getClazz() {
-    return this.clazz;
-  }
-
-  @Override
-  @NonNull
-  public String getMethod() {
-    return this.method;
-  }
-
-  @Override
-  @NonNull
-  public Map<String, ?> getParameters() {
-    return this.parameters;
   }
 
   @Override
@@ -107,7 +88,15 @@ public class Request<T> implements IRequest {
   }
 
   @Override
-  public @NonNull UUID getId() {
-    return this.id;
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || this.getClass() != o.getClass()) return false;
+    Request<?> request = (Request<?>) o;
+    return Objects.equals(id, request.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 }

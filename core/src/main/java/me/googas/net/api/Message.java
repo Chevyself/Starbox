@@ -1,4 +1,4 @@
-package me.googas.net.sockets.api;
+package me.googas.net.api;
 
 import java.util.UUID;
 import lombok.NonNull;

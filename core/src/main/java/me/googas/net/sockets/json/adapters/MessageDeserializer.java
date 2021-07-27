@@ -8,9 +8,9 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
-import me.googas.net.sockets.ReceivedRequest;
-import me.googas.net.sockets.Response;
-import me.googas.net.sockets.api.Message;
+import me.googas.net.api.Message;
+import me.googas.net.api.Response;
+import me.googas.net.sockets.json.ReceivedJsonRequest;
 
 /** Deserializes messages */
 public class MessageDeserializer implements JsonSerializer<Message>, JsonDeserializer<Message> {
@@ -26,7 +26,7 @@ public class MessageDeserializer implements JsonSerializer<Message>, JsonDeseria
     if (json.isJsonObject()) {
       JsonObject jsonObject = json.getAsJsonObject();
       if (jsonObject.get("method") != null) {
-        return context.deserialize(jsonObject, ReceivedRequest.class);
+        return context.deserialize(jsonObject, ReceivedJsonRequest.class);
       } else {
         return context.deserialize(jsonObject, Response.class);
       }

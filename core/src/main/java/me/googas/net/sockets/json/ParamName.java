@@ -17,14 +17,6 @@ import me.googas.net.sockets.json.reflect.JsonReceptorParameter;
 public @interface ParamName {
 
   /**
-   * @deprecated since 1.0.8-snapshot as {@link #value()} was introduced The name to use in the
-   *     parameter
-   * @return the name
-   */
-  @NonNull
-  String name() default "";
-
-  /**
    * The name to use in the parameter
    *
    * @return the name

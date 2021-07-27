@@ -1,15 +1,14 @@
-package me.googas.net.sockets.api;
+package me.googas.net.api;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import lombok.NonNull;
-import me.googas.net.sockets.Request;
 
 /** This object represents the server {@link Messenger} connects to */
-public interface Server {
+public interface Server<M extends Messenger> {
   /**
    * Closes the server
    *
@@ -22,17 +21,9 @@ public interface Server {
    *
    * @return whether the server requires the client to be authenticated
    */
-  boolean requiresAuthentication();
-
-  /** Makes the server start listening */
-  void start();
-
-  /**
-   * Set whether clients must be authenticated
-   *
-   * @param bol the new value whether clients need authentication
-   */
-  void setRequiresAuthentication(boolean bol);
+  default boolean hasAuthentication() {
+    return this.getAuthenticator().isPresent();
+  }
 
   /**
    * Send a request and accept the consumer for each client
@@ -41,7 +32,7 @@ public interface Server {
    * @param consumer the consumer to accept
    * @param <T> the type of object requested
    */
-  <T> void sendRequest(@NonNull Request<T> request, BiConsumer<Messenger, Optional<T>> consumer);
+  <T> void sendRequest(@NonNull Request<T> request, BiConsumer<M, Optional<T>> consumer);
 
   /**
    * Send a request and get the response for each client
@@ -51,7 +42,27 @@ public interface Server {
    * @return the map of clients and its response
    */
   @NonNull
-  <T> Map<Messenger, T> sendRequest(@NonNull Request<T> request);
+  <T> Map<M, Optional<T>> sendRequest(@NonNull Request<T> request);
+
+  /** Makes the server start listening */
+  void start();
+
+  /**
+   * Set the authenticator for request
+   *
+   * @param authenticator the new authenticator
+   */
+  @NonNull
+  Server<M> setAuthenticator(@NonNull Authenticator<M> authenticator);
+
+  /**
+   * Get an {@link Optional} instance containing the authenticator for the client to send requests
+   * to the server
+   *
+   * @return the authenticator to send requests to the server
+   */
+  @NonNull
+  Optional<Authenticator<M>> getAuthenticator();
 
   /**
    * Get the clients that are connected to the server
@@ -59,5 +70,5 @@ public interface Server {
    * @return the set of clients connected to the server
    */
   @NonNull
-  Set<? extends Messenger> getClients();
+  Collection<M> getClients();
 }

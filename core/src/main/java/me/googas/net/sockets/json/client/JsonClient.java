@@ -8,53 +8,54 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
+import lombok.Getter;
 import lombok.NonNull;
-import me.googas.net.sockets.AwaitingRequest;
-import me.googas.net.sockets.ThrowableHandler;
+import lombok.Setter;
+import me.googas.net.api.AwaitingRequest;
 import me.googas.net.sockets.json.JsonMessenger;
-import me.googas.net.sockets.json.reflect.JsonReceptor;
+import me.googas.net.sockets.json.JsonReceptor;
 import me.googas.net.sockets.json.server.JsonSocketServer;
 
 /** This object represents a client that can be used to connect to the {@link JsonSocketServer} */
 public class JsonClient extends Thread implements JsonMessenger {
 
   /** The builder to build json strings */
-  @NonNull private final StringBuilder builder = new StringBuilder();
+  @NonNull @Getter private final StringBuilder builder = new StringBuilder();
 
   /** The socket that the client is using */
-  @NonNull private final Socket socket;
+  @NonNull @Getter private final Socket socket;
 
   /** The output channel */
-  @NonNull private final PrintWriter out;
+  @NonNull @Getter private final PrintWriter output;
   /** The input channel */
-  @NonNull private final BufferedReader in;
+  @NonNull @Getter private final BufferedReader input;
 
   /**
    * The throwable handler in case something goes wrong and the user wants to handle it differently
    */
-  @NonNull private final ThrowableHandler throwableHandler;
+  @NonNull @Getter private final Consumer<Throwable> throwableHandler;
 
   /** The gson instance to serialize and deserialize objects */
-  @NonNull private final Gson gson;
+  @NonNull @Getter private final Gson gson;
 
   /** The receptors to accept requests */
-  @NonNull private final Set<JsonReceptor> receptors;
+  @NonNull @Getter private final Set<JsonReceptor> receptors;
 
   /** The request that are waiting for a response */
-  @NonNull private final HashMap<AwaitingRequest<?>, Long> requests = new HashMap<>();
+  @NonNull @Getter private final HashMap<AwaitingRequest<?>, Long> requests = new HashMap<>();
 
   /** The time to timeout requests */
-  private final long timeout;
+  @Getter private final long timeout;
 
   /** Whether the messenger is closed */
-  private boolean closed;
+  @Getter @Setter private boolean closed;
 
   /** The millis of when the last message was sent */
-  private long lastMessage;
+  @Getter @Setter private long lastMessage;
 
   /**
    * Create the guido client with a given socket
@@ -68,7 +69,7 @@ public class JsonClient extends Thread implements JsonMessenger {
    */
   public JsonClient(
       @NonNull Socket socket,
-      @NonNull ThrowableHandler throwableHandler,
+      @NonNull Consumer<Throwable> throwableHandler,
       @NonNull Gson gson,
       @NonNull Set<JsonReceptor> receptors,
       long timeout)
@@ -78,10 +79,10 @@ public class JsonClient extends Thread implements JsonMessenger {
     this.gson = gson;
     this.receptors = receptors;
     this.timeout = timeout;
-    this.out =
+    this.output =
         new PrintWriter(
             new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
-    this.in =
+    this.input =
         new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
   }
 
@@ -96,142 +97,29 @@ public class JsonClient extends Thread implements JsonMessenger {
    */
   public JsonClient(
       @NonNull Socket socket,
-      @NonNull ThrowableHandler throwableHandler,
+      @NonNull Consumer<Throwable> throwableHandler,
       @NonNull Gson gson,
       long timeout)
       throws IOException {
     this(socket, throwableHandler, gson, new HashSet<>(), timeout);
   }
 
-  /** Closes the messenger */
   @Override
   public void close() {
     this.setClosed(true);
-    this.out.close();
+    this.output.close();
     try {
-      this.in.close();
-    } catch (IOException e) {
-      this.throwableHandler.handle(e);
-    }
-    try {
+      this.input.close();
       this.socket.close();
     } catch (IOException e) {
-      this.throwableHandler.handle(e);
+      this.throwableHandler.accept(e);
     }
     this.receptors.clear();
     this.requests.clear();
   }
 
-  /**
-   * Adds the parsed receptors from the given object. This will get the receptors from the object
-   * using {@link JsonReceptor#getReceptors(Object)} and add them to the set
-   *
-   * @param objects the objects to add as receptors
-   */
-  public void addReceptors(@NonNull Object... objects) {
-    for (Object object : objects) {
-      this.receptors.addAll(JsonReceptor.getReceptors(object));
-    }
-  }
-
-  /**
-   * Get the output line to send messages
-   *
-   * @return the output line to send messages
-   */
-  @Override
-  public @NonNull PrintWriter getOutput() {
-    return this.out;
-  }
-
-  /**
-   * Get the input line to receive messages
-   *
-   * @return the input line
-   */
-  @Override
-  public @NonNull BufferedReader getInput() {
-    return this.in;
-  }
-
-  /**
-   * Get the receptors that the messenger is capable of using
-   *
-   * @return the collection of receptors
-   */
-  @Override
-  public @NonNull Collection<JsonReceptor> getReceptors() {
-    return this.receptors;
-  }
-
-  /**
-   * Get when request may timeout
-   *
-   * @return the time to timeout in millis
-   */
-  @Override
-  public long getTimeout() {
-    return this.timeout;
-  }
-
   @Override
   public void run() {
     JsonMessenger.super.run();
-  }
-
-  @NonNull
-  @Override
-  public HashMap<AwaitingRequest<?>, Long> getRequests() {
-    return this.requests;
-  }
-
-  @Override
-  public @NonNull Socket getSocket() {
-    return this.socket;
-  }
-
-  @Override
-  public long getLastMessage() {
-    return this.lastMessage;
-  }
-
-  @Override
-  public void setLastMessage(long millis) {
-    this.lastMessage = millis;
-  }
-
-  @Override
-  public @NonNull StringBuilder getBuilder() {
-    return this.builder;
-  }
-
-  /**
-   * Get the gson instance that this messenger may use
-   *
-   * @return the gson instance
-   */
-  @Override
-  public @NonNull Gson getGson() {
-    return this.gson;
-  }
-
-  @Override
-  public boolean isClosed() {
-    return this.closed;
-  }
-
-  @Override
-  public void setClosed(boolean bol) {
-    this.closed = bol;
-  }
-
-  /**
-   * Get the throwable handler that this messenger uses in case of a wrong request
-   *
-   * @return the throwable handler
-   */
-  @Override
-  public @NonNull ThrowableHandler getThrowableHandler() {
-    return this.throwableHandler;
   }
 }
