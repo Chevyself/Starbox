@@ -7,7 +7,7 @@ import lombok.Setter;
 import me.googas.starbox.time.Time;
 import me.googas.starbox.time.unit.Unit;
 
-public class SimpleCountdown implements Countdown {
+public class StarboxCountdown implements Countdown {
 
   @Setter private long start = System.currentTimeMillis();
   private long pause = 0;
@@ -22,7 +22,7 @@ public class SimpleCountdown implements Countdown {
 
   @Setter private boolean paused = false;
 
-  public SimpleCountdown(
+  public StarboxCountdown(
       @NonNull Time time,
       @NonNull int id,
       @NonNull Consumer<Time> onSecondPassed,
@@ -88,7 +88,7 @@ public class SimpleCountdown implements Countdown {
 
   @Override
   @NonNull
-  public SimpleCountdown refresh() {
+  public StarboxCountdown refresh() {
     this.secondsLeft = Math.round(this.time.get(Unit.SECONDS));
     return this;
   }

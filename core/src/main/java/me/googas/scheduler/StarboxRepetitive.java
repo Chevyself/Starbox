@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
-public class SimpleRepetitive implements Repetitive {
+public class StarboxRepetitive implements Repetitive {
 
   private final int id;
   @Setter private long start = System.currentTimeMillis();
@@ -15,7 +15,7 @@ public class SimpleRepetitive implements Repetitive {
 
   @NonNull @Getter @Setter private Runnable repetitive;
 
-  public SimpleRepetitive(int id, @NonNull Runnable repetitive) {
+  public StarboxRepetitive(int id, @NonNull Runnable repetitive) {
     this.id = id;
     this.repetitive = repetitive;
   }
