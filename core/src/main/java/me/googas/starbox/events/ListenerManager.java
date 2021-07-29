@@ -3,11 +3,11 @@ package me.googas.starbox.events;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -78,12 +78,10 @@ public class ListenerManager {
    */
   @NonNull
   public List<EventListener> getListeners(@NonNull Class<? extends Event> clazz) {
-    List<EventListener> listeners = new ArrayList<>();
-    for (EventListener listener : this.listeners) {
-      if (listener.getEvent().isAssignableFrom(clazz)) {
-        listeners.add(listener);
-      }
-    }
+    List<EventListener> listeners =
+        this.listeners.stream()
+            .filter(listener -> listener.getEvent().isAssignableFrom(clazz))
+            .collect(Collectors.toList());
     listeners.sort(Comparator.comparingInt(EventListener::getPriority));
     return listeners;
   }
