@@ -81,12 +81,7 @@ public class Pagination<O> {
    * @return the validated page number
    */
   private int validatePage(int page) {
-    if (page < 1) {
-      return 1;
-    } else if (page > this.maxPage()) {
-      return this.maxPage();
-    }
-    return page;
+    return page < 1 ? 1 : Math.min(page, this.maxPage());
   }
 
   /**
@@ -98,5 +93,6 @@ public class Pagination<O> {
     if (limit > 0) {
       throw new IllegalArgumentException("The limit by page cannot be lower than 0");
     }
+    this.limit = limit;
   }
 }
