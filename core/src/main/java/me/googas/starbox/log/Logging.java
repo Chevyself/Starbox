@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import lombok.NonNull;
 
 /** Static util for logging */
+@Deprecated
 public class Logging {
 
   public static void info(Logger logger, @NonNull String s) {

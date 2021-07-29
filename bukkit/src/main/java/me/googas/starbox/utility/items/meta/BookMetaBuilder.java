@@ -49,13 +49,15 @@ public class BookMetaBuilder extends ItemMetaBuilder {
   @Override
   public BookMeta build(@NonNull ItemStack stack) {
     ItemMeta itemMeta = super.build(stack);
-    if (!(itemMeta instanceof BookMeta)) return null;
-    BookMeta meta = (BookMeta) itemMeta;
-    meta.setAuthor(this.author);
-    meta.setPages(this.pages);
-    if (Versions.BUKKIT >= 12) {
-      BookMetaBuilder.SET_GENERATION.invoke(meta, this.wrappedGeneration.toGeneration());
+    BookMeta bookMeta = null;
+    if (itemMeta instanceof BookMeta) {
+      bookMeta = (BookMeta) itemMeta;
+      bookMeta.setAuthor(this.author);
+      bookMeta.setPages(this.pages);
+      if (Versions.BUKKIT >= 12) {
+        BookMetaBuilder.SET_GENERATION.invoke(bookMeta, this.wrappedGeneration.toGeneration());
+      }
     }
-    return meta;
+    return bookMeta;
   }
 }

@@ -75,14 +75,14 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
   public @NonNull ItemStack build() {
     ItemStack item = new ItemStack(this.material, this.amount);
     if (this.metaBuilder != null) {
-      ItemMeta meta = this.metaBuilder.build(item);
-      if (meta != null) item.setItemMeta(meta);
+      this.metaBuilder.ifBuildPresent(item, item::setItemMeta);
     }
     return item;
   }
 
   @Override
-  public @NonNull Button build(@NonNull ButtonListener listener) {
+  @NonNull
+  public Button build(@NonNull ButtonListener listener) {
     return new StarboxButton(listener, this.build());
   }
 

@@ -25,9 +25,11 @@ public class BlockStateMetaBuilder extends ItemMetaBuilder {
   @Override
   public BlockStateMeta build(@NonNull ItemStack stack) {
     ItemMeta itemMeta = super.build(stack);
-    if (!(itemMeta instanceof BlockStateMeta)) return null;
-    BlockStateMeta meta = (BlockStateMeta) itemMeta;
-    if (this.state != null) meta.setBlockState(this.state);
+    BlockStateMeta meta = null;
+    if (itemMeta instanceof BlockStateMeta) {
+      meta = (BlockStateMeta) itemMeta;
+      if (this.state != null) meta.setBlockState(this.state);
+    }
     return meta;
   }
 }

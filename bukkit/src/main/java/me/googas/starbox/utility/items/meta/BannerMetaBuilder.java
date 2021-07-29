@@ -19,12 +19,14 @@ public class BannerMetaBuilder extends ItemMetaBuilder {
   }
 
   @Override
+  @NonNull
   public BannerMeta build(@NonNull ItemStack stack) {
     ItemMeta itemMeta = super.build(stack);
-    if (!(itemMeta instanceof BannerMeta)) return null;
-    BannerMeta meta = (BannerMeta) itemMeta;
-    if (meta == null) return null;
-    meta.setPatterns(this.patterns);
+    BannerMeta meta = null;
+    if (itemMeta instanceof BannerMeta) {
+      meta = (BannerMeta) itemMeta;
+      meta.setPatterns(this.patterns);
+    }
     return meta;
   }
 }

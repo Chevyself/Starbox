@@ -101,21 +101,22 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
   @Override
   public ItemMeta build(@NonNull ItemStack stack) {
     ItemMeta meta = stack.getItemMeta();
-    if (meta == null) return null;
-    if (this.name != null) meta.setDisplayName(this.name);
-    if (this.lore != null) meta.setLore(Strings.divide(this.lore, 64));
-    if (this.attributes != null && Versions.BUKKIT >= 12) {
-      ItemMetaBuilder.SET_ATTRIBUTE_MODIFIERS.invoke(meta, this.attributes.build());
+    if (meta != null) {
+      if (this.name != null) meta.setDisplayName(this.name);
+      if (this.lore != null) meta.setLore(Strings.divide(this.lore, 64));
+      if (this.attributes != null && Versions.BUKKIT >= 12) {
+        ItemMetaBuilder.SET_ATTRIBUTE_MODIFIERS.invoke(meta, this.attributes.build());
+      }
+      if (Versions.BUKKIT <= 10) {
+        ItemMetaBuilder.SPIGOT_SET_UNBREAKABLE.invoke(
+            ItemMetaBuilder.ITEM_META_SPIGOT_METHOD.invoke(meta), this.unbreakable);
+      } else {
+        ItemMetaBuilder.SET_UNBREAKABLE.invoke(meta, this.unbreakable);
+      }
+      this.enchantments
+          .build()
+          .forEach(((enchantment, integer) -> meta.addEnchant(enchantment, integer, true)));
     }
-    if (Versions.BUKKIT <= 10) {
-      ItemMetaBuilder.SPIGOT_SET_UNBREAKABLE.invoke(
-          ItemMetaBuilder.ITEM_META_SPIGOT_METHOD.invoke(meta), this.unbreakable);
-    } else {
-      ItemMetaBuilder.SET_UNBREAKABLE.invoke(meta, this.unbreakable);
-    }
-    this.enchantments
-        .build()
-        .forEach(((enchantment, integer) -> meta.addEnchant(enchantment, integer, true)));
     return meta;
   }
 

@@ -56,18 +56,21 @@ public class SkullMetaBuilder extends ItemMetaBuilder {
   }
 
   @Override
+  @NonNull
   public SkullMeta build(@NonNull ItemStack stack) {
     ItemMeta itemMeta = super.build(stack);
-    if (!(itemMeta instanceof SkullMeta)) return null;
-    SkullMeta meta = (SkullMeta) itemMeta;
-    if (this.owner != null) {
-      if (Versions.BUKKIT > 11) {
-        SkullMetaBuilder.SET_OWNING_PLAYER.invoke(meta, this.owner);
-      } else {
-        SkullMetaBuilder.SET_OWNER.invoke(meta, this.owner.getName());
+    SkullMeta meta = null;
+    if (itemMeta instanceof SkullMeta) {
+      meta = (SkullMeta) itemMeta;
+      if (this.owner != null) {
+        if (Versions.BUKKIT > 11) {
+          SkullMetaBuilder.SET_OWNING_PLAYER.invoke(meta, this.owner);
+        } else {
+          SkullMetaBuilder.SET_OWNER.invoke(meta, this.owner.getName());
+        }
       }
+      this.appendSkin(meta);
     }
-    this.appendSkin(meta);
     return meta;
   }
 }
