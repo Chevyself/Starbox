@@ -2,6 +2,7 @@ package me.googas.starbox.modules.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.starbox.modules.Module;
@@ -31,17 +32,14 @@ public class UIModule implements Module {
 
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onPlayerInteractEvent(PlayerInteractEvent event) {
-    ItemStack hand = Players.getItemInMainHand(event.getPlayer());
-    if (hand == null) return;
-    ItemButton button = this.getButton(hand);
-    if (button != null) button.getListener().onClick(event);
+    Players.getItemInMainHand(event.getPlayer())
+        .flatMap(this::getButton)
+        .ifPresent(button -> button.getListener().onClick(event));
   }
 
-  public ItemButton getButton(@NonNull ItemStack stack) {
-    for (ItemButton button : this.items) {
-      if (button.getItem().isSimilar(stack)) return button;
-    }
-    return null;
+  @NonNull
+  public Optional<ItemButton> getButton(@NonNull ItemStack stack) {
+    return this.items.stream().filter(button -> button.getItem().isSimilar(stack)).findFirst();
   }
 
   @Override

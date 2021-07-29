@@ -137,7 +137,7 @@ public class Time implements TemporalAmount {
    * </ul>
    *
    * @see #ofMillis(long, boolean)
-   * @param string the string to parse as time
+   * @param string the string to forName as time
    * @param effective whether to use an effective {@link StarboxUnit} and value
    * @return the parsed instance of time
    * @throws IllegalArgumentException if no unit is matched

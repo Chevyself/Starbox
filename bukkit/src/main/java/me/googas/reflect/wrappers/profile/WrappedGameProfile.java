@@ -1,20 +1,20 @@
 package me.googas.reflect.wrappers.profile;
 
-import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.NonNull;
-import me.googas.reflect.WrappedClass;
-import me.googas.reflect.WrappedConstructor;
-import me.googas.reflect.WrappedMethod;
-import me.googas.reflect.WrappedReturnMethod;
-import me.googas.reflect.wrappers.SimpleWrapper;
+import me.googas.reflect.StarboxWrapper;
+import me.googas.reflect.wrappers.WrappedClass;
+import me.googas.reflect.wrappers.WrappedConstructor;
+import me.googas.reflect.wrappers.WrappedMethod;
+import me.googas.reflect.wrappers.WrappedReturnMethod;
 import me.googas.reflect.wrappers.properties.WrappedPropertyMap;
 
-public class WrappedGameProfile extends SimpleWrapper {
+public class WrappedGameProfile extends StarboxWrapper {
 
   @NonNull
   private static final WrappedClass GAME_PROFILE =
-      WrappedClass.parse("com.mojang.authlib.GameProfile");
+      WrappedClass.forName("com.mojang.authlib.GameProfile");
 
   @NonNull
   private static final WrappedConstructor CONSTRUCTOR =
@@ -50,13 +50,14 @@ public class WrappedGameProfile extends SimpleWrapper {
 
   @NonNull
   public UUID getId() {
-    return Objects.requireNonNull(
-        WrappedGameProfile.GET_ID.invoke(this.get()), "Could not invoke #getId");
+    return WrappedGameProfile.GET_ID
+        .invoke(this.get())
+        .orElseThrow(() -> new IllegalStateException("Could not invoke #getId"));
   }
 
-  public String getName() {
-    return Objects.requireNonNull(
-        WrappedGameProfile.GET_NAME.invoke(this.get()), "Could not invoke #getName");
+  @NonNull
+  public Optional<String> getName() {
+    return WrappedGameProfile.GET_NAME.invoke(this.get());
   }
 
   @NonNull

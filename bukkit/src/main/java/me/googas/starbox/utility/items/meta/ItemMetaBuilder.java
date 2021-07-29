@@ -5,8 +5,8 @@ import java.util.HashMap;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.reflect.APIVersion;
-import me.googas.reflect.WrappedClass;
-import me.googas.reflect.WrappedMethod;
+import me.googas.reflect.wrappers.WrappedClass;
+import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.reflect.wrappers.attributes.WrappedAttributes;
 import me.googas.starbox.Strings;
 import me.googas.starbox.builders.MapBuilder;
@@ -22,12 +22,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
 
-  @NonNull private static final WrappedClass ITEM_META = new WrappedClass(ItemMeta.class);
+  @NonNull private static final WrappedClass ITEM_META = WrappedClass.of(ItemMeta.class);
 
   @NonNull
   @APIVersion(value = 8, max = 15)
   private static final WrappedClass ITEM_META_SPIGOT =
-      WrappedClass.parse("org.bukkit.inventory.meta.ItemMeta.Spigot");
+      WrappedClass.forName("org.bukkit.inventory.meta.ItemMeta.Spigot");
 
   @NonNull
   @APIVersion(value = 8, max = 15)

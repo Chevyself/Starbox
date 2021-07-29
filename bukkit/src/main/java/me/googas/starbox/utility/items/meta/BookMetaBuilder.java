@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.reflect.WrappedClass;
-import me.googas.reflect.WrappedMethod;
+import me.googas.reflect.wrappers.WrappedClass;
+import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.reflect.wrappers.book.WrappedBookMetaGeneration;
 import me.googas.starbox.utility.Versions;
 import me.googas.starbox.utility.items.ItemBuilder;
@@ -17,7 +17,7 @@ public class BookMetaBuilder extends ItemMetaBuilder {
 
   @NonNull
   private static final WrappedClass BOOK_META =
-      WrappedClass.parse("org.bukkit.inventory.meta.BookMeta");
+      WrappedClass.forName("org.bukkit.inventory.meta.BookMeta");
 
   @NonNull
   private static final WrappedMethod SET_GENERATION =

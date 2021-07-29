@@ -1,15 +1,15 @@
 package me.googas.reflect.wrappers.properties;
 
 import lombok.NonNull;
-import me.googas.reflect.WrappedClass;
-import me.googas.reflect.WrappedConstructor;
-import me.googas.reflect.wrappers.SimpleWrapper;
+import me.googas.reflect.StarboxWrapper;
+import me.googas.reflect.wrappers.WrappedClass;
+import me.googas.reflect.wrappers.WrappedConstructor;
 
-public class WrappedProperty extends SimpleWrapper {
+public class WrappedProperty extends StarboxWrapper {
 
   @NonNull
   public static final WrappedClass PROPERTY =
-      WrappedClass.parse("com.mojang.authlib.properties.Property");
+      WrappedClass.forName("com.mojang.authlib.properties.Property");
 
   @NonNull
   private static final WrappedConstructor PROPERTY_CONSTRUCTOR =

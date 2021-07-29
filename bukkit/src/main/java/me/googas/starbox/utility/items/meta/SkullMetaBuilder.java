@@ -3,8 +3,8 @@ package me.googas.starbox.utility.items.meta;
 import java.util.UUID;
 import lombok.NonNull;
 import me.googas.reflect.APIVersion;
-import me.googas.reflect.WrappedClass;
-import me.googas.reflect.WrappedMethod;
+import me.googas.reflect.wrappers.WrappedClass;
+import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.reflect.wrappers.profile.WrappedGameProfile;
 import me.googas.reflect.wrappers.properties.WrappedProperty;
 import me.googas.starbox.utility.Versions;
@@ -16,7 +16,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 public class SkullMetaBuilder extends ItemMetaBuilder {
 
-  @NonNull private static final WrappedClass SKULL_META = new WrappedClass(SkullMeta.class);
+  @NonNull private static final WrappedClass SKULL_META = WrappedClass.of(SkullMeta.class);
 
   @NonNull
   @APIVersion(value = 8, max = 11)
@@ -39,7 +39,7 @@ public class SkullMetaBuilder extends ItemMetaBuilder {
     if (this.skin != null) {
       WrappedGameProfile gameProfile = WrappedGameProfile.construct(UUID.randomUUID(), null);
       gameProfile.getProperties().put("textures", WrappedProperty.construct("textures", this.skin));
-      new WrappedClass(meta.getClass()).getDeclaredField("profile").set(meta, gameProfile.get());
+      WrappedClass.of(meta.getClass()).getDeclaredField("profile").set(meta, gameProfile.get());
     }
   }
 

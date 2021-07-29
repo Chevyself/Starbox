@@ -7,7 +7,7 @@ import me.googas.starbox.time.Time;
 /**
  * Formats time into the 'Hh:Mm:Ss' format:
  *
- * <p>If you give this formatter 'Time.parse("1d12m59s")'
+ * <p>If you give this formatter 'Time.forName("1d12m59s")'
  *
  * <p>The formatted {@link String} will be: "24:12:59"
  */

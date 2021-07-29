@@ -4,9 +4,9 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.reflect.APIVersion;
-import me.googas.reflect.WrappedClass;
-import me.googas.reflect.WrappedConstructor;
-import me.googas.reflect.WrappedMethod;
+import me.googas.reflect.wrappers.WrappedClass;
+import me.googas.reflect.wrappers.WrappedConstructor;
+import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.starbox.utility.Versions;
 
 @APIVersion(9)
@@ -14,11 +14,11 @@ public class WrappedAttributeModifier {
 
   @NonNull
   private static final WrappedClass ATTRIBUTE_MODIFIER_CLASS =
-      WrappedClass.parse("org.bukkit.attribute.AttributeModifier");
+      WrappedClass.forName("org.bukkit.attribute.AttributeModifier");
 
   @NonNull
   private static final WrappedClass OPERATION_CLASS =
-      WrappedClass.parse("org.bukkit.attribute.AttributeModifier.Operation");
+      WrappedClass.forName("org.bukkit.attribute.AttributeModifier.Operation");
 
   @NonNull
   private static final WrappedConstructor ATTRIBUTE_MODIFIER_CONSTRUCTOR =

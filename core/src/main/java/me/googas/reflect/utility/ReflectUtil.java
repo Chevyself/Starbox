@@ -57,4 +57,13 @@ public class ReflectUtil {
       @NonNull Method method, @NonNull Class<? extends Annotation> clazz) {
     return ReflectUtil.hasAnnotation(method.getAnnotations(), clazz);
   }
+
+  public static boolean compareParameters(Class<?>[] paramTypes, Class<?>[] params) {
+    if (paramTypes == null || params == null) return false;
+    if (paramTypes.length != params.length) return false;
+    for (int i = 0; i < paramTypes.length; i++) {
+      if (paramTypes[i] != params[i]) return false;
+    }
+    return true;
+  }
 }

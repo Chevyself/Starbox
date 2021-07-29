@@ -2,8 +2,8 @@ package me.googas.reflect.wrappers.attributes;
 
 import lombok.NonNull;
 import me.googas.reflect.APIVersion;
-import me.googas.reflect.WrappedClass;
-import me.googas.reflect.WrappedMethod;
+import me.googas.reflect.wrappers.WrappedClass;
+import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.starbox.utility.Versions;
 
 @APIVersion(9)
@@ -20,7 +20,8 @@ public enum WrappedAttribute {
   ZOMBIE_SPAWN_REINFORCEMENTS;
 
   @NonNull
-  public static final WrappedClass ATTRIBUTE = WrappedClass.parse("org.bukkit.attribute.Attribute");
+  public static final WrappedClass ATTRIBUTE =
+      WrappedClass.forName("org.bukkit.attribute.Attribute");
 
   @NonNull
   private static final WrappedMethod VALUE_OF =

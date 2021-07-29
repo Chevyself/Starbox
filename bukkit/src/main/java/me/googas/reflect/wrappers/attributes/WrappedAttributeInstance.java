@@ -2,16 +2,16 @@ package me.googas.reflect.wrappers.attributes;
 
 import lombok.NonNull;
 import me.googas.reflect.APIVersion;
-import me.googas.reflect.WrappedClass;
-import me.googas.reflect.WrappedMethod;
-import me.googas.reflect.wrappers.SimpleWrapper;
+import me.googas.reflect.StarboxWrapper;
+import me.googas.reflect.wrappers.WrappedClass;
+import me.googas.reflect.wrappers.WrappedMethod;
 
 @APIVersion(9)
-public class WrappedAttributeInstance extends SimpleWrapper {
+public class WrappedAttributeInstance extends StarboxWrapper {
 
   @NonNull
   private static final WrappedClass ATTRIBUTE_INSTANCE =
-      WrappedClass.parse("org.bukkit.attribute.AttributeInstance");
+      WrappedClass.forName("org.bukkit.attribute.AttributeInstance");
 
   @NonNull
   private static final WrappedMethod GET_ATTRIBUTE =

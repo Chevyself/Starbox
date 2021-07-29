@@ -1,11 +1,12 @@
 package me.googas.reflect.wrappers.block;
 
+import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.reflect.APIVersion;
-import me.googas.reflect.WrappedClass;
-import me.googas.reflect.WrappedMethod;
-import me.googas.reflect.WrappedReturnMethod;
+import me.googas.reflect.wrappers.WrappedClass;
+import me.googas.reflect.wrappers.WrappedMethod;
+import me.googas.reflect.wrappers.WrappedReturnMethod;
 import org.bukkit.Material;
 
 @APIVersion(14)
@@ -13,7 +14,7 @@ public class WrappedBlockData {
 
   @NonNull
   private static final WrappedClass BLOCK_DATA =
-      WrappedClass.parse("org.bukkit.block.data.BlockData");
+      WrappedClass.forName("org.bukkit.block.data.BlockData");
 
   @NonNull
   private static final WrappedReturnMethod<Material> GET_MATERIAL =
@@ -41,7 +42,8 @@ public class WrappedBlockData {
     this.blockData = blockData;
   }
 
-  public String getAsString(boolean b) {
+  @NonNull
+  public Optional<String> getAsString(boolean b) {
     return WrappedBlockData.GET_STRING_BOL.invoke(this.blockData, b);
   }
 
@@ -58,11 +60,13 @@ public class WrappedBlockData {
     return false;
   }
 
-  public Material getMaterial() {
+  @NonNull
+  public Optional<Material> getMaterial() {
     return WrappedBlockData.GET_MATERIAL.invoke(this.blockData);
   }
 
-  public String getAsString() {
+  @NonNull
+  public Optional<String> getAsString() {
     return WrappedBlockData.GET_STRING.invoke(this.blockData);
   }
 }

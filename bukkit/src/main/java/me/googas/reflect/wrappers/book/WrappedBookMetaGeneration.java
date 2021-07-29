@@ -2,8 +2,8 @@ package me.googas.reflect.wrappers.book;
 
 import lombok.NonNull;
 import me.googas.reflect.APIVersion;
-import me.googas.reflect.WrappedClass;
-import me.googas.reflect.WrappedMethod;
+import me.googas.reflect.wrappers.WrappedClass;
+import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.starbox.utility.Versions;
 
 @APIVersion(12)
@@ -15,7 +15,7 @@ public enum WrappedBookMetaGeneration {
 
   @NonNull
   public static final WrappedClass GENERATION =
-      WrappedClass.parse("org.bukkit.inventory.meta.BookMeta.Generation");
+      WrappedClass.forName("org.bukkit.inventory.meta.BookMeta.Generation");
 
   @NonNull
   private static final WrappedMethod VALUE_OF =

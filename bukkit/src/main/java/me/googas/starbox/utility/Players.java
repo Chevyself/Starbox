@@ -2,11 +2,12 @@ package me.googas.starbox.utility;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.NonNull;
 import me.googas.reflect.APIVersion;
-import me.googas.reflect.WrappedClass;
-import me.googas.reflect.WrappedMethod;
-import me.googas.reflect.WrappedReturnMethod;
+import me.googas.reflect.wrappers.WrappedClass;
+import me.googas.reflect.wrappers.WrappedMethod;
+import me.googas.reflect.wrappers.WrappedReturnMethod;
 import me.googas.reflect.wrappers.attributes.WrappedAttribute;
 import me.googas.reflect.wrappers.attributes.WrappedAttributeInstance;
 import org.bukkit.Bukkit;
@@ -17,9 +18,9 @@ import org.bukkit.inventory.PlayerInventory;
 
 public class Players {
 
-  @NonNull public static WrappedClass PLAYER = new WrappedClass(Player.class);
-  @NonNull public static WrappedClass SPIGOT_PLAYER = new WrappedClass(Player.Spigot.class);
-  @NonNull public static WrappedClass PLAYER_INVENTORY = new WrappedClass(PlayerInventory.class);
+  @NonNull public static WrappedClass PLAYER = WrappedClass.of(Player.class);
+  @NonNull public static WrappedClass SPIGOT_PLAYER = WrappedClass.of(Player.Spigot.class);
+  @NonNull public static WrappedClass PLAYER_INVENTORY = WrappedClass.of(PlayerInventory.class);
 
   @APIVersion(value = 8)
   public static WrappedReturnMethod<String> SPIGOT_GET_LANG =
@@ -52,13 +53,13 @@ public class Players {
   public static String getLocale(@NonNull Player player) {
     switch (Versions.BUKKIT) {
       case 8:
-        return Players.SPIGOT_GET_LANG.invokeOr(player.spigot(), "en");
+        return Players.SPIGOT_GET_LANG.invoke(player.spigot()).orElse("en");
       case 9:
       case 10:
       case 11:
-        return Players.SPIGOT_GET_LOCALE.invokeOr(player.spigot(), "en");
+        return Players.SPIGOT_GET_LOCALE.invoke(player.spigot()).orElse("en");
       default:
-        return Players.GET_LOCALE.invokeOr(player, "en");
+        return Players.GET_LOCALE.invoke(player).orElse("en");
     }
   }
 
@@ -87,7 +88,8 @@ public class Players {
     return null;
   }
 
-  public static ItemStack getItemInMainHand(@NonNull Player player) {
+  @NonNull
+  public static Optional<ItemStack> getItemInMainHand(@NonNull Player player) {
     if (Versions.BUKKIT < 9) {
       return Players.GET_ITEM_IN_HAND.invoke(player);
     } else {
