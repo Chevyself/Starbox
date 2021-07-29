@@ -1,6 +1,7 @@
 package me.googas.scheduler;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.Consumer;
 import lombok.NonNull;
@@ -18,18 +19,16 @@ public interface Scheduler {
    * @param id the id of the task
    * @return the task if the id matches else null
    */
-  default Task getTask(int id) {
-    for (Task task : this.getTasks()) {
-      if (task.getId() == id) return task;
-    }
-    return null;
+  @NonNull
+  default Optional<Task> getTask(int id) {
+    return this.getTasks().stream().filter(task -> task.getId() == id).findFirst();
   }
 
   /**
    * Create a countdown
    *
    * @param repetition how often should the countdown repeat. This means that how ofter should the
-   *     countdown decrease its time. For example: In a {@link SimpleCountdown} which has a seconds
+   *     countdown decrease its time. For example: In a {@link StarboxCountdown} which has a seconds
    *     left method must run every second
    * @param countdown the countdown to schedule
    * @return the scheduled countdown
@@ -50,7 +49,7 @@ public interface Scheduler {
   default Countdown countdown(@NonNull Time time, Consumer<Time> onSecond, Runnable finish) {
     return this.countdown(
         Time.of(1, Unit.SECONDS),
-        new SimpleCountdown(
+        new StarboxCountdown(
             time,
             this.nextId(),
             onSecond == null ? second -> {} : onSecond,
@@ -76,7 +75,7 @@ public interface Scheduler {
    */
   @NonNull
   default RunLater later(@NonNull Time in, @NonNull Runnable later) {
-    return this.later(in, new SimpleRunLater(this.nextId(), later));
+    return this.later(in, new StarboxRunlater(this.nextId(), later));
   }
 
   /**
@@ -101,7 +100,7 @@ public interface Scheduler {
   @NonNull
   default Repetitive repeat(
       @NonNull Time initial, @NonNull Time period, @NonNull Runnable repetitive) {
-    return this.repeat(initial, period, new SimpleRepetitive(this.nextId(), repetitive));
+    return this.repeat(initial, period, new StarboxRepetitive(this.nextId(), repetitive));
   }
 
   /**
