@@ -1,9 +1,9 @@
 package me.googas.io.context;
 
 import java.net.URL;
-import java.util.Optional;
 import lombok.NonNull;
 import me.googas.io.StarboxFile;
+import me.googas.starbox.HandledExpression;
 
 /**
  * Implementations of this class are able to read Java objects from files:
@@ -24,20 +24,22 @@ public interface FileContext<O> {
    * @param file the file to read the object from
    * @param type the type to return when the file is read
    * @param <T> the type of object to return
-   * @return a {@link Optional} instance wrapping the read object or null if it could not be read
-   *     correctly
+   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns the read
+   *     object and handles {@link java.io.IOException}
    */
   @NonNull
-  <T> Optional<T> read(@NonNull StarboxFile file, @NonNull Class<T> type);
+  <T> HandledExpression<T> read(@NonNull StarboxFile file, @NonNull Class<T> type);
 
   /**
    * Write the object to the given file
    *
    * @param file the file to write the object to
    * @param object the object to write the file to
-   * @return true if the object was written correctly false otherwise
+   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns whether
+   *     the object was written and handles {@link java.io.IOException}
    */
-  boolean write(@NonNull StarboxFile file, @NonNull Object object);
+  @NonNull
+  HandledExpression<Boolean> write(@NonNull StarboxFile file, @NonNull Object object);
 
   /**
    * Read the object from the given input stream
@@ -45,29 +47,29 @@ public interface FileContext<O> {
    * @param resource the resource to read the object from
    * @param type the type to return when the file is ready
    * @param <T> the type of the object to return
-   * @return a {@link Optional} instance wrapping the read object or null if it could not be read
-   *     correctly
+   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns the read
+   *     object and handles {@link java.io.IOException}
    */
   @NonNull
-  <T> Optional<T> read(@NonNull URL resource, @NonNull Class<T> type);
+  <T> HandledExpression<T> read(@NonNull URL resource, @NonNull Class<T> type);
 
   /**
    * Read the default object given by the context from a {@link java.io.File}
    *
    * @param file the file to read the object from
-   * @return a {@link Optional} instance wrapping the read object or null if it could not be read
-   *     correctly
+   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns the read
+   *     object and handles {@link java.io.IOException}
    */
   @NonNull
-  Optional<O> read(@NonNull StarboxFile file);
+  HandledExpression<O> read(@NonNull StarboxFile file);
 
   /**
    * Read the default object given by the context from a {@link URL}
    *
    * @param resource the resource to read the object from
-   * @return a {@link Optional} instance wrapping the read object or null if it could not be read
-   *     correctly
+   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns the read
+   *     object and handles {@link java.io.IOException}
    */
   @NonNull
-  Optional<O> read(@NonNull URL resource);
+  HandledExpression<O> read(@NonNull URL resource);
 }

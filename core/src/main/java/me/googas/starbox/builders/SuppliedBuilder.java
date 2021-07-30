@@ -1,6 +1,5 @@
 package me.googas.starbox.builders;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import lombok.NonNull;

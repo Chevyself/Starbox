@@ -16,12 +16,12 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Delegate;
 import me.googas.io.context.FileContext;
+import me.googas.starbox.HandledExpression;
 
 /**
  * This is an "extension" of the {@link File} includes methods for reading and writing with the use
@@ -94,27 +94,19 @@ public class StarboxFile {
    * @throws IllegalStateException in case that the file could not be created
    */
   @NonNull
-  public FileWriter getPreparedWriter(boolean append) {
+  public FileWriter getPreparedWriter(boolean append) throws IOException {
     boolean exists = true;
     if (!this.exists()) {
       exists = false;
-      try {
-        this.getParentFile().mkdirs();
-        if (this.file.createNewFile()) {
-          exists = true;
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
+      this.getParentFile().mkdirs();
+      if (this.file.createNewFile()) {
+        exists = true;
       }
     }
-    if (exists) {
-      try {
-        return new FileWriter(this.getFile(), append);
-      } catch (IOException e) {
-        throw new IllegalStateException("Failed to open writer for " + this, e);
-      }
+    if (!exists) {
+      return new FileWriter(this.getFile(), append);
     }
-    throw new IllegalStateException("Could not create file for " + this);
+    throw new IOException(this + " could not be created");
   }
 
   /**
@@ -125,10 +117,11 @@ public class StarboxFile {
    * @param context the context to read the file with
    * @param clazz the clazz of the object that the {@link FileContext} must return upon read
    * @param <T> the type of the object to return
-   * @return an optional wrapping the object or null if it could not be read
+   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns the read
+   *     object and handles {@link java.io.IOException}
    */
   @NonNull
-  public <T> Optional<T> read(@NonNull FileContext<?> context, @NonNull Class<T> clazz) {
+  public <T> HandledExpression<T> read(@NonNull FileContext<?> context, @NonNull Class<T> clazz) {
     return context.read(this, clazz);
   }
 
@@ -146,7 +139,7 @@ public class StarboxFile {
   @NonNull
   @Deprecated
   public <T> T readOr(@NonNull FileContext<?> context, @NonNull Class<T> clazz, T def) {
-    return this.read(context, clazz).orElse(def);
+    return this.read(context, clazz).get().orElse(def);
   }
 
   /**
@@ -164,10 +157,12 @@ public class StarboxFile {
   public <T> T readOr(
       @NonNull FileContext<?> context, @NonNull Class<T> clazz, @NonNull URL resource) {
     return this.read(context, clazz)
+        .get()
         .orElseGet(
             () ->
                 context
                     .read(resource, clazz)
+                    .get()
                     .orElseThrow(
                         () ->
                             new IllegalStateException(
@@ -187,7 +182,7 @@ public class StarboxFile {
   @Deprecated
   public <T> T readOrGet(
       @NonNull FileContext<?> context, @NonNull Class<T> clazz, @NonNull Supplier<T> supplier) {
-    return this.read(context, clazz).orElseGet(supplier);
+    return this.read(context, clazz).get().orElseGet(supplier);
   }
 
   /**
@@ -199,7 +194,7 @@ public class StarboxFile {
    * @return an optional wrapping the object or null if it could not be read
    */
   @NonNull
-  public <O> Optional<O> read(@NonNull FileContext<O> context) {
+  public <O> HandledExpression<O> read(@NonNull FileContext<O> context) {
     return context.read(this);
   }
 
@@ -214,7 +209,7 @@ public class StarboxFile {
   @NonNull
   @Deprecated
   public <O> O readOr(@NonNull FileContext<O> context, @NonNull O def) {
-    return context.read(this).orElse(def);
+    return context.read(this).get().orElse(def);
   }
 
   /**
@@ -228,10 +223,12 @@ public class StarboxFile {
   @NonNull
   public <O> O readOr(@NonNull FileContext<O> context, @NonNull URL resource) {
     return this.read(context)
+        .get()
         .orElseGet(
             () ->
                 context
                     .read(resource)
+                    .get()
                     .orElseThrow(
                         () ->
                             new IllegalStateException(
@@ -248,7 +245,7 @@ public class StarboxFile {
    */
   @Deprecated
   public <O> O readOrGet(@NonNull FileContext<O> context, @NonNull Supplier<O> supplier) {
-    return context.read(this).orElseGet(supplier);
+    return context.read(this).get().orElseGet(supplier);
   }
 
   /**
@@ -258,9 +255,11 @@ public class StarboxFile {
    *
    * @param context the context to write the file with
    * @param object the object to write in the object
-   * @return true if the object was written successfully false otherwise
+   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns whether
+   *     the object was written and handles {@link java.io.IOException}
    */
-  public boolean write(@NonNull FileContext<?> context, @NonNull Object object) {
+  @NonNull
+  public HandledExpression<Boolean> write(@NonNull FileContext<?> context, @NonNull Object object) {
     return context.write(this, object);
   }
 
@@ -270,22 +269,17 @@ public class StarboxFile {
    * @param resource the resource to copy into the file
    * @return whether it was copied successfully false otherwise
    */
-  public boolean copy(@NonNull URL resource) {
-    if (!this.file.exists()) {
-      this.file.getParentFile().mkdirs();
-      try {
-        this.file.createNewFile();
-      } catch (IOException e) {
-        throw new IllegalArgumentException(this.file + " could not be created", e);
-      }
-    }
-    try {
-      Files.copy(resource.openStream(), this.file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-    } catch (IOException e) {
-      e.printStackTrace();
-      return false;
-    }
-    return true;
+  public HandledExpression<Boolean> copy(@NonNull URL resource) {
+    return HandledExpression.using(
+        () -> {
+          if (!this.file.exists()) {
+            this.getParentFile().mkdirs();
+            this.file.createNewFile();
+            Files.copy(
+                resource.openStream(), this.file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+          }
+          return true;
+        });
   }
 
   private StarboxFile[] listFiles(File[] files) {
@@ -331,23 +325,16 @@ public class StarboxFile {
     return new FileReader(this.file);
   }
 
-  /**
-   * Get a {@link BufferedReader} for the file this will check that the file exists else {@link
-   * IllegalStateException} will be thrown
-   *
-   * @return the {@link BufferedReader} for the file
-   * @throws IllegalStateException in case the file does not exist
-   */
   @NonNull
-  public BufferedReader getBufferedReader() {
-    if (this.file.exists()) {
-      try {
-        return new BufferedReader(new FileReader(this.file));
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
+  public StarboxFile copy(@NonNull StarboxFile source) throws IOException {
+    InputStream input = new FileInputStream(source.getFile());
+    OutputStream output = new FileOutputStream(this.getFile());
+    byte[] buffer = new byte[1024];
+    int length;
+    while ((length = input.read(buffer)) > 0) {
+      output.write(buffer, 0, length);
     }
-    throw new IllegalStateException(this + " does not exist");
+    return this;
   }
 
   /**
@@ -387,17 +374,16 @@ public class StarboxFile {
     return this;
   }
 
+  /**
+   * Get a {@link BufferedReader} for the file this will check that the file exists else {@link
+   * IllegalStateException} will be thrown
+   *
+   * @return the {@link BufferedReader} for the file
+   * @throws IllegalStateException in case the file does not exist
+   */
   @NonNull
-  public StarboxFile copy(@NonNull StarboxFile source) throws IOException {
-    try (InputStream input = new FileInputStream(source.getFile());
-        OutputStream output = new FileOutputStream(this.getFile())) {
-      byte[] buffer = new byte[1024];
-      int length;
-      while ((length = input.read(buffer)) > 0) {
-        output.write(buffer, 0, length);
-      }
-    }
-    return this;
+  public BufferedReader getBufferedReader() throws FileNotFoundException {
+    return new BufferedReader(new FileReader(this.file));
   }
 
   @Override

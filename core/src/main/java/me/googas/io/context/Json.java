@@ -1,16 +1,16 @@
 package me.googas.io.context;
 
 import com.google.gson.Gson;
-import java.io.BufferedReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Writer;
 import java.net.URL;
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import me.googas.io.StarboxFile;
+import me.googas.starbox.HandledExpression;
 
 /**
  * Reads '.json' files to return any type of object that can be deserialized or serialized check
@@ -31,58 +31,70 @@ public class Json implements FileContext<Object> {
 
   @Override
   @NonNull
-  public <T> Optional<T> read(@NonNull StarboxFile file, @NonNull Class<T> type) {
-    if (!file.exists()) return Optional.empty();
-    BufferedReader reader = file.getBufferedReader();
-    Optional<T> optional = Optional.ofNullable(this.gson.fromJson(reader, type));
-    try {
-      reader.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return optional;
-  }
-
-  @Override
-  public boolean write(@NonNull StarboxFile file, @NonNull Object object) {
-    FileWriter writer = file.getPreparedWriter(false);
-    this.gson.toJson(object, writer);
-    try {
-      writer.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return true;
+  public <T> HandledExpression<T> read(@NonNull StarboxFile file, @NonNull Class<T> type) {
+    AtomicReference<Reader> atomicReader = new AtomicReference<>();
+    return HandledExpression.using(
+            () -> {
+              T other = null;
+              if (file.exists()) {
+                Reader reader = file.getBufferedReader();
+                other = this.gson.fromJson(reader, type);
+                atomicReader.set(reader);
+              }
+              return other;
+            })
+        .next(
+            () -> {
+              Reader reader = atomicReader.get();
+              if (reader != null) reader.close();
+            });
   }
 
   @Override
   @NonNull
-  public <T> Optional<T> read(@NonNull URL resource, @NonNull Class<T> type) {
-    InputStreamReader reader = null;
-    try {
-      reader = new InputStreamReader(resource.openStream());
-    } catch (IOException e) {
-      e.printStackTrace();
-      return Optional.empty();
-    }
-    T t = this.gson.fromJson(reader, type);
-    try {
-      reader.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return Optional.ofNullable(t);
+  public HandledExpression<Boolean> write(@NonNull StarboxFile file, @NonNull Object object) {
+    AtomicReference<Writer> atomicWriter = new AtomicReference<>();
+    return HandledExpression.using(
+            () -> {
+              Writer writer = file.getPreparedWriter(false);
+              this.gson.toJson(object, writer);
+              atomicWriter.set(writer);
+              return true;
+            })
+        .next(
+            () -> {
+              Writer writer = atomicWriter.get();
+              if (writer != null) writer.close();
+            });
   }
 
   @Override
   @NonNull
-  public Optional<Object> read(@NonNull StarboxFile file) {
-    return Optional.ofNullable(this.read(file, Object.class));
+  public <T> HandledExpression<T> read(@NonNull URL resource, @NonNull Class<T> type) {
+    AtomicReference<Reader> atomicReader = new AtomicReference<>();
+    return HandledExpression.using(
+            () -> {
+              Reader reader = new InputStreamReader(resource.openStream());
+              T other = this.gson.fromJson(reader, type);
+              atomicReader.set(reader);
+              return other;
+            })
+        .next(
+            () -> {
+              Reader reader = atomicReader.get();
+              if (reader != null) reader.close();
+            });
   }
 
   @Override
   @NonNull
-  public Optional<Object> read(@NonNull URL resource) {
-    return Optional.ofNullable(this.read(resource, Object.class));
+  public HandledExpression<Object> read(@NonNull StarboxFile file) {
+    return this.read(file, Object.class);
+  }
+
+  @Override
+  @NonNull
+  public HandledExpression<Object> read(@NonNull URL resource) {
+    return this.read(resource, Object.class);
   }
 }

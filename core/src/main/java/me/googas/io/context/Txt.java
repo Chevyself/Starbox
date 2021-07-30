@@ -2,12 +2,13 @@ package me.googas.io.context;
 
 import java.io.BufferedReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Writer;
 import java.net.URL;
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.NonNull;
 import me.googas.io.StarboxFile;
+import me.googas.starbox.HandledExpression;
 
 /**
  * Reads {@link String} from files. {@link #read(StarboxFile, Class)} and {@link #write(StarboxFile,
@@ -20,25 +21,21 @@ public class Txt implements FileContext<String> {
    * Reads an String from a {@link BufferedReader}
    *
    * @param reader the reader to read the string from
-   * @return the read string or null if it could not be read
+   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns the read
+   *     object and handles {@link java.io.IOException}
    */
   @NonNull
-  public Optional<String> read(@NonNull BufferedReader reader) {
-    StringBuilder builder = new StringBuilder();
-    String line = null;
-    try {
-      while ((line = reader.readLine()) != null) {
-        builder.append(line);
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    try {
-      reader.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return Optional.ofNullable(builder.length() == 0 ? null : builder.toString());
+  public HandledExpression<String> read(@NonNull BufferedReader reader) {
+    return HandledExpression.using(
+            () -> {
+              StringBuilder builder = new StringBuilder();
+              String line = null;
+              while ((line = reader.readLine()) != null) {
+                builder.append(line);
+              }
+              return builder.toString();
+            })
+        .next(reader::close);
   }
 
   /**
@@ -47,66 +44,82 @@ public class Txt implements FileContext<String> {
    * @param file the file to write the string on
    * @param string the string to write on the file
    * @param append whether to append the new content to the previous
-   * @return whether the string was written in the file successfully
+   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns whether
+   *     the object was written and handles {@link java.io.IOException}
    */
-  public boolean write(@NonNull StarboxFile file, @NonNull String string, boolean append) {
-    FileWriter writer = file.getPreparedWriter(append);
-    try {
-      writer.write(string);
-    } catch (IOException e) {
-      e.printStackTrace();
-      return false;
-    }
-    try {
-      writer.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return true;
+  @NonNull
+  public HandledExpression<Boolean> write(
+      @NonNull StarboxFile file, @NonNull String string, boolean append) {
+    AtomicReference<Writer> atomicWriter = new AtomicReference<>();
+    return HandledExpression.using(
+            () -> {
+              FileWriter writer = file.getPreparedWriter(append);
+              writer.write(string);
+              return true;
+            })
+        .next(
+            () -> {
+              Writer writer = atomicWriter.get();
+              if (writer != null) writer.close();
+            });
   }
 
   @Override
-  public @NonNull Optional<String> read(@NonNull StarboxFile file) {
-    if (!file.exists()) return Optional.empty();
-    return this.read(file.getBufferedReader());
+  public @NonNull HandledExpression<String> read(@NonNull StarboxFile file) {
+    AtomicReference<BufferedReader> atomicReader = new AtomicReference<>();
+    return HandledExpression.using(
+            () -> {
+              BufferedReader reader = file.getBufferedReader();
+              StringBuilder builder = new StringBuilder();
+              String line = null;
+              while ((line = reader.readLine()) != null) {
+                builder.append(line);
+              }
+              return builder.toString();
+            })
+        .next(
+            () -> {
+              BufferedReader reader = atomicReader.get();
+              if (reader != null) reader.close();
+            });
   }
 
   @Override
   @NonNull
-  public Optional<String> read(@NonNull URL resource) {
-    try {
-      return this.read(new BufferedReader(new InputStreamReader(resource.openStream())));
-    } catch (IOException e) {
-      e.printStackTrace();
-      return Optional.empty();
-    }
+  public HandledExpression<String> read(@NonNull URL resource) {
+    AtomicReference<BufferedReader> atomicReader = new AtomicReference<>();
+    return HandledExpression.using(
+            () -> {
+              BufferedReader reader =
+                  new BufferedReader(new InputStreamReader(resource.openStream()));
+              StringBuilder builder = new StringBuilder();
+              String line = null;
+              while ((line = reader.readLine()) != null) {
+                builder.append(line);
+              }
+              return builder.toString();
+            })
+        .next(
+            () -> {
+              BufferedReader reader = atomicReader.get();
+              if (reader != null) reader.close();
+            });
   }
 
   @Override
   @NonNull
-  public <T> Optional<T> read(@NonNull StarboxFile file, @NonNull Class<T> type) {
-    if (type.equals(String.class)) {
-      return this.read(file).map(type::cast);
-    }
+  public <T> HandledExpression<T> read(@NonNull StarboxFile file, @NonNull Class<T> type) {
     throw new UnsupportedOperationException("Read has not been implemented for '.txt' files");
   }
 
   @Override
-  public boolean write(@NonNull StarboxFile file, @NonNull Object object) {
-    if (object instanceof String) {
-      return this.write(file, (String) object, false);
-    } else if (object == null) {
-      return this.write(file, "null");
-    }
-    throw new UnsupportedOperationException("Write has not been implemented for '.txt' files");
+  public HandledExpression<Boolean> write(@NonNull StarboxFile file, @NonNull Object object) {
+    return this.write(file, object == null ? "null" : object.toString(), false);
   }
 
   @Override
   @NonNull
-  public <T> Optional<T> read(@NonNull URL resource, @NonNull Class<T> type) {
-    if (type.equals(String.class)) {
-      return this.read(resource).map(type::cast);
-    }
+  public <T> HandledExpression<T> read(@NonNull URL resource, @NonNull Class<T> type) {
     throw new UnsupportedOperationException("Read has not been implemented for '.txt' files");
   }
 }

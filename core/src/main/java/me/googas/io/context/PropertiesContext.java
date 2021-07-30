@@ -1,13 +1,14 @@
 package me.googas.io.context;
 
-import java.io.BufferedReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.net.URL;
-import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.NonNull;
 import me.googas.io.StarboxFile;
+import me.googas.starbox.HandledExpression;
 
 /**
  * Reads {@link Properties} from files. {@link #read(StarboxFile, Class)} and {@link
@@ -22,69 +23,79 @@ public class PropertiesContext implements FileContext<Properties> {
    * @param file the file to write the properties on
    * @param properties the properties to write on the file
    * @param comment a comment to leave on the file when the properties are written this can be null
-   * @return whether the properties were written in the file successfully
+   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns whether
+   *     the object was written and handles {@link java.io.IOException}
    */
-  public boolean write(@NonNull StarboxFile file, @NonNull Properties properties, String comment) {
-    FileWriter writer = file.getPreparedWriter(false);
-    try {
-      properties.store(writer, comment);
-    } catch (IOException e) {
-      e.printStackTrace();
-      return false;
-    }
-    try {
-      writer.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return true;
+  public HandledExpression<Boolean> write(
+      @NonNull StarboxFile file, @NonNull Properties properties, String comment) {
+    AtomicReference<Writer> atomicWriter = new AtomicReference<>();
+    return HandledExpression.using(
+            () -> {
+              Writer writer = file.getPreparedWriter(false);
+              properties.store(writer, comment);
+              atomicWriter.set(writer);
+              return true;
+            })
+        .next(
+            () -> {
+              Writer writer = atomicWriter.get();
+              if (writer != null) writer.close();
+            });
   }
 
   @Override
-  public @NonNull Optional<Properties> read(@NonNull StarboxFile file) {
-    Properties properties = new Properties();
-    BufferedReader reader = file.getBufferedReader();
-    try {
-      properties.load(reader);
-    } catch (IOException e) {
-      throw new IllegalArgumentException("Could not read properties from " + file, e);
-    }
-    try {
-      reader.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return Optional.of(properties);
-  }
-
-  @Override
-  @NonNull
-  public Optional<Properties> read(@NonNull URL resource) {
-    Properties properties = new Properties();
-    try {
-      properties.load(resource.openStream());
-    } catch (IOException e) {
-      throw new IllegalArgumentException("Could not read Properties from InputStream", e);
-    }
-    return Optional.of(properties);
+  public @NonNull HandledExpression<Properties> read(@NonNull StarboxFile file) {
+    AtomicReference<Reader> atomicReader = new AtomicReference<>();
+    return HandledExpression.using(
+            () -> {
+              Properties properties = new Properties();
+              Reader reader = file.getBufferedReader();
+              properties.load(reader);
+              atomicReader.set(reader);
+              return properties;
+            })
+        .next(
+            () -> {
+              Reader reader = atomicReader.get();
+              if (reader != null) reader.close();
+            });
   }
 
   @Override
   @NonNull
-  public <T> Optional<T> read(@NonNull StarboxFile file, @NonNull Class<T> type) {
+  public HandledExpression<Properties> read(@NonNull URL resource) {
+    AtomicReference<InputStream> atomicStream = new AtomicReference<>();
+    return HandledExpression.using(
+            () -> {
+              Properties properties = new Properties();
+              InputStream stream = resource.openStream();
+              properties.load(stream);
+              atomicStream.set(stream);
+              return properties;
+            })
+        .next(
+            () -> {
+              InputStream stream = atomicStream.get();
+              if (stream != null) stream.close();
+            });
+  }
+
+  @Override
+  @NonNull
+  public <T> HandledExpression<T> read(@NonNull StarboxFile file, @NonNull Class<T> type) {
     throw new UnsupportedOperationException(
         "Read has not been implemented for '.properties' files");
   }
 
   @Override
-  public boolean write(@NonNull StarboxFile file, @NonNull Object object) {
+  public HandledExpression<Boolean> write(@NonNull StarboxFile file, @NonNull Object object) {
     throw new UnsupportedOperationException(
         "Write has not been implemented for '.properties' files");
   }
 
   @Override
   @NonNull
-  public <T> Optional<T> read(@NonNull URL resource, @NonNull Class<T> type) {
+  public <T> HandledExpression<T> read(@NonNull URL resource, @NonNull Class<T> type) {
     throw new UnsupportedOperationException(
         "Read has not been implemented for '.properties' files");
   }
