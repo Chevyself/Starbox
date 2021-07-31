@@ -21,8 +21,8 @@ public class Txt implements FileContext<String> {
    * Reads an String from a {@link BufferedReader}
    *
    * @param reader the reader to read the string from
-   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns the read
-   *     object and handles {@link java.io.IOException}
+   * @return a {@link HandledExpression} which on {@link HandledExpression#provide()} returns the
+   *     read object and handles {@link java.io.IOException}
    */
   @NonNull
   public HandledExpression<String> read(@NonNull BufferedReader reader) {
@@ -44,8 +44,8 @@ public class Txt implements FileContext<String> {
    * @param file the file to write the string on
    * @param string the string to write on the file
    * @param append whether to append the new content to the previous
-   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns whether
-   *     the object was written and handles {@link java.io.IOException}
+   * @return a {@link HandledExpression} which on {@link HandledExpression#provide()} returns
+   *     whether the object was written and handles {@link java.io.IOException}
    */
   @NonNull
   public HandledExpression<Boolean> write(

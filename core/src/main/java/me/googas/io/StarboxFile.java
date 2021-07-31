@@ -117,8 +117,8 @@ public class StarboxFile {
    * @param context the context to read the file with
    * @param clazz the clazz of the object that the {@link FileContext} must return upon read
    * @param <T> the type of the object to return
-   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns the read
-   *     object and handles {@link java.io.IOException}
+   * @return a {@link HandledExpression} which on {@link HandledExpression#provide()} returns the
+   *     read object and handles {@link java.io.IOException}
    */
   @NonNull
   public <T> HandledExpression<T> read(@NonNull FileContext<?> context, @NonNull Class<T> clazz) {
@@ -139,7 +139,7 @@ public class StarboxFile {
   @NonNull
   @Deprecated
   public <T> T readOr(@NonNull FileContext<?> context, @NonNull Class<T> clazz, T def) {
-    return this.read(context, clazz).get().orElse(def);
+    return this.read(context, clazz).provide().orElse(def);
   }
 
   /**
@@ -157,12 +157,12 @@ public class StarboxFile {
   public <T> T readOr(
       @NonNull FileContext<?> context, @NonNull Class<T> clazz, @NonNull URL resource) {
     return this.read(context, clazz)
-        .get()
+        .provide()
         .orElseGet(
             () ->
                 context
                     .read(resource, clazz)
-                    .get()
+                    .provide()
                     .orElseThrow(
                         () ->
                             new IllegalStateException(
@@ -182,7 +182,7 @@ public class StarboxFile {
   @Deprecated
   public <T> T readOrGet(
       @NonNull FileContext<?> context, @NonNull Class<T> clazz, @NonNull Supplier<T> supplier) {
-    return this.read(context, clazz).get().orElseGet(supplier);
+    return this.read(context, clazz).provide().orElseGet(supplier);
   }
 
   /**
@@ -209,7 +209,7 @@ public class StarboxFile {
   @NonNull
   @Deprecated
   public <O> O readOr(@NonNull FileContext<O> context, @NonNull O def) {
-    return context.read(this).get().orElse(def);
+    return context.read(this).provide().orElse(def);
   }
 
   /**
@@ -223,12 +223,12 @@ public class StarboxFile {
   @NonNull
   public <O> O readOr(@NonNull FileContext<O> context, @NonNull URL resource) {
     return this.read(context)
-        .get()
+        .provide()
         .orElseGet(
             () ->
                 context
                     .read(resource)
-                    .get()
+                    .provide()
                     .orElseThrow(
                         () ->
                             new IllegalStateException(
@@ -240,12 +240,12 @@ public class StarboxFile {
    * will be returned using the {@link Supplier}
    *
    * @param context the context to read the file with
-   * @param supplier the supplier to get the object from
+   * @param supplier the supplier to provide the object from
    * @return the object from the file or the default object from the supplier
    */
   @Deprecated
   public <O> O readOrGet(@NonNull FileContext<O> context, @NonNull Supplier<O> supplier) {
-    return context.read(this).get().orElseGet(supplier);
+    return context.read(this).provide().orElseGet(supplier);
   }
 
   /**
@@ -255,8 +255,8 @@ public class StarboxFile {
    *
    * @param context the context to write the file with
    * @param object the object to write in the object
-   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns whether
-   *     the object was written and handles {@link java.io.IOException}
+   * @return a {@link HandledExpression} which on {@link HandledExpression#provide()} returns
+   *     whether the object was written and handles {@link java.io.IOException}
    */
   @NonNull
   public HandledExpression<Boolean> write(@NonNull FileContext<?> context, @NonNull Object object) {
@@ -304,27 +304,12 @@ public class StarboxFile {
   }
 
   /**
-   * Get a {@link FileWriter} of the file
+   * Copies the bytes of another file to this one
    *
-   * @return the {@link FileWriter} for the file
-   * @throws IOException in case the file does not exist
+   * @param source the source file to copy the bytes from
+   * @return this same instance
+   * @throws IOException if the bytes could not be copied
    */
-  @NonNull
-  public FileWriter getWriter() throws IOException {
-    return new FileWriter(this.file);
-  }
-
-  /**
-   * Get a {@link FileReader} of the file
-   *
-   * @return the {@link FileReader} for the file
-   * @throws FileNotFoundException in case that the file does not exist
-   */
-  @NonNull
-  public FileReader getReader() throws FileNotFoundException {
-    return new FileReader(this.file);
-  }
-
   @NonNull
   public StarboxFile copy(@NonNull StarboxFile source) throws IOException {
     InputStream input = new FileInputStream(source.getFile());
@@ -335,6 +320,43 @@ public class StarboxFile {
       output.write(buffer, 0, length);
     }
     return this;
+  }
+
+  /**
+   * Copies a complete directory to this one and each file using {@link #copy(StarboxFile)} this
+   * method is recursive and copies every directory inside the source directory
+   *
+   * @param source the source directory to copy from
+   * @return this same instance
+   * @throws IOException if the directories could not be created or bytes of the files could not be
+   *     copied
+   */
+  @NonNull
+  public StarboxFile copyDirectory(@NonNull StarboxFile source) throws IOException {
+    String[] list = source.list();
+    if (source.isDirectory() && list != null) {
+      if (!this.exists() && !this.mkdir()) throw new IOException(this + " could not be created");
+      for (String string : list) {
+        StarboxFile sourceFile = new StarboxFile(source, string);
+        StarboxFile destinationFile = new StarboxFile(this, string);
+        destinationFile.copyDirectory(sourceFile);
+      }
+    } else {
+      this.copy(source);
+    }
+    return this;
+  }
+
+  /**
+   * Get a {@link FileWriter} of the file
+   *
+   * @return the {@link FileWriter} for the file
+   * @throws IOException in case the file does not exist
+   */
+  @NonNull
+  @Deprecated
+  public FileWriter getWriter() throws IOException {
+    return new FileWriter(this.file);
   }
 
   /**
@@ -358,20 +380,16 @@ public class StarboxFile {
     return deleted;
   }
 
+  /**
+   * Get a {@link FileReader} of the file
+   *
+   * @return the {@link FileReader} for the file
+   * @throws FileNotFoundException in case that the file does not exist
+   */
   @NonNull
-  public StarboxFile copyDirectory(@NonNull StarboxFile source) throws IOException {
-    String[] list = source.list();
-    if (source.isDirectory() && list != null) {
-      if (!this.exists() && !this.mkdir()) throw new IOException(this + " could not be created");
-      for (String string : list) {
-        StarboxFile sourceFile = new StarboxFile(source, string);
-        StarboxFile destinationFile = new StarboxFile(this, string);
-        destinationFile.copyDirectory(sourceFile);
-      }
-    } else {
-      this.copy(source);
-    }
-    return this;
+  @Deprecated
+  public FileReader getReader() throws FileNotFoundException {
+    return new FileReader(this.file);
   }
 
   /**
@@ -379,7 +397,8 @@ public class StarboxFile {
    * IllegalStateException} will be thrown
    *
    * @return the {@link BufferedReader} for the file
-   * @throws IllegalStateException in case the file does not exist
+   * @throws FileNotFoundException if the file does not exists, or it is a directory or for any
+   *     other reason
    */
   @NonNull
   public BufferedReader getBufferedReader() throws FileNotFoundException {

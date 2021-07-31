@@ -24,8 +24,8 @@ public interface FileContext<O> {
    * @param file the file to read the object from
    * @param type the type to return when the file is read
    * @param <T> the type of object to return
-   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns the read
-   *     object and handles {@link java.io.IOException}
+   * @return a {@link HandledExpression} which on {@link HandledExpression#provide()} returns the
+   *     read object and handles {@link java.io.IOException}
    */
   @NonNull
   <T> HandledExpression<T> read(@NonNull StarboxFile file, @NonNull Class<T> type);
@@ -35,8 +35,8 @@ public interface FileContext<O> {
    *
    * @param file the file to write the object to
    * @param object the object to write the file to
-   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns whether
-   *     the object was written and handles {@link java.io.IOException}
+   * @return a {@link HandledExpression} which on {@link HandledExpression#provide()} returns
+   *     whether the object was written and handles {@link java.io.IOException}
    */
   @NonNull
   HandledExpression<Boolean> write(@NonNull StarboxFile file, @NonNull Object object);
@@ -47,8 +47,8 @@ public interface FileContext<O> {
    * @param resource the resource to read the object from
    * @param type the type to return when the file is ready
    * @param <T> the type of the object to return
-   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns the read
-   *     object and handles {@link java.io.IOException}
+   * @return a {@link HandledExpression} which on {@link HandledExpression#provide()} returns the
+   *     read object and handles {@link java.io.IOException}
    */
   @NonNull
   <T> HandledExpression<T> read(@NonNull URL resource, @NonNull Class<T> type);
@@ -57,8 +57,8 @@ public interface FileContext<O> {
    * Read the default object given by the context from a {@link java.io.File}
    *
    * @param file the file to read the object from
-   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns the read
-   *     object and handles {@link java.io.IOException}
+   * @return a {@link HandledExpression} which on {@link HandledExpression#provide()} returns the
+   *     read object and handles {@link java.io.IOException}
    */
   @NonNull
   HandledExpression<O> read(@NonNull StarboxFile file);
@@ -67,8 +67,8 @@ public interface FileContext<O> {
    * Read the default object given by the context from a {@link URL}
    *
    * @param resource the resource to read the object from
-   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns the read
-   *     object and handles {@link java.io.IOException}
+   * @return a {@link HandledExpression} which on {@link HandledExpression#provide()} returns the
+   *     read object and handles {@link java.io.IOException}
    */
   @NonNull
   HandledExpression<O> read(@NonNull URL resource);

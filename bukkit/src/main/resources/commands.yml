@@ -1,0 +1,18 @@
+mappings:
+  Player: org.bukkit.entity.Player
+  String: java.lang.String
+commands:
+  test:
+    aliases: [starbox, debug]
+    permission: starbox.*
+    description: Some debug command
+    async: false
+    usage: <Player:player:The player to send the message> <String:message:The message to send to the player>
+    suggestions:
+      player:
+        - "none"
+      message:
+        - "Hello!"
+        - "How are you?"
+    runs:
+      - tellraw %player% "%message%"

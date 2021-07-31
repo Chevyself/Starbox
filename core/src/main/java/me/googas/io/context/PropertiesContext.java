@@ -23,8 +23,8 @@ public class PropertiesContext implements FileContext<Properties> {
    * @param file the file to write the properties on
    * @param properties the properties to write on the file
    * @param comment a comment to leave on the file when the properties are written this can be null
-   * @return a {@link HandledExpression} which on {@link HandledExpression#get()} returns whether
-   *     the object was written and handles {@link java.io.IOException}
+   * @return a {@link HandledExpression} which on {@link HandledExpression#provide()} returns
+   *     whether the object was written and handles {@link java.io.IOException}
    */
   public HandledExpression<Boolean> write(
       @NonNull StarboxFile file, @NonNull Properties properties, String comment) {
