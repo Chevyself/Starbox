@@ -13,19 +13,19 @@ import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class StarboxFileTest {
+class IOTest {
 
-  @NonNull static final Logger logger = LoggerFactory.getLogger(StarboxFileTest.class);
+  @NonNull static final Logger logger = LoggerFactory.getLogger(IOTest.class);
   @NonNull private static TestingMocks mocks = new TestingMocks();
 
   @BeforeAll
   static void prepareMocks() {
-    StarboxFileTest.mocks =
+    IOTest.mocks =
         TestingFiles.Contexts.JSON
             .read(TestingFiles.Resources.MOCKS, TestingMocks.class)
             .handle(
                 (e) -> {
-                  StarboxFileTest.logger.error(e, () -> "Could not load mocking resources");
+                  IOTest.logger.error(e, () -> "Could not load mocking resources");
                 })
             .provide()
             .orElseThrow(() -> new NullPointerException("Mocks could not be loaded"));
@@ -35,13 +35,13 @@ class StarboxFileTest {
   @Order(0)
   void writeAndRead() {
     int index = 0;
-    Person person = StarboxFileTest.mocks.getPersons().get(index);
+    Person person = IOTest.mocks.getPersons().get(index);
     boolean written =
         TestingFiles.WRITE
-            .write(TestingFiles.Contexts.JSON, StarboxFileTest.mocks.getPersons().get(index))
+            .write(TestingFiles.Contexts.JSON, IOTest.mocks.getPersons().get(index))
             .handle(
                 e -> {
-                  StarboxFileTest.logger.error(e, () -> "Could not write person in index " + index);
+                  IOTest.logger.error(e, () -> "Could not write person in index " + index);
                 })
             .provide()
             .orElse(false);
@@ -51,7 +51,7 @@ class StarboxFileTest {
             .read(TestingFiles.Contexts.TXT)
             .handle(
                 e -> {
-                  StarboxFileTest.logger.error(e, () -> "Could not read person in index " + index);
+                  IOTest.logger.error(e, () -> "Could not read person in index " + index);
                 })
             .provide()
             .orElse(null);
@@ -68,7 +68,7 @@ class StarboxFileTest {
             .read(TestingFiles.Contexts.TXT)
             .handle(
                 e -> {
-                  StarboxFileTest.logger.error(e, () -> "Could not read original file");
+                  IOTest.logger.error(e, () -> "Could not read original file");
                 })
             .provide()
             .orElse(null);
@@ -77,7 +77,7 @@ class StarboxFileTest {
         file.read(TestingFiles.Contexts.TXT)
             .handle(
                 e -> {
-                  StarboxFileTest.logger.error(e, () -> "Could not read copied file");
+                  IOTest.logger.error(e, () -> "Could not read copied file");
                 })
             .provide()
             .orElse(null);

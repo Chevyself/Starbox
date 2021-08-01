@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Delegate;
 import me.googas.scheduler.Scheduler;
-import me.googas.scheduler.TimerScheduler;
 import me.googas.starbox.time.Time;
 import me.googas.starbox.time.unit.Unit;
 
@@ -35,7 +34,7 @@ public class MemoryCache extends TimerTask implements Cache {
     return this;
   }
 
-    @Override
+  @Override
   public void run() {
     Cache.super.run();
   }

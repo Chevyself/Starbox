@@ -34,12 +34,13 @@ import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class JsonSocketsTest {
+public class NetTest {
 
-  @NonNull private static final Logger logger = LoggerFactory.getLogger(StarboxFileTest.class);
+  @NonNull private static final Logger logger = LoggerFactory.getLogger(IOTest.class);
+  @NonNull private static final TimerScheduler scheduler = new TimerScheduler();
+
   @NonNull
-  private static final TimerScheduler scheduler = new TimerScheduler();
-  @NonNull private static final MemoryCache cache = new MemoryCache().register(JsonSocketsTest.scheduler);
+  private static final MemoryCache cache = new MemoryCache().register(NetTest.scheduler);
   // The id which will be used for testing using the Person mock
   private static final int id = 0;
   @NonNull private static TestingMocks mocks = new TestingMocks();
@@ -56,37 +57,38 @@ public class JsonSocketsTest {
             .registerTypeAdapter(Message.class, new MessageDeserializer())
             .create();
     long timeout = 1000;
-    JsonSocketsTest.mocks =
+    NetTest.mocks =
         TestingFiles.Contexts.JSON
             .read(TestingFiles.Resources.MOCKS, TestingMocks.class)
             .handle(
                 (e) -> {
-                  JsonSocketsTest.logger.error(e, () -> "Could not load mocking resources");
+                  NetTest.logger.error(e, () -> "Could not load mocking resources");
                 })
             .provide()
             .orElseThrow(() -> new NullPointerException("Mocks could not be loaded"));
-    JsonSocketsTest.server =
+    // TODO both server and client initializers seem really bad and those could actually be created using a builder
+    NetTest.server =
         new JsonSocketServer(
             3000,
-            e -> JsonSocketsTest.logger.error(e, () -> "Caught error in server"),
+            e -> NetTest.logger.error(e, () -> "Caught error in server"),
             null,
             gson,
             timeout);
-    JsonSocketsTest.client =
+    NetTest.client =
         new JsonClient(
             new Socket("localhost", port),
-            e -> JsonSocketsTest.logger.error(e, () -> "Caught error in client"),
+            e -> NetTest.logger.error(e, () -> "Caught error in client"),
             gson,
             timeout);
-    JsonSocketsTest.server
+    NetTest.server
         .getReceptors()
         .addAll(ReflectJsonReceptor.getReceptors(new TestingReceptors()));
-    JsonSocketsTest.client.addReceptors(new TestingReceptors());
-    JsonSocketsTest.server.start();
-    JsonSocketsTest.client.start();
+    NetTest.client.addReceptors(new TestingReceptors());
+    NetTest.server.start();
+    NetTest.client.start();
     // We should wait a little until the client has been fully connected
     long wait = 0;
-    while (JsonSocketsTest.server.getClients().isEmpty()) {
+    while (NetTest.server.getClients().isEmpty()) {
       Thread.sleep(1);
       wait++;
       if (wait > timeout) throw new MessengerListenFailException("Messenger failed to connect");
@@ -95,48 +97,59 @@ public class JsonSocketsTest {
 
   @AfterAll
   static void close() throws IOException {
-    JsonSocketsTest.client.close();
-    JsonSocketsTest.server.close();
-    Assertions.assertTrue(JsonSocketsTest.client.isClosed());
+    NetTest.client.close();
+    NetTest.server.close();
+    Assertions.assertTrue(NetTest.client.isClosed());
   }
 
   @Test
   @Order(0)
   void clientRequests() throws MessengerListenFailException {
     NullPointerException exception = new NullPointerException("Did not return the existing person");
-    RequestBuilder<Person> builder = Request.builder(Person.class, "person").put("id", JsonSocketsTest.id);
+    RequestBuilder<Person> builder =
+        Request.builder(Person.class, "person").put("id", NetTest.id);
     // Sync request
-    Person person = builder.send(JsonSocketsTest.client).orElseThrow(() -> exception);
-    Assertions.assertEquals(JsonSocketsTest.id, person.getId());
-    JsonSocketsTest.cache.add(person);
+    Person person = builder.send(NetTest.client).orElseThrow(() -> exception);
+    Assertions.assertEquals(NetTest.id, person.getId());
+    NetTest.cache.add(person);
     // Async Request
-    JsonSocketsTest.client.sendRequest(
+    NetTest.client.sendRequest(
         builder.build(),
         optional -> {
           Person asyncPerson = optional.orElseThrow(() -> exception);
-          Assertions.assertEquals(JsonSocketsTest.id, person.getId());
+          Assertions.assertEquals(NetTest.id, person.getId());
         });
     // Async Request with a failed result: incorrect type of parameter
-    JsonSocketsTest.client.sendRequest(
+    NetTest.client.sendRequest(
         builder.put("id", "foo").build(),
         optional -> {
           Person asyncPerson = optional.orElseThrow(() -> exception);
-          Assertions.assertEquals(JsonSocketsTest.id, person.getId());
+          Assertions.assertEquals(NetTest.id, person.getId());
         },
         expected -> {
-          JsonSocketsTest.logger.info(expected, () -> "Expected exception");
+          NetTest.logger.info(expected, () -> "Expected exception");
         });
   }
 
   @Test
   @Order(1)
   void cacheTests() {
-      Person person = JsonSocketsTest.cache.get(Person.class, cachePerson -> cachePerson.getId() == JsonSocketsTest.id).orElseThrow(() -> new NullPointerException("Person was not found in cache"));
-      JsonSocketsTest.logger.info(() -> person.getUsername() + " has " + JsonSocketsTest.cache.getTimeLeft(person) + " time left");
-      // Person gets removed in 5 seconds so lets wait 6
-      JsonSocketsTest.scheduler.later(Time.of(6, Unit.SECONDS), () -> {
-         Assertions.assertFalse(JsonSocketsTest.cache.contains(person));
-      });
+    Person person =
+        NetTest.cache
+            .get(Person.class, cachePerson -> cachePerson.getId() == NetTest.id)
+            .orElseThrow(() -> new NullPointerException("Person was not found in cache"));
+    NetTest.logger.info(
+        () ->
+            person.getUsername()
+                + " has "
+                + NetTest.cache.getTimeLeft(person)
+                + " time left");
+    // Person gets removed in 5 seconds so lets wait 6
+    NetTest.scheduler.later(
+        Time.of(6, Unit.SECONDS),
+        () -> {
+          Assertions.assertFalse(NetTest.cache.contains(person));
+        });
   }
 
   @Test
@@ -144,24 +157,24 @@ public class JsonSocketsTest {
   void serverRequests() {
     // Sync request
     Map<JsonClientThread, Optional<Integer>> pings =
-        JsonSocketsTest.server.sendRequest(
+        NetTest.server.sendRequest(
             Request.builder(int.class, "ping").put("init", System.currentTimeMillis()).build());
     Assertions.assertEquals(1, pings.size());
     pings.forEach(
         (client, optionalPing) -> {
           optionalPing.ifPresent(
               ping -> {
-                JsonSocketsTest.logger.info(
+                NetTest.logger.info(
                     () -> String.format("Sync: Ping from server to %s is: %dms", client, ping));
               });
         });
     // Async request
-    JsonSocketsTest.server.sendRequest(
+    NetTest.server.sendRequest(
         Request.builder(int.class, "ping").put("init", System.currentTimeMillis()).build(),
         (client, optionalPing) -> {
           optionalPing.ifPresent(
               ping -> {
-                JsonSocketsTest.logger.info(
+                NetTest.logger.info(
                     () -> String.format("Async: Ping from server to %s is: %dms", client, ping));
               });
         });
@@ -171,7 +184,7 @@ public class JsonSocketsTest {
 
     @Receptor("person")
     public Person person(@ParamName("id") int id) {
-      return JsonSocketsTest.mocks.getPerson(id).orElse(null);
+      return NetTest.mocks.getPerson(id).orElse(null);
     }
 
     @Receptor("ping")
