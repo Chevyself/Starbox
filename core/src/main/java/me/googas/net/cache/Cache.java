@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -243,6 +244,23 @@ public interface Cache extends Runnable {
   @NonNull
   Map<SoftReference<Catchable>, Long> getMap();
 
+  /**
+   * Set the consumer to be used in exceptions
+   *
+   * @see #getHandler()
+   * @param handler the handler
+   * @return this same instance
+   */
+  @NonNull
+  Cache handle(@NonNull Consumer<Throwable> handler);
+
+  /**
+   * This consumer for {@link Throwable} is for try and catches that may be used in for {@link Catchable#onRemove()}
+   *
+   * @return the consumer handler for {@link Throwable}
+   */
+  @NonNull Consumer<Throwable> getHandler();
+
   @Override
   default void run() {
     // Get a copy of the map to avoid concurrent modification exception
@@ -254,8 +272,8 @@ public interface Cache extends Runnable {
               if (catchable != null && (time == null || System.currentTimeMillis() >= time)) {
                 try {
                   catchable.onRemove();
-                } catch (Throwable throwable) {
-                  throwable.printStackTrace();
+                } catch (Throwable e) {
+                  this.getHandler().accept(e);
                 }
                 reference.clear();
               }
