@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import lombok.NonNull;
-import me.googas.net.api.Request;
+import me.googas.net.api.messages.Request;
 
 /** This annotation is used in methods which are capable of receiving {@link Request} */
 @Retention(RetentionPolicy.RUNTIME)

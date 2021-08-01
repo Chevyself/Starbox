@@ -3,6 +3,9 @@ package me.googas.net.api;
 import java.util.Optional;
 import java.util.function.Consumer;
 import lombok.NonNull;
+import me.googas.net.api.exception.MessengerListenFailException;
+import me.googas.net.api.messages.Message;
+import me.googas.net.api.messages.Request;
 
 /** This object is used to give and receive {@link Message} */
 public interface Messenger {

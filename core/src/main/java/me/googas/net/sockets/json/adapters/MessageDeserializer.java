@@ -8,8 +8,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
-import me.googas.net.api.Message;
-import me.googas.net.api.Response;
+import me.googas.net.api.messages.Message;
+import me.googas.net.api.messages.Response;
 import me.googas.net.sockets.json.ReceivedJsonRequest;
 
 /** Deserializes messages */

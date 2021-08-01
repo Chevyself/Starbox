@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import me.googas.net.api.AwaitingRequest;
+import me.googas.net.api.messages.AwaitingRequest;
 import me.googas.net.sockets.json.JsonMessenger;
 import me.googas.net.sockets.json.JsonReceptor;
 import me.googas.net.sockets.json.server.JsonSocketServer;

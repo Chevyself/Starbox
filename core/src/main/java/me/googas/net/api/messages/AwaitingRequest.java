@@ -1,9 +1,12 @@
-package me.googas.net.api;
+package me.googas.net.api.messages;
 
 import java.util.Optional;
 import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.NonNull;
+import me.googas.net.api.Messenger;
+import me.googas.net.api.messages.Request;
+import me.googas.net.api.messages.Response;
 
 /**
  * A request that is waiting for a {@link Response} in a {@link Messenger}

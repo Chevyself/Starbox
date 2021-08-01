@@ -1,4 +1,4 @@
-package me.googas.net.api;
+package me.googas.net.api.messages;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,6 +6,9 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import lombok.NonNull;
+import me.googas.net.api.Messenger;
+import me.googas.net.api.Server;
+import me.googas.net.api.exception.MessengerListenFailException;
 
 public class RequestBuilder<T> {
 

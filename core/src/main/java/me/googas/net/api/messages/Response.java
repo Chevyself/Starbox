@@ -1,4 +1,4 @@
-package me.googas.net.api;
+package me.googas.net.api.messages;
 
 import java.util.Optional;
 import java.util.UUID;

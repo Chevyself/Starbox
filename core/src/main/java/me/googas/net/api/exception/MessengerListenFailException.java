@@ -1,6 +1,7 @@
-package me.googas.net.api;
+package me.googas.net.api.exception;
 
 import lombok.NonNull;
+import me.googas.net.api.Messenger;
 
 /** Thrown when the {@link Messenger} fails to {@link Messenger#listen()} */
 public class MessengerListenFailException extends Exception {

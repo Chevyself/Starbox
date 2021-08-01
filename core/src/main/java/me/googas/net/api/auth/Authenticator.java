@@ -2,7 +2,7 @@ package me.googas.net.api.auth;
 
 import lombok.NonNull;
 import me.googas.net.api.Messenger;
-import me.googas.net.api.StarboxRequest;
+import me.googas.net.api.messages.StarboxRequest;
 
 /** This authenticates a request */
 public interface Authenticator<T extends Messenger> {

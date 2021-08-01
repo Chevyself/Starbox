@@ -1,8 +1,9 @@
-package me.googas.net.api;
+package me.googas.net.api.messages;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NonNull;
@@ -74,25 +75,21 @@ public class Request<T> implements StarboxRequest {
 
   @Override
   public String toString() {
-    return "Request{"
-        + "clazz="
-        + this.clazz
-        + ", id="
-        + this.id
-        + ", method='"
-        + this.method
-        + '\''
-        + ", parameters="
-        + this.parameters
-        + '}';
+    return new StringJoiner(", ", Request.class.getSimpleName() + "[", "]")
+            .add("clazz=" + clazz)
+            .add("id=" + id)
+            .add("method='" + method + "'")
+            .add("parameters=" + parameters)
+            .toString();
   }
+
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || this.getClass() != o.getClass()) return false;
     Request<?> request = (Request<?>) o;
-    return Objects.equals(id, request.id);
+    return id.equals(request.id);
   }
 
   @Override
