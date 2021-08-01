@@ -288,6 +288,7 @@ public class Time implements TemporalAmount {
 
   @Override
   public String toString() {
+    if (this.value <= 0) return "0S";
     StarboxUnit current = this.unit;
     long millis = this.toMillisRound();
     StringBuilder builder = new StringBuilder();

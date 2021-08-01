@@ -110,7 +110,7 @@ public interface Scheduler {
    */
   default int nextId() {
     int id = Scheduler.random.nextInt();
-    if (this.getTask(id) == null) return id;
+    if (!this.getTask(id).isPresent()) return id;
     return this.nextId();
   }
 

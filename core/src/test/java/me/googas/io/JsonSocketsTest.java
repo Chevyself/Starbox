@@ -12,6 +12,7 @@ import me.googas.net.api.exception.MessengerListenFailException;
 import me.googas.net.api.messages.Message;
 import me.googas.net.api.messages.Request;
 import me.googas.net.api.messages.RequestBuilder;
+import me.googas.net.cache.MemoryCache;
 import me.googas.net.sockets.json.ParamName;
 import me.googas.net.sockets.json.Receptor;
 import me.googas.net.sockets.json.adapters.MessageDeserializer;
@@ -19,6 +20,9 @@ import me.googas.net.sockets.json.client.JsonClient;
 import me.googas.net.sockets.json.reflect.ReflectJsonReceptor;
 import me.googas.net.sockets.json.server.JsonClientThread;
 import me.googas.net.sockets.json.server.JsonSocketServer;
+import me.googas.scheduler.TimerScheduler;
+import me.googas.starbox.time.Time;
+import me.googas.starbox.time.unit.Unit;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,6 +37,11 @@ import org.junit.platform.commons.logging.LoggerFactory;
 public class JsonSocketsTest {
 
   @NonNull private static final Logger logger = LoggerFactory.getLogger(StarboxFileTest.class);
+  @NonNull
+  private static final TimerScheduler scheduler = new TimerScheduler();
+  @NonNull private static final MemoryCache cache = new MemoryCache().register(JsonSocketsTest.scheduler);
+  // The id which will be used for testing using the Person mock
+  private static final int id = 0;
   @NonNull private static TestingMocks mocks = new TestingMocks();
   private static JsonSocketServer server;
   private static JsonClient client;
@@ -94,25 +103,25 @@ public class JsonSocketsTest {
   @Test
   @Order(0)
   void clientRequests() throws MessengerListenFailException {
-    int id = 0;
     NullPointerException exception = new NullPointerException("Did not return the existing person");
-    RequestBuilder<Person> builder = Request.builder(Person.class, "person").put("id", id);
+    RequestBuilder<Person> builder = Request.builder(Person.class, "person").put("id", JsonSocketsTest.id);
     // Sync request
     Person person = builder.send(JsonSocketsTest.client).orElseThrow(() -> exception);
-    Assertions.assertEquals(id, person.getId());
+    Assertions.assertEquals(JsonSocketsTest.id, person.getId());
+    JsonSocketsTest.cache.add(person);
     // Async Request
     JsonSocketsTest.client.sendRequest(
         builder.build(),
         optional -> {
           Person asyncPerson = optional.orElseThrow(() -> exception);
-          Assertions.assertEquals(id, person.getId());
+          Assertions.assertEquals(JsonSocketsTest.id, person.getId());
         });
     // Async Request with a failed result: incorrect type of parameter
     JsonSocketsTest.client.sendRequest(
         builder.put("id", "foo").build(),
         optional -> {
           Person asyncPerson = optional.orElseThrow(() -> exception);
-          Assertions.assertEquals(id, person.getId());
+          Assertions.assertEquals(JsonSocketsTest.id, person.getId());
         },
         expected -> {
           JsonSocketsTest.logger.info(expected, () -> "Expected exception");
@@ -121,6 +130,17 @@ public class JsonSocketsTest {
 
   @Test
   @Order(1)
+  void cacheTests() {
+      Person person = JsonSocketsTest.cache.get(Person.class, cachePerson -> cachePerson.getId() == JsonSocketsTest.id).orElseThrow(() -> new NullPointerException("Person was not found in cache"));
+      JsonSocketsTest.logger.info(() -> person.getUsername() + " has " + JsonSocketsTest.cache.getTimeLeft(person) + " time left");
+      // Person gets removed in 5 seconds so lets wait 6
+      JsonSocketsTest.scheduler.later(Time.of(6, Unit.SECONDS), () -> {
+         Assertions.assertFalse(JsonSocketsTest.cache.contains(person));
+      });
+  }
+
+  @Test
+  @Order(2)
   void serverRequests() {
     // Sync request
     Map<JsonClientThread, Optional<Integer>> pings =

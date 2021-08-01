@@ -9,6 +9,10 @@ import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Delegate;
+import me.googas.scheduler.Scheduler;
+import me.googas.scheduler.TimerScheduler;
+import me.googas.starbox.time.Time;
+import me.googas.starbox.time.unit.Unit;
 
 public class MemoryCache extends TimerTask implements Cache {
 
@@ -24,7 +28,14 @@ public class MemoryCache extends TimerTask implements Cache {
     return this;
   }
 
-  @Override
+  @NonNull
+  public MemoryCache register(@NonNull Scheduler scheduler) {
+    Time time = Time.of(1, Unit.MILLIS);
+    scheduler.repeat(time, time, this);
+    return this;
+  }
+
+    @Override
   public void run() {
     Cache.super.run();
   }

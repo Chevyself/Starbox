@@ -178,7 +178,7 @@ public interface Cache extends Runnable {
         .map(
             entry -> {
               long millis = entry.getValue() - System.currentTimeMillis();
-              return Time.ofMillis(millis > 0 ? 0 : millis, false);
+              return Time.ofMillis(millis < 0 ? 0 : millis, false);
             })
         .findFirst()
         .orElse(Time.ZERO);
