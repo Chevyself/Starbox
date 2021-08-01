@@ -20,11 +20,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import lombok.NonNull;
-import me.googas.net.api.messages.AwaitingRequest;
 import me.googas.net.api.Error;
-import me.googas.net.api.messages.Message;
 import me.googas.net.api.Messenger;
 import me.googas.net.api.exception.MessengerListenFailException;
+import me.googas.net.api.messages.AwaitingRequest;
+import me.googas.net.api.messages.Message;
 import me.googas.net.api.messages.Request;
 import me.googas.net.api.messages.Response;
 import me.googas.net.api.messages.StarboxRequest;
@@ -432,7 +432,7 @@ public interface JsonMessenger extends Messenger, Runnable {
         }
       }
     } catch (IOException e) {
-      throw new MessengerListenFailException(null, e);
+      if (!this.isClosed()) throw new MessengerListenFailException(null, e);
     }
   }
 

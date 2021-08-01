@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.StringJoiner;
-
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -74,10 +73,10 @@ public class Sphere implements Shape {
   @Override
   public String toString() {
     return new StringJoiner(", ", Sphere.class.getSimpleName() + "[", "]")
-            .add("id='" + id + "'")
-            .add("center=" + center)
-            .add("radius=" + radius)
-            .toString();
+        .add("id='" + id + "'")
+        .add("center=" + center)
+        .add("radius=" + radius)
+        .toString();
   }
 
   @Override

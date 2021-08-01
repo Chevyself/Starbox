@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.StringJoiner;
-
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -115,10 +114,10 @@ public class Cylinder implements Shape {
   @Override
   public String toString() {
     return new StringJoiner(", ", Cylinder.class.getSimpleName() + "[", "]")
-            .add("id='" + id + "'")
-            .add("base=" + base)
-            .add("radius=" + radius)
-            .add("height=" + height)
-            .toString();
+        .add("id='" + id + "'")
+        .add("base=" + base)
+        .add("radius=" + radius)
+        .add("height=" + height)
+        .toString();
   }
 }

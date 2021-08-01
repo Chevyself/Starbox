@@ -1,11 +1,10 @@
 package me.googas.starbox;
 
-import lombok.NonNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import lombok.NonNull;
 
 /**
  * This class represents an expression which throws an exception that must be handled. This was

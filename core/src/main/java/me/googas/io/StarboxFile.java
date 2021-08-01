@@ -1,11 +1,5 @@
 package me.googas.io;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.experimental.Delegate;
-import me.googas.io.context.FileContext;
-import me.googas.starbox.HandledExpression;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
@@ -24,6 +18,11 @@ import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.experimental.Delegate;
+import me.googas.io.context.FileContext;
+import me.googas.starbox.HandledExpression;
 
 /**
  * This is an "extension" of the {@link File} includes methods for reading and writing with the use

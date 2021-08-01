@@ -2,6 +2,7 @@ package me.googas.io;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.StringJoiner;
 import lombok.Getter;
 import lombok.NonNull;
@@ -17,6 +18,11 @@ public class TestingMocks {
 
   public TestingMocks() {
     this(new ArrayList<>());
+  }
+
+  @NonNull
+  public Optional<Person> getPerson(int id) {
+    return this.persons.stream().filter(person -> person.getId() == id).findFirst();
   }
 
   @Override

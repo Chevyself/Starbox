@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.StringJoiner;
-
 import lombok.NonNull;
 import lombok.Setter;
 import me.googas.math.MathUtils;
@@ -114,10 +113,10 @@ public class Box implements Shape {
   @Override
   public String toString() {
     return new StringJoiner(", ", Box.class.getSimpleName() + "[", "]")
-            .add("id='" + id + "'")
-            .add("minimum=" + minimum)
-            .add("maximum=" + maximum)
-            .toString();
+        .add("id='" + id + "'")
+        .add("minimum=" + minimum)
+        .add("maximum=" + maximum)
+        .toString();
   }
 
   @Override

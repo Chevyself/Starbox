@@ -76,13 +76,12 @@ public class Request<T> implements StarboxRequest {
   @Override
   public String toString() {
     return new StringJoiner(", ", Request.class.getSimpleName() + "[", "]")
-            .add("clazz=" + clazz)
-            .add("id=" + id)
-            .add("method='" + method + "'")
-            .add("parameters=" + parameters)
-            .toString();
+        .add("clazz=" + clazz)
+        .add("id=" + id)
+        .add("method='" + method + "'")
+        .add("parameters=" + parameters)
+        .toString();
   }
-
 
   @Override
   public boolean equals(Object o) {

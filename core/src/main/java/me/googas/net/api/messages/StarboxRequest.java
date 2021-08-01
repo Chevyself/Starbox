@@ -2,10 +2,8 @@ package me.googas.net.api.messages;
 
 import java.util.Map;
 import lombok.NonNull;
-import me.googas.net.api.messages.Message;
-import me.googas.net.api.messages.Response;
 
-/** An extension for messages to receive a {@link Response} */
+/** An extension for messages to receive a {@link me.googas.net.api.messages.Response} */
 public interface StarboxRequest extends Message {
 
   /**

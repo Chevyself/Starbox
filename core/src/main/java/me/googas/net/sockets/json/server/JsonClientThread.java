@@ -10,15 +10,16 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import me.googas.net.api.messages.AwaitingRequest;
 import me.googas.net.api.Error;
-import me.googas.net.api.messages.Response;
 import me.googas.net.api.auth.Authenticator;
+import me.googas.net.api.messages.AwaitingRequest;
+import me.googas.net.api.messages.Response;
 import me.googas.net.sockets.json.JsonMessenger;
 import me.googas.net.sockets.json.JsonReceptor;
 import me.googas.net.sockets.json.ReceivedJsonRequest;
@@ -45,7 +46,7 @@ public class JsonClientThread extends Thread implements JsonMessenger {
   @NonNull @Getter private final JsonSocketServer server;
 
   /** The request that are waiting for a response */
-  @NonNull @Getter private final HashMap<AwaitingRequest<?>, Long> requests = new HashMap<>();
+  @NonNull @Getter private final Map<AwaitingRequest<?>, Long> requests = new HashMap<>();
 
   /** The time to timeout requests */
   @Getter private final long timeout;
