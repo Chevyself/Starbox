@@ -1,16 +1,17 @@
 package me.googas.io.context;
 
 import com.google.gson.Gson;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.Writer;
-import java.net.URL;
-import java.util.concurrent.atomic.AtomicReference;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import me.googas.io.StarboxFile;
 import me.googas.starbox.HandledExpression;
+
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Writer;
+import java.net.URL;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Reads '.json' files to return any type of object that can be deserialized or serialized check
@@ -102,7 +103,7 @@ public class Json implements FileContext<Object> {
             () -> {
               Reader reader = atomicReader.get();
               if (reader != null) {
-                  reader.close();
+                reader.close();
               }
             });
   }

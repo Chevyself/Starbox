@@ -1,7 +1,5 @@
 package me.googas.io;
 
-import java.io.File;
-import java.io.IOException;
 import lombok.NonNull;
 import me.googas.io.mocks.Person;
 import org.junit.jupiter.api.Assertions;
@@ -12,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
+
+import java.io.IOException;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class StarboxFileTest {

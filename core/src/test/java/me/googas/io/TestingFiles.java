@@ -1,18 +1,17 @@
 package me.googas.io;
 
 import com.google.gson.GsonBuilder;
-import java.io.File;
-import java.net.URL;
-import java.util.Objects;
 import lombok.NonNull;
 import me.googas.io.context.Json;
 import me.googas.io.context.PropertiesContext;
 import me.googas.io.context.Txt;
 
+import java.net.URL;
+import java.util.Objects;
+
 public class TestingFiles {
 
-  public static final StarboxFile DIR =
-      new StarboxFile(StarboxFile.DIR, "testing");
+  public static final StarboxFile DIR = new StarboxFile(StarboxFile.DIR, "testing");
   public static final StarboxFile WRITE = new StarboxFile(TestingFiles.DIR, "write.txt");
 
   public static class Contexts {

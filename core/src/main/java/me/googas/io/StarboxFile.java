@@ -1,5 +1,11 @@
 package me.googas.io;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.experimental.Delegate;
+import me.googas.io.context.FileContext;
+import me.googas.starbox.HandledExpression;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
@@ -18,11 +24,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.experimental.Delegate;
-import me.googas.io.context.FileContext;
-import me.googas.starbox.HandledExpression;
 
 /**
  * This is an "extension" of the {@link File} includes methods for reading and writing with the use
@@ -308,33 +309,38 @@ public class StarboxFile {
    * Copies the bytes of another file to this one
    *
    * @param source the source file to copy the bytes from
-   * @return a {@link HandledExpression} that returns whether the source has been copied and handles {@link IOException} for
-   * creating missing directories and closing streams
+   * @return a {@link HandledExpression} that returns whether the source has been copied and handles
+   *     {@link IOException} for creating missing directories and closing streams
    */
   @NonNull
   public HandledExpression<Boolean> copy(@NonNull StarboxFile source) {
     AtomicReference<InputStream> atomicInput = new AtomicReference<>();
     AtomicReference<OutputStream> atomicOutput = new AtomicReference<>();
-    return HandledExpression.using(() -> {
-      if ((!this.getParentFile().exists() && !this.getParentFile().mkdirs()) || (!this.exists() && !this.createNewFile()))
-        return false;
-      InputStream input = new FileInputStream(source.getFile());
-      OutputStream output = new FileOutputStream(this.getFile());
-      byte[] buffer = new byte[1024];
-      int length;
-      while ((length = input.read(buffer)) > 0) {
-        output.write(buffer, 0, length);
-      }
-      atomicInput.set(input);
-      atomicOutput.set(output);
-      return true;
-    }).next(() -> {
-      InputStream input = atomicInput.get();
-      if (input != null) input.close();
-    }).next(() -> {
-      OutputStream output = atomicOutput.get();
-      if (output != null) output.close();
-    });
+    return HandledExpression.using(
+            () -> {
+              if ((!this.getParentFile().exists() && !this.getParentFile().mkdirs())
+                  || (!this.exists() && !this.createNewFile())) return false;
+              InputStream input = new FileInputStream(source.getFile());
+              OutputStream output = new FileOutputStream(this.getFile());
+              byte[] buffer = new byte[1024];
+              int length;
+              while ((length = input.read(buffer)) > 0) {
+                output.write(buffer, 0, length);
+              }
+              atomicInput.set(input);
+              atomicOutput.set(output);
+              return true;
+            })
+        .next(
+            () -> {
+              InputStream input = atomicInput.get();
+              if (input != null) input.close();
+            })
+        .next(
+            () -> {
+              OutputStream output = atomicOutput.get();
+              if (output != null) output.close();
+            });
   }
 
   /**

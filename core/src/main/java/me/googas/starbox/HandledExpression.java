@@ -1,10 +1,11 @@
 package me.googas.starbox;
 
+import lombok.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import lombok.NonNull;
 
 /**
  * This class represents an expression which throws an exception that must be handled. This was
@@ -19,17 +20,15 @@ public class HandledExpression<O> {
 
   /** The expression to execute in the try block */
   @NonNull private final Expression<O> expression;
-  /**
-   * The expressions to execute in the finally block
-   */
-  @NonNull
-  private final List<RunnableExpression> nexts;
+  /** The expressions to execute in the finally block */
+  @NonNull private final List<RunnableExpression> nexts;
   /** The consumer which will handle the thrown exceptions */
   @NonNull private Consumer<Throwable> handle;
 
   private HandledExpression(
-          @NonNull Expression<O> expression,
-          @NonNull List<RunnableExpression> nexts, @NonNull Consumer<Throwable> handle) {
+      @NonNull Expression<O> expression,
+      @NonNull List<RunnableExpression> nexts,
+      @NonNull Consumer<Throwable> handle) {
     this.expression = expression;
     this.nexts = nexts;
     this.handle = handle;
