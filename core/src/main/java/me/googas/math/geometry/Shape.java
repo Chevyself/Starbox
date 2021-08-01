@@ -12,25 +12,6 @@ import lombok.NonNull;
 public interface Shape {
 
   /**
-   * Whether a point is a face point or not. Currently this method is broken
-   *
-   * @param point the point to check if it is a face point
-   * @return true if it is
-   */
-  @Deprecated
-  default boolean isFacePoint(@NonNull Point point) {
-    Point x = new Point(1, 0, 0);
-    Point y = new Point(0, 1, 0);
-    Point z = new Point(0, 0, 1);
-    return !this.contains(point.sum(x))
-        || !this.contains(point.subtract(x))
-        || !this.contains(point.sum(y))
-        || !this.contains(point.subtract(y))
-        || !this.contains(point.sum(z))
-        || !this.contains(point.subtract(z));
-  }
-
-  /**
    * Check if this shape contains a point inside of it
    *
    * @param point the point to check if it is inside this shape
@@ -118,29 +99,6 @@ public interface Shape {
    */
   @NonNull
   Point getMaximum();
-
-  /**
-   * Get the points that are the 'faces' of the shape, this means that the point above, below, left,
-   * right, in front or behind is not a point inside the shape
-   *
-   * @return the points that are the faces of the shape
-   */
-  @NonNull
-  default Points getFacePoints() {
-    Points pointsInside = this.getPointsInside();
-    if (pointsInside.isInfinite()) {
-      throw new UnsupportedOperationException(
-          "There's infinite points. This operation would never end");
-    } else {
-      Set<Point> points = new HashSet<>();
-      for (Point point : this.getPointsInside().getPoints()) {
-        if (this.isFacePoint(point)) {
-          points.add(point);
-        }
-      }
-      return new Points(points);
-    }
-  }
 
   /**
    * Get the volume of the shape

@@ -37,7 +37,7 @@ public class Point {
    * @return the new instance of this point
    */
   @NonNull
-  public Point duplicate() {
+  public Point copy() {
     return new Point(this.x, this.y, this.z);
   }
 
