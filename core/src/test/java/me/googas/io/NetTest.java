@@ -1,9 +1,7 @@
 package me.googas.io;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
-import java.net.Socket;
 import java.util.Map;
 import java.util.Optional;
 import lombok.NonNull;
@@ -17,7 +15,6 @@ import me.googas.net.sockets.json.ParamName;
 import me.googas.net.sockets.json.Receptor;
 import me.googas.net.sockets.json.adapters.MessageDeserializer;
 import me.googas.net.sockets.json.client.JsonClient;
-import me.googas.net.sockets.json.reflect.ReflectJsonReceptor;
 import me.googas.net.sockets.json.server.JsonClientThread;
 import me.googas.net.sockets.json.server.JsonSocketServer;
 import me.googas.scheduler.TimerScheduler;
@@ -39,8 +36,7 @@ public class NetTest {
   @NonNull private static final Logger logger = LoggerFactory.getLogger(IOTest.class);
   @NonNull private static final TimerScheduler scheduler = new TimerScheduler();
 
-  @NonNull
-  private static final MemoryCache cache = new MemoryCache().register(NetTest.scheduler);
+  @NonNull private static final MemoryCache cache = new MemoryCache().register(NetTest.scheduler);
   // The id which will be used for testing using the Person mock
   private static final int id = 0;
   @NonNull private static TestingMocks mocks = new TestingMocks();
@@ -51,11 +47,10 @@ public class NetTest {
   static void prepareMocks()
       throws IOException, InterruptedException, MessengerListenFailException {
     int port = 3000;
-    Gson gson =
+    GsonBuilder gson =
         new GsonBuilder()
             .setPrettyPrinting()
-            .registerTypeAdapter(Message.class, new MessageDeserializer())
-            .create();
+            .registerTypeAdapter(Message.class, new MessageDeserializer());
     long timeout = 1000;
     NetTest.mocks =
         TestingFiles.Contexts.JSON
@@ -66,26 +61,16 @@ public class NetTest {
                 })
             .provide()
             .orElseThrow(() -> new NullPointerException("Mocks could not be loaded"));
-    // TODO both server and client initializers seem really bad and those could actually be created using a builder
     NetTest.server =
-        new JsonSocketServer(
-            3000,
-            e -> NetTest.logger.error(e, () -> "Caught error in server"),
-            null,
-            gson,
-            timeout);
+        JsonSocketServer.listen(port)
+            .addReceptors(new TestingReceptors())
+            .handle(e -> NetTest.logger.error(e, () -> "Caught error in server"))
+            .start();
     NetTest.client =
-        new JsonClient(
-            new Socket("localhost", port),
-            e -> NetTest.logger.error(e, () -> "Caught error in client"),
-            gson,
-            timeout);
-    NetTest.server
-        .getReceptors()
-        .addAll(ReflectJsonReceptor.getReceptors(new TestingReceptors()));
-    NetTest.client.addReceptors(new TestingReceptors());
-    NetTest.server.start();
-    NetTest.client.start();
+        JsonClient.join("localhost", port)
+            .addReceptors(new TestingReceptors())
+            .handle(e -> NetTest.logger.error(e, () -> "Caught error in client"))
+            .start();
     // We should wait a little until the client has been fully connected
     long wait = 0;
     while (NetTest.server.getClients().isEmpty()) {
@@ -96,7 +81,7 @@ public class NetTest {
   }
 
   @AfterAll
-  static void close() throws IOException {
+  static void close() throws IOException, InterruptedException, MessengerListenFailException {
     NetTest.client.close();
     NetTest.server.close();
     Assertions.assertTrue(NetTest.client.isClosed());
@@ -106,8 +91,7 @@ public class NetTest {
   @Order(0)
   void clientRequests() throws MessengerListenFailException {
     NullPointerException exception = new NullPointerException("Did not return the existing person");
-    RequestBuilder<Person> builder =
-        Request.builder(Person.class, "person").put("id", NetTest.id);
+    RequestBuilder<Person> builder = Request.builder(Person.class, "person").put("id", NetTest.id);
     // Sync request
     Person person = builder.send(NetTest.client).orElseThrow(() -> exception);
     Assertions.assertEquals(NetTest.id, person.getId());
@@ -139,11 +123,7 @@ public class NetTest {
             .get(Person.class, cachePerson -> cachePerson.getId() == NetTest.id)
             .orElseThrow(() -> new NullPointerException("Person was not found in cache"));
     NetTest.logger.info(
-        () ->
-            person.getUsername()
-                + " has "
-                + NetTest.cache.getTimeLeft(person)
-                + " time left");
+        () -> person.getUsername() + " has " + NetTest.cache.getTimeLeft(person) + " time left");
     // Person gets removed in 5 seconds so lets wait 6
     NetTest.scheduler.later(
         Time.of(6, Unit.SECONDS),
@@ -190,6 +170,12 @@ public class NetTest {
     @Receptor("ping")
     public int ping(@ParamName("init") long init) {
       return (int) (System.currentTimeMillis() - init);
+    }
+
+    @Receptor("disconnect")
+    public boolean disconnect(JsonClientThread client) {
+        NetTest.server.disconnect(client);
+      return true;
     }
   }
 }

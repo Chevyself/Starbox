@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Type;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,7 +31,6 @@ import me.googas.net.sockets.json.exception.JsonCommunicationException;
 import me.googas.net.sockets.json.exception.JsonExternalCommunicationException;
 import me.googas.net.sockets.json.exception.JsonInternalCommunicationException;
 import me.googas.net.sockets.json.reflect.JsonReceptorParameter;
-import me.googas.net.sockets.json.reflect.ReflectJsonReceptor;
 import me.googas.net.sockets.json.server.JsonClientThread;
 
 /** A {@link Messenger} that works with json messages */
@@ -155,36 +153,6 @@ public interface JsonMessenger extends Messenger, Runnable {
       }
       return objects;
     }
-  }
-
-  /**
-   * Adds the parsed receptors from the given object. This will get the receptors from the object
-   * using {@link ReflectJsonReceptor#getReceptors(Object)} and add them to the set
-   *
-   * @param objects the objects to add as receptors
-   */
-  default void addReceptors(@NonNull Object... objects) {
-    for (Object object : objects) {
-      this.addReceptors(ReflectJsonReceptor.getReceptors(object));
-    }
-  }
-
-  /**
-   * Adds all the given receptors
-   *
-   * @param receptors the receptors to add
-   */
-  default void addReceptors(@NonNull JsonReceptor... receptors) {
-    this.getReceptors().addAll(Arrays.asList(receptors));
-  }
-
-  /**
-   * Adds all the given receptors
-   *
-   * @param receptors the receptors to add
-   */
-  default void addReceptors(@NonNull Collection<JsonReceptor> receptors) {
-    this.getReceptors().addAll(receptors);
   }
 
   /**

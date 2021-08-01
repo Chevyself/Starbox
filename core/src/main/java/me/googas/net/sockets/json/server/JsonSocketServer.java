@@ -1,10 +1,13 @@
 package me.googas.net.sockets.json.server;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,8 +21,11 @@ import lombok.NonNull;
 import me.googas.net.api.Server;
 import me.googas.net.api.auth.Authenticator;
 import me.googas.net.api.exception.MessengerListenFailException;
+import me.googas.net.api.messages.Message;
 import me.googas.net.api.messages.Request;
 import me.googas.net.sockets.json.JsonReceptor;
+import me.googas.net.sockets.json.adapters.MessageDeserializer;
+import me.googas.net.sockets.json.reflect.ReflectJsonReceptor;
 
 /** An implementation for socket servers for guido */
 public class JsonSocketServer extends Thread implements Server<JsonClientThread> {
@@ -42,6 +48,21 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
   /** The authenticator for the requests */
   private Authenticator<JsonClientThread> authenticator;
 
+  protected JsonSocketServer(
+      @NonNull ServerSocket server,
+      @NonNull Set<JsonReceptor> receptors,
+      @NonNull Consumer<Throwable> throwableHandler,
+      @NonNull Gson gson,
+      long timeout,
+      Authenticator<JsonClientThread> authenticator) {
+    this.server = server;
+    this.receptors = receptors;
+    this.throwableHandler = throwableHandler;
+    this.gson = gson;
+    this.timeout = timeout;
+    this.authenticator = authenticator;
+  }
+
   /**
    * Creates the guido socket server
    *
@@ -53,6 +74,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
    * @param timeout the time too timeout requests
    * @throws IOException if the port is already in use
    */
+  @Deprecated
   public JsonSocketServer(
       int port,
       @NonNull Set<JsonReceptor> receptors,
@@ -79,6 +101,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
    * @param timeout the time too timeout requests
    * @throws IOException if the port is already in use
    */
+  @Deprecated
   public JsonSocketServer(
       int port,
       @NonNull Consumer<Throwable> throwableHandler,
@@ -197,5 +220,106 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
           }
         });
     return responses;
+  }
+
+  public static ServerBuilder listen(int port) {
+    return new ServerBuilder(port);
+  }
+
+  public static class ServerBuilder {
+
+    @NonNull private final Set<JsonReceptor> receptors;
+    private final int port;
+    @NonNull private GsonBuilder gson;
+    @NonNull private Consumer<Throwable> handler;
+    private long timeout;
+    private Authenticator<JsonClientThread> authenticator;
+
+    private ServerBuilder(int port) {
+      this.port = port;
+      this.receptors = new HashSet<>();
+      this.gson = new GsonBuilder().registerTypeAdapter(Message.class, new MessageDeserializer());
+      this.handler = Throwable::printStackTrace;
+      this.timeout = 1000;
+    }
+
+    @NonNull
+    public ServerBuilder handle(@NonNull Consumer<Throwable> handler) {
+      this.handler = handler;
+      return this;
+    }
+
+    @NonNull
+    public ServerBuilder maxWait(long timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+
+    @NonNull
+    public ServerBuilder auth(@NonNull Authenticator<JsonClientThread> authenticator) {
+      this.authenticator = authenticator;
+      return this;
+    }
+
+    /**
+     * Adds the parsed receptors from the given object. This will get the receptors from the object
+     * using {@link ReflectJsonReceptor#getReceptors(Object)} and add them to the set
+     *
+     * @param objects the objects to add as receptors
+     */
+    @NonNull
+    public ServerBuilder addReceptors(@NonNull Object... objects) {
+      for (Object object : objects) {
+        this.addReceptors(ReflectJsonReceptor.getReceptors(object));
+      }
+      return this;
+    }
+
+    /**
+     * Adds all the given receptors
+     *
+     * @param receptors the receptors to add
+     */
+    @NonNull
+    public ServerBuilder addReceptors(@NonNull JsonReceptor... receptors) {
+      this.receptors.addAll(Arrays.asList(receptors));
+      return this;
+    }
+
+    /**
+     * Adds all the given receptors
+     *
+     * @param receptors the receptors to add
+     */
+    @NonNull
+    public ServerBuilder addReceptors(@NonNull Collection<JsonReceptor> receptors) {
+      this.receptors.addAll(receptors);
+      return this;
+    }
+
+    @NonNull
+    public JsonSocketServer start() throws IOException {
+      JsonSocketServer server =
+          new JsonSocketServer(
+              new ServerSocket(this.port),
+              this.receptors,
+              this.handler,
+              this.gson.create(),
+              this.timeout,
+              this.authenticator);
+      server.start();
+      return server;
+    }
+
+    @NonNull
+    public ServerBuilder setGson(@NonNull GsonBuilder gson) {
+      this.gson = gson;
+      return this;
+    }
+
+    @NonNull
+    public GsonBuilder getGsonBuilder() {
+      return this.gson;
+    }
   }
 }

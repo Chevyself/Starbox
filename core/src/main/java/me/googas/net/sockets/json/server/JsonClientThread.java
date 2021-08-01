@@ -104,6 +104,10 @@ public class JsonClientThread extends Thread implements JsonMessenger {
     this.output.close();
     try {
       this.socket.close();
+    } catch (IOException e) {
+      this.server.getThrowableHandler().accept(e);
+    }
+    try {
       this.input.close();
     } catch (IOException e) {
       this.server.getThrowableHandler().accept(e);
