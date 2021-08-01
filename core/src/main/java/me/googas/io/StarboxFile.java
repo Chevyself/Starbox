@@ -16,6 +16,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.NonNull;
@@ -307,19 +308,33 @@ public class StarboxFile {
    * Copies the bytes of another file to this one
    *
    * @param source the source file to copy the bytes from
-   * @return this same instance
-   * @throws IOException if the bytes could not be copied
+   * @return a {@link HandledExpression} that returns whether the source has been copied and handles {@link IOException} for
+   * creating missing directories and closing streams
    */
   @NonNull
-  public StarboxFile copy(@NonNull StarboxFile source) throws IOException {
-    InputStream input = new FileInputStream(source.getFile());
-    OutputStream output = new FileOutputStream(this.getFile());
-    byte[] buffer = new byte[1024];
-    int length;
-    while ((length = input.read(buffer)) > 0) {
-      output.write(buffer, 0, length);
-    }
-    return this;
+  public HandledExpression<Boolean> copy(@NonNull StarboxFile source) {
+    AtomicReference<InputStream> atomicInput = new AtomicReference<>();
+    AtomicReference<OutputStream> atomicOutput = new AtomicReference<>();
+    return HandledExpression.using(() -> {
+      if ((!this.getParentFile().exists() && !this.getParentFile().mkdirs()) || (!this.exists() && !this.createNewFile()))
+        return false;
+      InputStream input = new FileInputStream(source.getFile());
+      OutputStream output = new FileOutputStream(this.getFile());
+      byte[] buffer = new byte[1024];
+      int length;
+      while ((length = input.read(buffer)) > 0) {
+        output.write(buffer, 0, length);
+      }
+      atomicInput.set(input);
+      atomicOutput.set(output);
+      return true;
+    }).next(() -> {
+      InputStream input = atomicInput.get();
+      if (input != null) input.close();
+    }).next(() -> {
+      OutputStream output = atomicOutput.get();
+      if (output != null) output.close();
+    });
   }
 
   /**
@@ -342,7 +357,7 @@ public class StarboxFile {
         destinationFile.copyDirectory(sourceFile);
       }
     } else {
-      this.copy(source);
+      this.copy(source).run();
     }
     return this;
   }
@@ -364,7 +379,7 @@ public class StarboxFile {
    *
    * @return whether the file or directory has been deleted
    */
-  public boolean deleteAll() {
+  public boolean deleteAll() throws IOException {
     StarboxFile[] files = this.listFiles();
     boolean deleted = false;
     if (files != null) {
@@ -374,7 +389,8 @@ public class StarboxFile {
         }
       }
     }
-    if (this.exists() && this.delete()) {
+    if (this.exists()) {
+      Files.delete(this.toPath());
       deleted = true;
     }
     return deleted;

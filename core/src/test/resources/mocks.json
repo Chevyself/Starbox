@@ -1,0 +1,25 @@
+{
+  "persons": [
+    {
+      "id": 0,
+      "username": "Osfe",
+      "name": "Franco Donato",
+      "email": "franc@o.com",
+      "age": 18
+    },
+    {
+      "id": 1,
+      "username": "Gabo",
+      "name": "Gabriel Morales",
+      "email": "gabrie@l.com",
+      "age": 19
+    },
+    {
+      "id": 2,
+      "username": "SebaCL",
+      "name": "Sebastian Chilean",
+      "email": "setbastia@n.com",
+      "age": 20
+    }
+  ]
+}

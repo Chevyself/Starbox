@@ -1,5 +1,7 @@
 package me.googas.starbox;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import lombok.NonNull;
@@ -17,18 +19,20 @@ public class HandledExpression<O> {
 
   /** The expression to execute in the try block */
   @NonNull private final Expression<O> expression;
+  /**
+   * The expressions to execute in the finally block
+   */
+  @NonNull
+  private final List<RunnableExpression> nexts;
   /** The consumer which will handle the thrown exceptions */
   @NonNull private Consumer<Throwable> handle;
-  /** The expression to execute in the finally block */
-  private RunnableExpression next;
 
   private HandledExpression(
-      @NonNull Expression<O> expression,
-      @NonNull Consumer<Throwable> handle,
-      RunnableExpression next) {
+          @NonNull Expression<O> expression,
+          @NonNull List<RunnableExpression> nexts, @NonNull Consumer<Throwable> handle) {
     this.expression = expression;
+    this.nexts = nexts;
     this.handle = handle;
-    this.next = next;
   }
 
   /**
@@ -40,7 +44,7 @@ public class HandledExpression<O> {
    */
   @NonNull
   public static <O> HandledExpression<O> using(@NonNull Expression<O> expression) {
-    return new HandledExpression<>(expression, (throwable) -> {}, null);
+    return new HandledExpression<>(expression, new ArrayList<>(), (throwable) -> {});
   }
 
   /**
@@ -57,11 +61,13 @@ public class HandledExpression<O> {
     } catch (Throwable e) {
       handle.accept(e);
     } finally {
-      if (next != null) {
-        try {
-          next.run();
-        } catch (Throwable e) {
-          handle.accept(e);
+      if (nexts != null) {
+        for (RunnableExpression next : this.nexts) {
+          try {
+            next.run();
+          } catch (Throwable e) {
+            handle.accept(e);
+          }
         }
       }
     }
@@ -93,7 +99,7 @@ public class HandledExpression<O> {
    */
   @NonNull
   public HandledExpression<O> next(@NonNull RunnableExpression next) {
-    this.next = next;
+    this.nexts.add(next);
     return this;
   }
 

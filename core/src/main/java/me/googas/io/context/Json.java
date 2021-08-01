@@ -101,7 +101,9 @@ public class Json implements FileContext<Object> {
         .next(
             () -> {
               Reader reader = atomicReader.get();
-              if (reader != null) reader.close();
+              if (reader != null) {
+                  reader.close();
+              }
             });
   }
 
