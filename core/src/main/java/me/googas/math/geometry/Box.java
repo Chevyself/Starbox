@@ -1,9 +1,12 @@
 package me.googas.math.geometry;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.StringJoiner;
+
 import lombok.NonNull;
 import lombok.Setter;
 import me.googas.math.MathUtils;
@@ -110,15 +113,24 @@ public class Box implements Shape {
 
   @Override
   public String toString() {
-    return "Box{"
-        + "minimum="
-        + this.minimum
-        + ", maximum="
-        + this.maximum
-        + ", id='"
-        + this.id
-        + '\''
-        + '}';
+    return new StringJoiner(", ", Box.class.getSimpleName() + "[", "]")
+            .add("id='" + id + "'")
+            .add("minimum=" + minimum)
+            .add("maximum=" + maximum)
+            .toString();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || this.getClass() != o.getClass()) return false;
+    Box box = (Box) o;
+    return id.equals(box.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 
   @Override

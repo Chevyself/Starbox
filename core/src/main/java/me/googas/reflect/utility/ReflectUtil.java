@@ -31,10 +31,11 @@ public class ReflectUtil {
    * @param annotations the array of annotations to get the annotation from
    * @param clazz the class of the annotation to get
    * @param <T> the type of the annotation to get
-   * @return the annotation if found else
+   * @return the annotation if found
    * @throws IllegalArgumentException if the array does not contain the annotation use {@link
    *     #hasAnnotation(Method, Class)} to avoid this
    */
+  @NonNull
   public static <T extends Annotation> T getAnnotation(
       @NonNull Annotation[] annotations, @NonNull Class<T> clazz) {
     for (Annotation annotation : annotations) {

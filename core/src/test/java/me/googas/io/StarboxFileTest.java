@@ -61,7 +61,7 @@ class StarboxFileTest {
 
   @Test
   @Order(1)
-  void copy() throws IOException {
+  void copy() {
     StarboxFile file = new StarboxFile(TestingFiles.DIR, "write-copy.txt");
     Assertions.assertTrue(file.copy(TestingFiles.WRITE).provide().orElse(false));
     String original =

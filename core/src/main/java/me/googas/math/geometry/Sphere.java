@@ -1,7 +1,10 @@
 package me.googas.math.geometry;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import java.util.StringJoiner;
+
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -70,15 +73,24 @@ public class Sphere implements Shape {
 
   @Override
   public String toString() {
-    return "Sphere{"
-        + "id='"
-        + this.id
-        + '\''
-        + ", center="
-        + this.center
-        + ", radius="
-        + this.radius
-        + '}';
+    return new StringJoiner(", ", Sphere.class.getSimpleName() + "[", "]")
+            .add("id='" + id + "'")
+            .add("center=" + center)
+            .add("radius=" + radius)
+            .toString();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || this.getClass() != o.getClass()) return false;
+    Sphere sphere = (Sphere) o;
+    return Objects.equals(id, sphere.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 
   @Override

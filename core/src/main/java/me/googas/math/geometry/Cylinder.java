@@ -1,7 +1,10 @@
 package me.googas.math.geometry;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import java.util.StringJoiner;
+
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -97,17 +100,25 @@ public class Cylinder implements Shape {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || this.getClass() != o.getClass()) return false;
+    Cylinder cylinder = (Cylinder) o;
+    return Objects.equals(id, cylinder.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
+
+  @Override
   public String toString() {
-    return "Cylinder{"
-        + "id='"
-        + this.id
-        + '\''
-        + ", base="
-        + this.base
-        + ", radius="
-        + this.radius
-        + ", height="
-        + this.height
-        + '}';
+    return new StringJoiner(", ", Cylinder.class.getSimpleName() + "[", "]")
+            .add("id='" + id + "'")
+            .add("base=" + base)
+            .add("radius=" + radius)
+            .add("height=" + height)
+            .toString();
   }
 }
