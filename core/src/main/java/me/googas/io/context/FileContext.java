@@ -1,5 +1,7 @@
 package me.googas.io.context;
 
+import java.io.Reader;
+import java.io.Writer;
 import java.net.URL;
 import lombok.NonNull;
 import me.googas.io.StarboxFile;
@@ -31,6 +33,18 @@ public interface FileContext<O> {
   <T> HandledExpression<T> read(@NonNull StarboxFile file, @NonNull Class<T> type);
 
   /**
+   * Read the object from the given reader
+   *
+   * @param reader the reader to read the object from
+   * @param type the type to return when the reader has been finished reading
+   * @param <T> the type of object to return
+   * @return a {@link HandledExpression} which on {@link HandledExpression#provide()} returns the
+   *     read object and handles {@link java.io.IOException}
+   */
+  @NonNull
+  <T> HandledExpression<T> read(@NonNull Reader reader, @NonNull Class<T> type);
+
+  /**
    * Write the object to the given file
    *
    * @param file the file to write the object to
@@ -40,6 +54,17 @@ public interface FileContext<O> {
    */
   @NonNull
   HandledExpression<Boolean> write(@NonNull StarboxFile file, @NonNull Object object);
+
+  /**
+   * Write the object using the given writer
+   *
+   * @param writer the write to write the object to
+   * @param object the object to be written
+   * @return a {@link HandledExpression} which on {@link HandledExpression#provide()} returns
+   *     whether the object was written and handles {@link java.io.IOException}
+   */
+  @NonNull
+  HandledExpression<Boolean> write(@NonNull Writer writer, @NonNull Object object);
 
   /**
    * Read the object from the given input stream

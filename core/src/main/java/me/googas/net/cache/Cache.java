@@ -255,11 +255,13 @@ public interface Cache extends Runnable {
   Cache handle(@NonNull Consumer<Throwable> handler);
 
   /**
-   * This consumer for {@link Throwable} is for try and catches that may be used in for {@link Catchable#onRemove()}
+   * This consumer for {@link Throwable} is for try and catches that may be used in for {@link
+   * Catchable#onRemove()}
    *
    * @return the consumer handler for {@link Throwable}
    */
-  @NonNull Consumer<Throwable> getHandler();
+  @NonNull
+  Consumer<Throwable> getHandler();
 
   @Override
   default void run() {

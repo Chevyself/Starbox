@@ -88,7 +88,20 @@ public class PropertiesContext implements FileContext<Properties> {
   }
 
   @Override
+  public @NonNull <T> HandledExpression<T> read(@NonNull Reader reader, @NonNull Class<T> type) {
+    throw new UnsupportedOperationException(
+        "Read has not been implemented for '.properties' files");
+  }
+
+  @Override
   public HandledExpression<Boolean> write(@NonNull StarboxFile file, @NonNull Object object) {
+    throw new UnsupportedOperationException(
+        "Write has not been implemented for '.properties' files");
+  }
+
+  @Override
+  @NonNull
+  public HandledExpression<Boolean> write(@NonNull Writer writer, @NonNull Object object) {
     throw new UnsupportedOperationException(
         "Write has not been implemented for '.properties' files");
   }

@@ -103,7 +103,7 @@ public class StarboxFile {
         exists = true;
       }
     }
-    if (!exists) {
+    if (exists) {
       return new FileWriter(this.getFile(), append);
     }
     throw new IOException(this + " could not be created");

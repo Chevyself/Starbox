@@ -3,6 +3,7 @@ package me.googas.io.context;
 import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicReference;
@@ -113,8 +114,22 @@ public class Txt implements FileContext<String> {
   }
 
   @Override
+  public @NonNull <T> HandledExpression<T> read(@NonNull Reader reader, @NonNull Class<T> type) {
+    throw new UnsupportedOperationException("Read has not been implemented for '.txt' files");
+  }
+
+  @Override
   public HandledExpression<Boolean> write(@NonNull StarboxFile file, @NonNull Object object) {
-    return this.write(file, object == null ? "null" : object.toString(), false);
+    return this.write(file, object.toString(), false);
+  }
+
+  @Override
+  public HandledExpression<Boolean> write(@NonNull Writer writer, @NonNull Object object) {
+    return HandledExpression.using(
+        () -> {
+          writer.write(object.toString());
+          return true;
+        });
   }
 
   @Override

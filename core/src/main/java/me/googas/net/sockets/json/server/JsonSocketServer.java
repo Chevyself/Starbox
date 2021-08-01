@@ -15,10 +15,10 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.net.api.Authenticator;
 import me.googas.net.api.MessengerListenFailException;
 import me.googas.net.api.Request;
 import me.googas.net.api.Server;
+import me.googas.net.api.auth.Authenticator;
 import me.googas.net.sockets.json.JsonReceptor;
 
 /** An implementation for socket servers for guido */

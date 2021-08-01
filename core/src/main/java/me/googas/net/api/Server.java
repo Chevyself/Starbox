@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import lombok.NonNull;
+import me.googas.net.api.auth.Authenticator;
 
 /** This object represents the server {@link Messenger} connects to */
 public interface Server<M extends Messenger> {

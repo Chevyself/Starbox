@@ -29,6 +29,15 @@ public class Json implements FileContext<Object> {
     this.gson = gson;
   }
 
+  @NonNull
+  @Override
+  public <T> HandledExpression<T> read(@NonNull Reader reader, @NonNull Class<T> type) {
+    return HandledExpression.using(
+        () -> {
+          return this.gson.fromJson(reader, type);
+        });
+  }
+
   @Override
   @NonNull
   public <T> HandledExpression<T> read(@NonNull StarboxFile file, @NonNull Class<T> type) {
@@ -66,6 +75,16 @@ public class Json implements FileContext<Object> {
               Writer writer = atomicWriter.get();
               if (writer != null) writer.close();
             });
+  }
+
+  @Override
+  @NonNull
+  public HandledExpression<Boolean> write(@NonNull Writer writer, @NonNull Object object) {
+    return HandledExpression.using(
+        () -> {
+          this.gson.toJson(object, writer);
+          return true;
+        });
   }
 
   @Override
