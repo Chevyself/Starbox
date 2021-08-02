@@ -64,12 +64,12 @@ public class NetTest {
     NetTest.server =
         JsonSocketServer.listen(port)
             .addReceptors(new TestingReceptors())
-            .handle(e -> NetTest.logger.error(e, () -> "Caught error in server"))
+            .handle(e -> NetTest.logger.warn(e, () -> "Caught error in server"))
             .start();
     NetTest.client =
         JsonClient.join("localhost", port)
             .addReceptors(new TestingReceptors())
-            .handle(e -> NetTest.logger.error(e, () -> "Caught error in client"))
+            .handle(e -> NetTest.logger.warn(e, () -> "Caught error in client"))
             .start();
     // We should wait a little until the client has been fully connected
     long wait = 0;
@@ -170,12 +170,6 @@ public class NetTest {
     @Receptor("ping")
     public int ping(@ParamName("init") long init) {
       return (int) (System.currentTimeMillis() - init);
-    }
-
-    @Receptor("disconnect")
-    public boolean disconnect(JsonClientThread client) {
-        NetTest.server.disconnect(client);
-      return true;
     }
   }
 }

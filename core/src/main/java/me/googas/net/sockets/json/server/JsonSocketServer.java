@@ -222,10 +222,18 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
     return responses;
   }
 
+  /**
+   * Start a builder for a server
+   *
+   * @param port the port to which the server will listen to
+   * @return the builder instance
+   */
+  @NonNull
   public static ServerBuilder listen(int port) {
     return new ServerBuilder(port);
   }
 
+  /** This class is used to create instances of servers in a neat way */
   public static class ServerBuilder {
 
     @NonNull private final Set<JsonReceptor> receptors;
@@ -235,6 +243,11 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
     private long timeout;
     private Authenticator<JsonClientThread> authenticator;
 
+    /**
+     * Create the builder
+     *
+     * @param port the port to which the server will listen to
+     */
     private ServerBuilder(int port) {
       this.port = port;
       this.receptors = new HashSet<>();
@@ -243,20 +256,38 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
       this.timeout = 1000;
     }
 
+    /**
+     * Set the exception handler that the client may use
+     *
+     * @param handler the new exception handler
+     * @return this same builder instance
+     */
     @NonNull
     public ServerBuilder handle(@NonNull Consumer<Throwable> handler) {
       this.handler = handler;
       return this;
     }
 
+    /**
+     * Set the maximum time that the server will tolerate
+     *
+     * @param timeout the new maximum time in millis
+     * @return this same builder instance
+     */
     @NonNull
     public ServerBuilder maxWait(long timeout) {
       this.timeout = timeout;
       return this;
     }
 
+    /**
+     * Sets the authentication method which clients may use
+     *
+     * @param authenticator the new authentication method
+     * @return this same builder instance
+     */
     @NonNull
-    public ServerBuilder auth(@NonNull Authenticator<JsonClientThread> authenticator) {
+    public ServerBuilder auth(Authenticator<JsonClientThread> authenticator) {
       this.authenticator = authenticator;
       return this;
     }
@@ -266,6 +297,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
      * using {@link ReflectJsonReceptor#getReceptors(Object)} and add them to the set
      *
      * @param objects the objects to add as receptors
+     * @return this same builder instance
      */
     @NonNull
     public ServerBuilder addReceptors(@NonNull Object... objects) {
@@ -279,6 +311,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
      * Adds all the given receptors
      *
      * @param receptors the receptors to add
+     * @return this same builder instance
      */
     @NonNull
     public ServerBuilder addReceptors(@NonNull JsonReceptor... receptors) {
@@ -290,6 +323,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
      * Adds all the given receptors
      *
      * @param receptors the receptors to add
+     * @return this same builder instance
      */
     @NonNull
     public ServerBuilder addReceptors(@NonNull Collection<JsonReceptor> receptors) {
@@ -297,6 +331,12 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
       return this;
     }
 
+    /**
+     * Starts the server
+     *
+     * @return the server instance
+     * @throws IOException if the server could not be created
+     */
     @NonNull
     public JsonSocketServer start() throws IOException {
       JsonSocketServer server =
@@ -311,12 +351,25 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
       return server;
     }
 
+    /**
+     * Set the instance of {@link GsonBuilder}
+     *
+     * @see #getGsonBuilder()
+     * @param gson the new builder
+     * @return this same instance
+     */
     @NonNull
     public ServerBuilder setGson(@NonNull GsonBuilder gson) {
       this.gson = gson;
       return this;
     }
 
+    /**
+     * Get the instance of {@link GsonBuilder} that will create the {@link Gson} of the server to
+     * read messages
+     *
+     * @return the builder
+     */
     @NonNull
     public GsonBuilder getGsonBuilder() {
       return this.gson;

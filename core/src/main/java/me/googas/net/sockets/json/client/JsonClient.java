@@ -133,16 +133,6 @@ public class JsonClient extends Thread implements JsonMessenger {
     this(socket, throwableHandler, gson, new HashSet<>(), timeout);
   }
 
-  @NonNull
-  public static ClientBuilder join(@NonNull String host, int port) {
-    return new ClientBuilder(host, port);
-  }
-
-  @Override
-  public void run() {
-    JsonMessenger.super.run();
-  }
-
   @Override
   public void close() {
     this.setClosed(true);
@@ -161,6 +151,24 @@ public class JsonClient extends Thread implements JsonMessenger {
     this.requests.clear();
   }
 
+  /**
+   * Starts the builder for a client
+   *
+   * @param host the host to which the client will be connected
+   * @param port the port of the host
+   * @return the client builder
+   */
+  @NonNull
+  public static ClientBuilder join(@NonNull String host, int port) {
+    return new ClientBuilder(host, port);
+  }
+
+  @Override
+  public void run() {
+    JsonMessenger.super.run();
+  }
+
+  /** This class is used to create instances of clients in a neat way */
   public static class ClientBuilder {
 
     @NonNull private final String host;
@@ -170,7 +178,13 @@ public class JsonClient extends Thread implements JsonMessenger {
     @NonNull private Consumer<Throwable> handler;
     private long timeout;
 
-    public ClientBuilder(@NonNull String host, int port) {
+    /**
+     * Create the builder
+     *
+     * @param host the host to which the client will be connected
+     * @param port the port of the host
+     */
+    private ClientBuilder(@NonNull String host, int port) {
       this.host = host;
       this.port = port;
       this.receptors = new HashSet<>();
@@ -184,6 +198,7 @@ public class JsonClient extends Thread implements JsonMessenger {
      * using {@link ReflectJsonReceptor#getReceptors(Object)} and add them to the set
      *
      * @param objects the objects to add as receptors
+     * @return this same builder instance
      */
     @NonNull
     public ClientBuilder addReceptors(@NonNull Object... objects) {
@@ -197,6 +212,7 @@ public class JsonClient extends Thread implements JsonMessenger {
      * Adds all the given receptors
      *
      * @param receptors the receptors to add
+     * @return this same builder instance
      */
     @NonNull
     public ClientBuilder addReceptors(@NonNull JsonReceptor... receptors) {
@@ -208,6 +224,7 @@ public class JsonClient extends Thread implements JsonMessenger {
      * Adds all the given receptors
      *
      * @param receptors the receptors to add
+     * @return this same builder instance
      */
     @NonNull
     public ClientBuilder addReceptors(@NonNull Collection<JsonReceptor> receptors) {
@@ -215,18 +232,36 @@ public class JsonClient extends Thread implements JsonMessenger {
       return this;
     }
 
+    /**
+     * Set the exception handler that the client may use
+     *
+     * @param handler the new exception handler
+     * @return this same builder instance
+     */
     @NonNull
     public ClientBuilder handle(@NonNull Consumer<Throwable> handler) {
       this.handler = handler;
       return this;
     }
 
+    /**
+     * Set the maximum time that the client will tolerate
+     *
+     * @param timeout the new maximum time in millis
+     * @return this same builder instance
+     */
     @NonNull
     public ClientBuilder maxWait(long timeout) {
       this.timeout = timeout;
       return this;
     }
 
+    /**
+     * Starts the client
+     *
+     * @return the client instance
+     * @throws IOException if the server could not be found or the input/output could not be open
+     */
     @NonNull
     public JsonClient start() throws IOException {
       Socket socket = new Socket(host, port);
@@ -247,12 +282,25 @@ public class JsonClient extends Thread implements JsonMessenger {
       return client;
     }
 
+    /**
+     * Set the instance of {@link GsonBuilder}
+     *
+     * @see #getGsonBuilder()
+     * @param gson the new builder
+     * @return this same instance
+     */
     @NonNull
     public ClientBuilder setGson(@NonNull GsonBuilder gson) {
       this.gson = gson;
       return this;
     }
 
+    /**
+     * Get the instance of {@link GsonBuilder} that will create the {@link Gson} of the client to
+     * read messages
+     *
+     * @return the builder
+     */
     @NonNull
     public GsonBuilder getGsonBuilder() {
       return this.gson;
