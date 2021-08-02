@@ -4,8 +4,8 @@ import org.bukkit.Bukkit;
 
 public class Versions {
 
-  public static int MIN_BUKKIT = 8;
-  public static int MAX_BUKKIT = 17;
+  public static final int MIN_BUKKIT = 8;
+  public static final int MAX_BUKKIT = 17;
   public static int BUKKIT = Versions.check();
 
   public static int check() {

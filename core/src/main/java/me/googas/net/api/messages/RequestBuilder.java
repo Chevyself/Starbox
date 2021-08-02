@@ -66,15 +66,16 @@ public class RequestBuilder<T> {
   }
 
   @NonNull
-  public Map<Messenger, Optional<T>> send(Server server) {
+  public <M extends Messenger> Map<M, Optional<T>> send(Server<M> server) {
     return server == null ? new HashMap<>() : server.sendRequest(this.build());
   }
 
-  public void send(Server server, @NonNull BiConsumer<Messenger, Optional<T>> consumer) {
+  public <M extends Messenger> void send(
+      Server<M> server, @NonNull BiConsumer<M, Optional<T>> consumer) {
     server.sendRequest(this.build(), consumer);
   }
 
-  public void queue(@NonNull Server server) {
+  public <M extends Messenger> void queue(@NonNull Server<M> server) {
     this.send(server, (messenger, optional) -> {});
   }
 

@@ -44,25 +44,25 @@ public class WrappedBlockData {
 
   @NonNull
   public Optional<String> getAsString(boolean b) {
-    return WrappedBlockData.GET_STRING_BOL.invoke(this.blockData, b).provide();
+    return WrappedBlockData.GET_STRING_BOL.prepare(this.blockData, b).provide();
   }
 
   public Object merge(@NonNull Object blockData) {
-    return WrappedBlockData.MERGE.invoke(this.blockData, blockData);
+    return WrappedBlockData.MERGE.prepare(this.blockData, blockData).provide().orElse(null);
   }
 
   public boolean matches(Object blockData) {
     if (blockData == null) return false;
-    return WrappedBlockData.MATCHES.invoke(this.blockData, blockData).provide().orElse(false);
+    return WrappedBlockData.MATCHES.prepare(this.blockData, blockData).provide().orElse(false);
   }
 
   @NonNull
   public Optional<Material> getMaterial() {
-    return WrappedBlockData.GET_MATERIAL.invoke(this.blockData).provide();
+    return WrappedBlockData.GET_MATERIAL.prepare(this.blockData).provide();
   }
 
   @NonNull
   public Optional<String> getAsString() {
-    return WrappedBlockData.GET_STRING.invoke(this.blockData).provide();
+    return WrappedBlockData.GET_STRING.prepare(this.blockData).provide();
   }
 }

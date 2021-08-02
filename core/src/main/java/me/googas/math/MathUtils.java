@@ -36,6 +36,6 @@ public class MathUtils {
   }
 
   public static double nextDoubleFloor(double min, double max) {
-    return Math.floor(nextDouble(min, max));
+    return Math.floor(MathUtils.nextDouble(min, max));
   }
 }

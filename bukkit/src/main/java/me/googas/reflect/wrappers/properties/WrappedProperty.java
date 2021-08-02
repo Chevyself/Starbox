@@ -5,18 +5,18 @@ import me.googas.reflect.StarboxWrapper;
 import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedConstructor;
 
-public class WrappedProperty extends StarboxWrapper {
+public class WrappedProperty extends StarboxWrapper<Object> {
 
   @NonNull
   public static final WrappedClass PROPERTY =
       WrappedClass.forName("com.mojang.authlib.properties.Property");
 
   @NonNull
-  private static final WrappedConstructor PROPERTY_CONSTRUCTOR =
+  private static final WrappedConstructor<?> PROPERTY_CONSTRUCTOR =
       WrappedProperty.PROPERTY.getConstructor(String.class, String.class, String.class);
 
   @NonNull
-  private static final WrappedConstructor PROPERTY_KEY_VAL_CONSTRUCTOR =
+  private static final WrappedConstructor<?> PROPERTY_KEY_VAL_CONSTRUCTOR =
       WrappedProperty.PROPERTY.getConstructor(String.class, String.class);
 
   public WrappedProperty(@NonNull Object reference) {
@@ -28,21 +28,22 @@ public class WrappedProperty extends StarboxWrapper {
 
   @NonNull
   public static WrappedProperty construct(@NonNull String key, @NonNull String value) {
-    Object invoke = WrappedProperty.PROPERTY_KEY_VAL_CONSTRUCTOR.invoke(key, value);
-    if (invoke != null) {
-      return new WrappedProperty(invoke);
-    } else {
-      throw new IllegalArgumentException("Property could not be created");
-    }
+    Object invoke =
+        WrappedProperty.PROPERTY_KEY_VAL_CONSTRUCTOR
+            .invoke(key, value)
+            .provide()
+            .orElseThrow(() -> new IllegalArgumentException("Property could not be created"));
+    return new WrappedProperty(invoke);
   }
 
+  @NonNull
   public static WrappedProperty construct(
       @NonNull String key, @NonNull String value, String signature) {
-    Object invoke = WrappedProperty.PROPERTY_CONSTRUCTOR.invoke(key, value, signature);
-    if (invoke != null) {
-      return new WrappedProperty(invoke);
-    } else {
-      throw new IllegalArgumentException("Property could not be created");
-    }
+    Object object =
+        WrappedProperty.PROPERTY_CONSTRUCTOR
+            .invoke(key, value, signature)
+            .provide()
+            .orElseThrow(() -> new IllegalArgumentException("Property could not be created"));
+    return new WrappedProperty(object);
   }
 }

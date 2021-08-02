@@ -26,7 +26,7 @@ public interface JsonReceptor {
       throws JsonInternalCommunicationException, JsonExternalCommunicationException;
 
   /**
-   * Get the method which request must use to invoke this receptor
+   * Get the method which request must use to prepare this receptor
    *
    * @return the method as a string
    */

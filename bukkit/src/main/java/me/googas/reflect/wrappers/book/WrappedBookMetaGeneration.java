@@ -18,13 +18,14 @@ public enum WrappedBookMetaGeneration {
       WrappedClass.forName("org.bukkit.inventory.meta.BookMeta.Generation");
 
   @NonNull
-  private static final WrappedMethod VALUE_OF =
+  private static final WrappedMethod<?> VALUE_OF =
       WrappedBookMetaGeneration.GENERATION.getMethod("valueOf");
 
   @NonNull
   public Object toGeneration() {
     if (Versions.BUKKIT >= 12) {
-      Object invoke = WrappedBookMetaGeneration.VALUE_OF.invoke(null, this.name());
+      Object invoke =
+          WrappedBookMetaGeneration.VALUE_OF.prepare(null, this.name()).provide().orElse(null);
       if (invoke != null) return invoke;
     }
     throw new IllegalStateException(

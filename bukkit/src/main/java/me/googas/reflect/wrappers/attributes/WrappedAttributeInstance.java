@@ -7,31 +7,31 @@ import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedMethod;
 
 @APIVersion(9)
-public class WrappedAttributeInstance extends StarboxWrapper {
+public class WrappedAttributeInstance extends StarboxWrapper<Object> {
 
   @NonNull
   private static final WrappedClass ATTRIBUTE_INSTANCE =
       WrappedClass.forName("org.bukkit.attribute.AttributeInstance");
 
   @NonNull
-  private static final WrappedMethod GET_ATTRIBUTE =
+  private static final WrappedMethod<?> GET_ATTRIBUTE =
       WrappedAttributeInstance.ATTRIBUTE_INSTANCE.getMethod("getAttribute");
 
   @NonNull
-  private static final WrappedMethod GET_BASE_VALUE =
-      WrappedAttributeInstance.ATTRIBUTE_INSTANCE.getMethod("getBaseValue");
+  private static final WrappedMethod<Double> GET_BASE_VALUE =
+      WrappedAttributeInstance.ATTRIBUTE_INSTANCE.getMethod(Double.class, "getBaseValue");
 
   @NonNull
-  private static final WrappedMethod SET_BASE_VALUE =
+  private static final WrappedMethod<?> SET_BASE_VALUE =
       WrappedAttributeInstance.ATTRIBUTE_INSTANCE.getMethod("setBaseValue", double.class);
 
   @NonNull
-  private static final WrappedMethod GET_VALUE =
-      WrappedAttributeInstance.ATTRIBUTE_INSTANCE.getMethod("getValue");
+  private static final WrappedMethod<Double> GET_VALUE =
+      WrappedAttributeInstance.ATTRIBUTE_INSTANCE.getMethod(Double.class, "getValue");
 
   @NonNull
-  private static final WrappedMethod GET_DEFAULT_VALUE =
-      WrappedAttributeInstance.ATTRIBUTE_INSTANCE.getMethod("getDefaultValue");
+  private static final WrappedMethod<Double> GET_DEFAULT_VALUE =
+      WrappedAttributeInstance.ATTRIBUTE_INSTANCE.getMethod(Double.class, "getDefaultValue");
 
   public WrappedAttributeInstance(Object reference) {
     super(reference);
@@ -42,37 +42,26 @@ public class WrappedAttributeInstance extends StarboxWrapper {
   }
 
   public void setBaseValue(double value) {
-    WrappedAttributeInstance.SET_BASE_VALUE.invoke(this.get(), value);
+    WrappedAttributeInstance.SET_BASE_VALUE.prepare(this.get(), value).run();
   }
 
   @NonNull
   public WrappedAttribute getAttribute() {
-    Object invoke = WrappedAttributeInstance.GET_ATTRIBUTE.invoke(this.get());
+    Object invoke =
+        WrappedAttributeInstance.GET_ATTRIBUTE.prepare(this.get()).provide().orElse(null);
     if (invoke != null) return WrappedAttribute.valueOf(invoke.toString());
     throw new IllegalStateException(this + " does not have a legal WrappedAttribute");
   }
 
   public double getBaseValue() {
-    Object invoke = WrappedAttributeInstance.GET_BASE_VALUE.invoke(this.get());
-    if (invoke instanceof Double) {
-      return (double) invoke;
-    }
-    return 0;
+    return WrappedAttributeInstance.GET_BASE_VALUE.prepare(this.get()).provide().orElse(0.0);
   }
 
   public double getValue() {
-    Object invoke = WrappedAttributeInstance.GET_VALUE.invoke(this.get());
-    if (invoke instanceof Double) {
-      return (double) invoke;
-    }
-    return 0;
+    return WrappedAttributeInstance.GET_VALUE.prepare(this.get()).provide().orElse(0.0);
   }
 
   public double getDefaultValue() {
-    Object invoke = WrappedAttributeInstance.GET_DEFAULT_VALUE.invoke(this.get());
-    if (invoke instanceof Double) {
-      return (double) invoke;
-    }
-    return 0;
+    return WrappedAttributeInstance.GET_DEFAULT_VALUE.prepare(this.get()).provide().orElse(0.0);
   }
 }

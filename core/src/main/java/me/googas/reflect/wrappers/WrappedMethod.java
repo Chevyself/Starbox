@@ -8,7 +8,7 @@ import java.util.StringJoiner;
 import lombok.NonNull;
 import me.googas.starbox.expressions.HandledExpression;
 
-/** This class wraps a {@link Method} to invoke */
+/** This class wraps a {@link Method} to prepare */
 public class WrappedMethod<T> extends LangWrapper<Method> {
 
   private final Class<T> returnType;
@@ -43,15 +43,15 @@ public class WrappedMethod<T> extends LangWrapper<Method> {
   /**
    * Invoke the method
    *
-   * @param object the instance of the object to invoke the method if the method is static it may be
-   *     null
-   * @param params the parameters to invoke the method
+   * @param object the instance of the object to prepare the method if the method is static it may
+   *     be null
+   * @param params the parameters to prepare the method
    * @return a {@link HandledExpression} returning the object which the method returns and handles
    *     {@link IllegalAccessException} {@link InvocationTargetException} and {@link
    *     ClassCastException} in case the return type does not match {@link #returnType}
    */
   @NonNull
-  public HandledExpression<T> invoke(Object object, Object... params) {
+  public HandledExpression<T> prepare(Object object, Object... params) {
     return HandledExpression.using(
         () -> {
           T obj = null;
@@ -64,13 +64,13 @@ public class WrappedMethod<T> extends LangWrapper<Method> {
   }
 
   /**
-   * The type that the method returns when {@link #invoke(Object, Object...)}
+   * The type that the method returns when {@link #prepare(Object, Object...)}
    *
    * @return an {@link Optional} instance holding the return type
    */
   @NonNull
   public Optional<Class<?>> getReturnType() {
-    return Optional.ofNullable(this.reference == null ? null : this.reference.getReturnType());
+    return Optional.ofNullable(this.returnType);
   }
 
   /**

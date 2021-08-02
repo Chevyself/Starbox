@@ -23,10 +23,7 @@ class IOTest {
     IOTest.mocks =
         TestingFiles.Contexts.JSON
             .read(TestingFiles.Resources.MOCKS, TestingMocks.class)
-            .handle(
-                (e) -> {
-                  IOTest.logger.error(e, () -> "Could not load mocking resources");
-                })
+            .handle((e) -> IOTest.logger.error(e, () -> "Could not load mocking resources"))
             .provide()
             .orElseThrow(() -> new NullPointerException("Mocks could not be loaded"));
   }
@@ -39,20 +36,14 @@ class IOTest {
     boolean written =
         TestingFiles.WRITE
             .write(TestingFiles.Contexts.JSON, IOTest.mocks.getPersons().get(index))
-            .handle(
-                e -> {
-                  IOTest.logger.error(e, () -> "Could not write person in index " + index);
-                })
+            .handle(e -> IOTest.logger.error(e, () -> "Could not write person in index " + index))
             .provide()
             .orElse(false);
     Assertions.assertTrue(written);
     String personJson =
         TestingFiles.WRITE
             .read(TestingFiles.Contexts.TXT)
-            .handle(
-                e -> {
-                  IOTest.logger.error(e, () -> "Could not read person in index " + index);
-                })
+            .handle(e -> IOTest.logger.error(e, () -> "Could not read person in index " + index))
             .provide()
             .orElse(null);
     Assertions.assertEquals(TestingFiles.Contexts.JSON.getGson().toJson(person), personJson);
@@ -66,19 +57,13 @@ class IOTest {
     String original =
         TestingFiles.WRITE
             .read(TestingFiles.Contexts.TXT)
-            .handle(
-                e -> {
-                  IOTest.logger.error(e, () -> "Could not read original file");
-                })
+            .handle(e -> IOTest.logger.error(e, () -> "Could not read original file"))
             .provide()
             .orElse(null);
     Assertions.assertNotNull(original);
     String copy =
         file.read(TestingFiles.Contexts.TXT)
-            .handle(
-                e -> {
-                  IOTest.logger.error(e, () -> "Could not read copied file");
-                })
+            .handle(e -> IOTest.logger.error(e, () -> "Could not read copied file"))
             .provide()
             .orElse(null);
     Assertions.assertEquals(original, copy);

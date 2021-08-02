@@ -21,7 +21,7 @@ public class WrappedAttributeModifier {
       WrappedClass.forName("org.bukkit.attribute.AttributeModifier.Operation");
 
   @NonNull
-  private static final WrappedConstructor ATTRIBUTE_MODIFIER_CONSTRUCTOR =
+  private static final WrappedConstructor<?> ATTRIBUTE_MODIFIER_CONSTRUCTOR =
       WrappedAttributeModifier.ATTRIBUTE_MODIFIER_CLASS.getConstructor(
           UUID.class,
           String.class,
@@ -29,7 +29,7 @@ public class WrappedAttributeModifier {
           WrappedAttributeModifier.OPERATION_CLASS.getClazz());
 
   @NonNull
-  private static final WrappedMethod OPERATION_VALUE_OF =
+  private static final WrappedMethod<?> OPERATION_VALUE_OF =
       WrappedAttributeModifier.OPERATION_CLASS.getMethod("valueOf", String.class);
 
   @NonNull @Getter private final UUID uuid;
@@ -55,8 +55,10 @@ public class WrappedAttributeModifier {
   }
 
   public Object toAttributeModifier() {
-    return WrappedAttributeModifier.ATTRIBUTE_MODIFIER_CONSTRUCTOR.invoke(
-        this.uuid, this.name, this.amount, this.operation.toOperation());
+    return WrappedAttributeModifier.ATTRIBUTE_MODIFIER_CONSTRUCTOR
+        .invoke(this.uuid, this.name, this.amount, this.operation.toOperation())
+        .provide()
+        .orElse(null);
   }
 
   public enum WrappedOperation {
@@ -72,7 +74,11 @@ public class WrappedAttributeModifier {
     @NonNull
     public Object toOperation() {
       if (Versions.BUKKIT > 9) {
-        Object invoke = WrappedAttributeModifier.OPERATION_VALUE_OF.invoke(null, this.name());
+        Object invoke =
+            WrappedAttributeModifier.OPERATION_VALUE_OF
+                .prepare(null, this.name())
+                .provide()
+                .orElse(null);
         if (invoke != null) return invoke;
       }
       throw new IllegalStateException(

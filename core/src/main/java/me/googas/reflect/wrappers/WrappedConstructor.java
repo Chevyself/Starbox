@@ -4,7 +4,7 @@ import java.lang.reflect.Constructor;
 import lombok.NonNull;
 import me.googas.starbox.expressions.HandledExpression;
 
-/** This class wraps a {@link Constructor} to invoke it and create instances of a class */
+/** This class wraps a {@link Constructor} to prepare it and create instances of a class */
 public class WrappedConstructor<T> extends LangWrapper<Constructor<T>> {
 
   private WrappedConstructor(Constructor<T> reference) {
@@ -30,7 +30,7 @@ public class WrappedConstructor<T> extends LangWrapper<Constructor<T>> {
   /**
    * Invoke the constructor to create a new instance of an object
    *
-   * @param args the required arguments to invoke the constructor
+   * @param args the required arguments to prepare the constructor
    * @return a {@link HandledExpression} that returns the invoked object or handles the exception in
    *     case the constructor could not be invoked
    */

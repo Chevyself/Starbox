@@ -21,9 +21,9 @@ public class EventListener {
    * Create an event listener instance which can be used inside the {@link ListenerManager} to be
    * called
    *
-   * @param listener the object used to invoke the method
+   * @param listener the object used to prepare the method
    * @param method the method that is listening to the event
-   * @param event the event that is being listened to. Required to invoke the method
+   * @param event the event that is being listened to. Required to prepare the method
    * @param priority the priority for the event to be called in the listener
    */
   public EventListener(

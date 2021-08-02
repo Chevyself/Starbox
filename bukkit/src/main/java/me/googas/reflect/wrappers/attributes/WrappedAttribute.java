@@ -24,7 +24,7 @@ public enum WrappedAttribute {
       WrappedClass.forName("org.bukkit.attribute.Attribute");
 
   @NonNull
-  private static final WrappedMethod VALUE_OF =
+  private static final WrappedMethod<?> VALUE_OF =
       WrappedAttribute.ATTRIBUTE.getMethod("valueOf", String.class);
 
   /**
@@ -35,7 +35,7 @@ public enum WrappedAttribute {
   @NonNull
   public Object toAttribute() {
     if (Versions.BUKKIT >= 9) {
-      Object invoke = WrappedAttribute.VALUE_OF.invoke(null, this.name());
+      Object invoke = WrappedAttribute.VALUE_OF.prepare(null, this.name()).provide().orElse(null);
       if (invoke != null) return invoke;
     }
     throw new IllegalStateException(

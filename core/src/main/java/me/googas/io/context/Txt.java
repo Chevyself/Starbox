@@ -30,7 +30,7 @@ public class Txt implements FileContext<String> {
     return HandledExpression.using(
             () -> {
               StringBuilder builder = new StringBuilder();
-              String line = null;
+              String line;
               while ((line = reader.readLine()) != null) {
                 builder.append(line);
               }

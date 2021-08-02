@@ -64,7 +64,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
    * @return a {@link WrappedConstructor} instance containing the constructor or empty if not found
    */
   @NonNull
-  public WrappedConstructor getConstructor(Class<?>... params) {
+  public WrappedConstructor<?> getConstructor(Class<?>... params) {
     Constructor<?> constructor = null;
     if (this.hasConstructor(params)) {
       try {

@@ -53,7 +53,7 @@ public class ListenerManager {
                   + method
                   + " in "
                   + aClass
-                  + " has more than one parameter which will cause an exception when trying to invoke the method");
+                  + " has more than one parameter which will cause an exception when trying to prepare the method");
         } else if (Event.class.isAssignableFrom(parameters[0].getType())) {
           this.listeners.add(
               new EventListener(
@@ -81,15 +81,15 @@ public class ListenerManager {
     List<EventListener> listeners =
         this.listeners.stream()
             .filter(listener -> listener.getEvent().isAssignableFrom(clazz))
+            .sorted(Comparator.comparingInt(EventListener::getPriority))
             .collect(Collectors.toList());
-    listeners.sort(Comparator.comparingInt(EventListener::getPriority));
     return listeners;
   }
 
   /**
    * Unregisters a listener
    *
-   * @param object the listener to unregister, this is the object used to invoke the methods of the
+   * @param object the listener to unregister, this is the object used to prepare the methods of the
    *     listeners
    */
   public void unregister(@NonNull Object object) {
@@ -106,7 +106,7 @@ public class ListenerManager {
       try {
         listener.getMethod().invoke(listener.getListener(), event);
       } catch (IllegalAccessException | InvocationTargetException e) {
-        throw new IllegalStateException("Could not invoke listener for " + event, e);
+        throw new IllegalStateException("Could not prepare listener for " + event, e);
       }
     }
   }

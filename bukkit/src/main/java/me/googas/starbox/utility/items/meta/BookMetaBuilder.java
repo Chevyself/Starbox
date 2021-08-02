@@ -20,7 +20,7 @@ public class BookMetaBuilder extends ItemMetaBuilder {
       WrappedClass.forName("org.bukkit.inventory.meta.BookMeta");
 
   @NonNull
-  private static final WrappedMethod SET_GENERATION =
+  private static final WrappedMethod<?> SET_GENERATION =
       BookMetaBuilder.BOOK_META.getMethod(
           "setGeneration", WrappedBookMetaGeneration.GENERATION.getClazz());
 
@@ -55,7 +55,9 @@ public class BookMetaBuilder extends ItemMetaBuilder {
       bookMeta.setAuthor(this.author);
       bookMeta.setPages(this.pages);
       if (Versions.BUKKIT >= 12) {
-        BookMetaBuilder.SET_GENERATION.invoke(bookMeta, this.wrappedGeneration.toGeneration());
+        BookMetaBuilder.SET_GENERATION
+            .prepare(bookMeta, this.wrappedGeneration.toGeneration())
+            .run();
       }
     }
     return bookMeta;

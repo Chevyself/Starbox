@@ -20,12 +20,12 @@ public class SkullMetaBuilder extends ItemMetaBuilder {
 
   @NonNull
   @APIVersion(value = 8, max = 11)
-  private static final WrappedMethod SET_OWNER =
+  private static final WrappedMethod<?> SET_OWNER =
       SkullMetaBuilder.SKULL_META.getMethod("setOwner", String.class);
 
   @NonNull
   @APIVersion(12)
-  private static final WrappedMethod SET_OWNING_PLAYER =
+  private static final WrappedMethod<?> SET_OWNING_PLAYER =
       SkullMetaBuilder.SKULL_META.getMethod("setOwningPlayer", OfflinePlayer.class);
 
   private OfflinePlayer owner;
@@ -39,7 +39,10 @@ public class SkullMetaBuilder extends ItemMetaBuilder {
     if (this.skin != null) {
       WrappedGameProfile gameProfile = WrappedGameProfile.construct(UUID.randomUUID(), null);
       gameProfile.getProperties().put("textures", WrappedProperty.construct("textures", this.skin));
-      WrappedClass.of(meta.getClass()).getDeclaredField("profile").set(meta, gameProfile.get());
+      WrappedClass.of(meta.getClass())
+          .getDeclaredField("profile")
+          .set(meta, gameProfile.get())
+          .run();
     }
   }
 
@@ -64,9 +67,9 @@ public class SkullMetaBuilder extends ItemMetaBuilder {
       meta = (SkullMeta) itemMeta;
       if (this.owner != null) {
         if (Versions.BUKKIT > 11) {
-          SkullMetaBuilder.SET_OWNING_PLAYER.invoke(meta, this.owner);
+          SkullMetaBuilder.SET_OWNING_PLAYER.prepare(meta, this.owner).run();
         } else {
-          SkullMetaBuilder.SET_OWNER.invoke(meta, this.owner.getName());
+          SkullMetaBuilder.SET_OWNER.prepare(meta, this.owner.getName()).run();
         }
       }
       this.appendSkin(meta);

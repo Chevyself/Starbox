@@ -31,22 +31,22 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
 
   @NonNull
   @APIVersion(value = 8, max = 15)
-  private static final WrappedMethod ITEM_META_SPIGOT_METHOD =
+  private static final WrappedMethod<?> ITEM_META_SPIGOT_METHOD =
       ItemMetaBuilder.ITEM_META.getMethod("spigot");
 
   @NonNull
   @APIVersion(11)
-  private static final WrappedMethod SET_UNBREAKABLE =
+  private static final WrappedMethod<?> SET_UNBREAKABLE =
       ItemMetaBuilder.ITEM_META_SPIGOT.getMethod("setUnbreakable", boolean.class);
 
   @NonNull
   @APIVersion(value = 8, max = 10)
-  private static final WrappedMethod SPIGOT_SET_UNBREAKABLE =
+  private static final WrappedMethod<?> SPIGOT_SET_UNBREAKABLE =
       ItemMetaBuilder.ITEM_META_SPIGOT.getMethod("setUnbreakable", boolean.class);
 
   @NonNull
   @APIVersion(12)
-  private static final WrappedMethod SET_ATTRIBUTE_MODIFIERS =
+  private static final WrappedMethod<?> SET_ATTRIBUTE_MODIFIERS =
       ItemMetaBuilder.ITEM_META.getMethod("setAttributeModifiers", Multimap.class);
 
   @NonNull @Getter private final EnchantmentsBuilder enchantments = new EnchantmentsBuilder(this);
@@ -105,13 +105,16 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
       if (this.name != null) meta.setDisplayName(this.name);
       if (this.lore != null) meta.setLore(Strings.divide(this.lore, 64));
       if (this.attributes != null && Versions.BUKKIT >= 12) {
-        ItemMetaBuilder.SET_ATTRIBUTE_MODIFIERS.invoke(meta, this.attributes.build());
+        ItemMetaBuilder.SET_ATTRIBUTE_MODIFIERS.prepare(meta, this.attributes.build()).run();
       }
       if (Versions.BUKKIT <= 10) {
-        ItemMetaBuilder.SPIGOT_SET_UNBREAKABLE.invoke(
-            ItemMetaBuilder.ITEM_META_SPIGOT_METHOD.invoke(meta), this.unbreakable);
+        ItemMetaBuilder.SPIGOT_SET_UNBREAKABLE
+            .prepare(
+                ItemMetaBuilder.ITEM_META_SPIGOT_METHOD.prepare(meta).provide().orElse(null),
+                this.unbreakable)
+            .run();
       } else {
-        ItemMetaBuilder.SET_UNBREAKABLE.invoke(meta, this.unbreakable);
+        ItemMetaBuilder.SET_UNBREAKABLE.prepare(meta, this.unbreakable).run();
       }
       this.enchantments
           .build()

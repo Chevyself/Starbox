@@ -117,9 +117,9 @@ public interface JsonMessenger extends Messenger, Runnable {
   }
 
   /**
-   * Get the parameters to invoke the receptor to get the response
+   * Get the parameters to prepare the receptor to get the response
    *
-   * @param receptor the receptor to invoke
+   * @param receptor the receptor to prepare
    * @param request the request that is using the receptor
    * @return the parameters to execute
    * @throws JsonCommunicationException in case something goes wrong while providing the objects

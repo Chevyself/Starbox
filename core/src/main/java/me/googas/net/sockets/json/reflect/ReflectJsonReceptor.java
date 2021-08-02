@@ -21,13 +21,13 @@ import me.googas.reflect.utility.ReflectUtil;
  */
 public class ReflectJsonReceptor implements JsonReceptor {
 
-  /** The method which request must use to invoke this receptor */
+  /** The method which request must use to prepare this receptor */
   @NonNull private final String requestMethod;
 
-  /** The object required to invoke the method */
+  /** The object required to prepare the method */
   @NonNull private final Object object;
 
-  /** The method to invoke. This is the annotated method with {@link JsonReceptor} */
+  /** The method to prepare. This is the annotated method with {@link JsonReceptor} */
   @NonNull private final Method method;
 
   /** The parameters that the receptor requires to be executed */
@@ -36,9 +36,9 @@ public class ReflectJsonReceptor implements JsonReceptor {
   /**
    * Create the receptor
    *
-   * @param requestMethod the method which request use to invoke this receptor
-   * @param object the object required to invoke the method
-   * @param method the method to invoke
+   * @param requestMethod the method which request use to prepare this receptor
+   * @param object the object required to prepare the method
+   * @param method the method to prepare
    * @param parameters the parameters that the receptor requires to be executed
    */
   public ReflectJsonReceptor(
@@ -100,7 +100,7 @@ public class ReflectJsonReceptor implements JsonReceptor {
   }
 
   /**
-   * Get the method which request must use to invoke this receptor
+   * Get the method which request must use to prepare this receptor
    *
    * @return the method as a string
    */

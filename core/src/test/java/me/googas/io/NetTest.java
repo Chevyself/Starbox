@@ -55,10 +55,7 @@ public class NetTest {
     NetTest.mocks =
         TestingFiles.Contexts.JSON
             .read(TestingFiles.Resources.MOCKS, TestingMocks.class)
-            .handle(
-                (e) -> {
-                  NetTest.logger.error(e, () -> "Could not load mocking resources");
-                })
+            .handle((e) -> NetTest.logger.error(e, () -> "Could not load mocking resources"))
             .provide()
             .orElseThrow(() -> new NullPointerException("Mocks could not be loaded"));
     NetTest.server =
@@ -110,9 +107,7 @@ public class NetTest {
           Person asyncPerson = optional.orElseThrow(() -> exception);
           Assertions.assertEquals(NetTest.id, person.getId());
         },
-        expected -> {
-          NetTest.logger.info(expected, () -> "Expected exception");
-        });
+        expected -> NetTest.logger.info(expected, () -> "Expected exception"));
   }
 
   @Test
@@ -126,10 +121,7 @@ public class NetTest {
         () -> person.getUsername() + " has " + NetTest.cache.getTimeLeft(person) + " time left");
     // Person gets removed in 5 seconds so lets wait 6
     NetTest.scheduler.later(
-        Time.of(6, Unit.SECONDS),
-        () -> {
-          Assertions.assertFalse(NetTest.cache.contains(person));
-        });
+        Time.of(6, Unit.SECONDS), () -> Assertions.assertFalse(NetTest.cache.contains(person)));
   }
 
   @Test
@@ -141,23 +133,22 @@ public class NetTest {
             Request.builder(int.class, "ping").put("init", System.currentTimeMillis()).build());
     Assertions.assertEquals(1, pings.size());
     pings.forEach(
-        (client, optionalPing) -> {
-          optionalPing.ifPresent(
-              ping -> {
-                NetTest.logger.info(
-                    () -> String.format("Sync: Ping from server to %s is: %dms", client, ping));
-              });
-        });
+        (client, optionalPing) ->
+            optionalPing.ifPresent(
+                ping ->
+                    NetTest.logger.info(
+                        () ->
+                            String.format("Sync: Ping from server to %s is: %dms", client, ping))));
     // Async request
     NetTest.server.sendRequest(
         Request.builder(int.class, "ping").put("init", System.currentTimeMillis()).build(),
-        (client, optionalPing) -> {
-          optionalPing.ifPresent(
-              ping -> {
-                NetTest.logger.info(
-                    () -> String.format("Async: Ping from server to %s is: %dms", client, ping));
-              });
-        });
+        (client, optionalPing) ->
+            optionalPing.ifPresent(
+                ping ->
+                    NetTest.logger.info(
+                        () ->
+                            String.format(
+                                "Async: Ping from server to %s is: %dms", client, ping))));
   }
 
   public static class TestingReceptors {

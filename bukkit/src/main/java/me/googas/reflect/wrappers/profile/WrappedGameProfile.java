@@ -21,14 +21,14 @@ public class WrappedGameProfile extends StarboxWrapper<Object> {
 
   @NonNull
   private static final WrappedMethod<UUID> GET_ID =
-      WrappedGameProfile.GAME_PROFILE.getMethod(UUID.class, "getNode");
+      WrappedGameProfile.GAME_PROFILE.getMethod(UUID.class, "getId");
 
   @NonNull
   private static final WrappedMethod<String> GET_NAME =
       WrappedGameProfile.GAME_PROFILE.getMethod(String.class, "getName");
 
   @NonNull
-  private static final WrappedMethod GET_PROPERTIES =
+  private static final WrappedMethod<?> GET_PROPERTIES =
       WrappedGameProfile.GAME_PROFILE.getMethod("getProperties");
 
   public WrappedGameProfile(@NonNull Object reference) {
@@ -40,33 +40,34 @@ public class WrappedGameProfile extends StarboxWrapper<Object> {
 
   @NonNull
   public static WrappedGameProfile construct(@NonNull UUID uuid, String name) {
-    Object invoke = WrappedGameProfile.CONSTRUCTOR.invoke(uuid, name);
-    if (invoke != null) {
-      return new WrappedGameProfile(invoke);
-    }
-    throw new IllegalStateException("GameProfile could not be created");
+    Object object =
+        WrappedGameProfile.CONSTRUCTOR
+            .invoke(uuid, name)
+            .provide()
+            .orElseThrow(() -> new IllegalStateException("GameProfile could not be created"));
+    return new WrappedGameProfile(object);
   }
 
   @NonNull
   public UUID getId() {
     return WrappedGameProfile.GET_ID
-        .invoke(this.get())
+        .prepare(this.get())
         .provide()
-        .orElseThrow(() -> new IllegalStateException("Could not invoke #getId"));
+        .orElseThrow(() -> new IllegalStateException("Could not prepare #getId"));
   }
 
   @NonNull
   public Optional<String> getName() {
-    return WrappedGameProfile.GET_NAME.invoke(this.get()).provide();
+    return WrappedGameProfile.GET_NAME.prepare(this.get()).provide();
   }
 
   @NonNull
   public WrappedPropertyMap getProperties() {
-    Object invoke = WrappedGameProfile.GET_PROPERTIES.invoke(this.get());
-    if (invoke != null) {
-      return new WrappedPropertyMap(invoke);
-    } else {
-      throw new IllegalStateException("Could not invoke #getProperties");
-    }
+    Object object =
+        WrappedGameProfile.GET_PROPERTIES
+            .prepare(this.get())
+            .provide()
+            .orElseThrow(() -> new IllegalStateException("Could not prepare #getProperties"));
+    return new WrappedPropertyMap(object);
   }
 }

@@ -32,10 +32,7 @@ public class Json implements FileContext<Object> {
   @NonNull
   @Override
   public <T> HandledExpression<T> read(@NonNull Reader reader, @NonNull Class<T> type) {
-    return HandledExpression.using(
-        () -> {
-          return this.gson.fromJson(reader, type);
-        });
+    return HandledExpression.using(() -> this.gson.fromJson(reader, type));
   }
 
   @Override

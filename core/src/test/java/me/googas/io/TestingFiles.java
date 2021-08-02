@@ -15,9 +15,9 @@ public class TestingFiles {
 
   public static class Contexts {
 
-    @NonNull public static Json JSON = new Json(new GsonBuilder().create());
+    @NonNull public static final Json JSON = new Json(new GsonBuilder().create());
     @NonNull public static PropertiesContext PROPERTIES = new PropertiesContext();
-    @NonNull public static Txt TXT = new Txt();
+    @NonNull public static final Txt TXT = new Txt();
   }
 
   public static class Resources {
