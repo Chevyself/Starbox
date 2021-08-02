@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.StringJoiner;
 import lombok.NonNull;
+import me.googas.starbox.expressions.HandledExpression;
 
 /** This class wraps a {@link Field} to set or get the declaration */
 public class WrappedField extends LangWrapper<Field> {
@@ -32,18 +33,19 @@ public class WrappedField extends LangWrapper<Field> {
    * Get the value that is stored in the field for the parameter object
    *
    * @param obj the object to get the value of the field from
-   * @return the value of the field for the parameter object or null if the value could not be
-   *     obtained
+   * @return a {@link HandledExpression} which gets the object in the field or handles a {@link
+   *     IllegalAccessException}
    */
-  public Object get(@NonNull Object obj) {
-    if (this.reference != null) {
-      try {
-        return this.reference.get(obj);
-      } catch (IllegalAccessException e) {
-        e.printStackTrace();
-      }
-    }
-    return null;
+  @NonNull
+  public HandledExpression<Object> get(@NonNull Object obj) {
+    return HandledExpression.using(
+        () -> {
+          Object other = null;
+          if (this.reference != null) {
+            other = this.reference.get(obj);
+          }
+          return other;
+        });
   }
 
   /**
@@ -51,18 +53,20 @@ public class WrappedField extends LangWrapper<Field> {
    *
    * @param object the object to set the value of the field to
    * @param value the new value to set on the field
-   * @return true if the value was set false otherwise
+   * @return a {@link HandledExpression} which returns whether the new value was set or handles
+   *     {@link IllegalAccessException}
    */
-  public boolean set(@NonNull Object object, Object value) {
-    if (this.reference != null) {
-      try {
-        this.reference.set(object, value);
-        return true;
-      } catch (IllegalAccessException e) {
-        e.printStackTrace();
-      }
-    }
-    return false;
+  @NonNull
+  public HandledExpression<Boolean> set(@NonNull Object object, Object value) {
+    return HandledExpression.using(
+        () -> {
+          boolean set = false;
+          if (this.reference != null) {
+            this.reference.set(object, value);
+            set = true;
+          }
+          return set;
+        });
   }
 
   /**

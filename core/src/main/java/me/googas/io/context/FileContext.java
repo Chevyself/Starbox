@@ -5,7 +5,7 @@ import java.io.Writer;
 import java.net.URL;
 import lombok.NonNull;
 import me.googas.io.StarboxFile;
-import me.googas.starbox.HandledExpression;
+import me.googas.starbox.expressions.HandledExpression;
 
 /**
  * Implementations of this class are able to read Java objects from files:

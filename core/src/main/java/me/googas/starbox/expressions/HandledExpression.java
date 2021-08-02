@@ -1,4 +1,4 @@
-package me.googas.starbox;
+package me.googas.starbox.expressions;
 
 import java.util.ArrayList;
 import java.util.List;

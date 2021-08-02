@@ -6,7 +6,6 @@ import lombok.NonNull;
 import me.googas.reflect.APIVersion;
 import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedMethod;
-import me.googas.reflect.wrappers.WrappedReturnMethod;
 import org.bukkit.Material;
 
 @APIVersion(14)
@@ -17,24 +16,25 @@ public class WrappedBlockData {
       WrappedClass.forName("org.bukkit.block.data.BlockData");
 
   @NonNull
-  private static final WrappedReturnMethod<Material> GET_MATERIAL =
+  private static final WrappedMethod<Material> GET_MATERIAL =
       WrappedBlockData.BLOCK_DATA.getMethod(Material.class, "getMaterial");
 
   @NonNull
-  private static final WrappedReturnMethod<String> GET_STRING =
+  private static final WrappedMethod<String> GET_STRING =
       WrappedBlockData.BLOCK_DATA.getMethod(String.class, "getAsString");
 
   @NonNull
-  private static final WrappedReturnMethod<String> GET_STRING_BOL =
+  private static final WrappedMethod<String> GET_STRING_BOL =
       WrappedBlockData.BLOCK_DATA.getMethod(String.class, "getAsString", boolean.class);
 
   @NonNull
-  private static final WrappedMethod MERGE =
+  private static final WrappedMethod<?> MERGE =
       WrappedBlockData.BLOCK_DATA.getMethod(
           WrappedBlockData.BLOCK_DATA.getClazz(), "merge", WrappedBlockData.BLOCK_DATA.getClazz());
 
   @NonNull
-  private static final WrappedMethod MATCHES = WrappedBlockData.BLOCK_DATA.getMethod("matches");
+  private static final WrappedMethod<Boolean> MATCHES =
+      WrappedBlockData.BLOCK_DATA.getMethod(Boolean.class, "matches");
 
   @NonNull @Getter private final Object blockData;
 
@@ -44,7 +44,7 @@ public class WrappedBlockData {
 
   @NonNull
   public Optional<String> getAsString(boolean b) {
-    return WrappedBlockData.GET_STRING_BOL.invoke(this.blockData, b);
+    return WrappedBlockData.GET_STRING_BOL.invoke(this.blockData, b).provide();
   }
 
   public Object merge(@NonNull Object blockData) {
@@ -53,20 +53,16 @@ public class WrappedBlockData {
 
   public boolean matches(Object blockData) {
     if (blockData == null) return false;
-    Object invoke = WrappedBlockData.MATCHES.invoke(this.blockData, blockData);
-    if (invoke instanceof Boolean) {
-      return (boolean) invoke;
-    }
-    return false;
+    return WrappedBlockData.MATCHES.invoke(this.blockData, blockData).provide().orElse(false);
   }
 
   @NonNull
   public Optional<Material> getMaterial() {
-    return WrappedBlockData.GET_MATERIAL.invoke(this.blockData);
+    return WrappedBlockData.GET_MATERIAL.invoke(this.blockData).provide();
   }
 
   @NonNull
   public Optional<String> getAsString() {
-    return WrappedBlockData.GET_STRING.invoke(this.blockData);
+    return WrappedBlockData.GET_STRING.invoke(this.blockData).provide();
   }
 }

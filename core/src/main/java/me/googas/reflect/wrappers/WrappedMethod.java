@@ -6,16 +6,20 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
 import lombok.NonNull;
+import me.googas.starbox.expressions.HandledExpression;
 
 /** This class wraps a {@link Method} to invoke */
-public class WrappedMethod extends LangWrapper<Method> {
+public class WrappedMethod<T> extends LangWrapper<Method> {
 
-  protected WrappedMethod(Method reference) {
+  private final Class<T> returnType;
+
+  protected WrappedMethod(Method reference, Class<T> returnType) {
     super(reference);
+    this.returnType = returnType;
   }
 
   public WrappedMethod() {
-    this(null);
+    this(null, null);
   }
 
   /**
@@ -25,37 +29,15 @@ public class WrappedMethod extends LangWrapper<Method> {
    * @return the wrapper of the method
    */
   @NonNull
-  public static WrappedMethod of(Method method) {
+  public static <T> WrappedMethod<T> of(Method method) {
     if (method != null) method.setAccessible(true);
-    return new WrappedMethod(method);
+    return new WrappedMethod<>(method, null);
   }
 
-  /**
-   * Wrap a method finding it from a class and its parameters
-   *
-   * @param clazz the class to get the method from
-   * @param name the name to match the method
-   * @param params the parameters to match the method
-   * @return a wrapper of the method
-   */
   @NonNull
-  public static WrappedMethod of(
-      @NonNull Class<?> clazz, @NonNull String name, @NonNull Class<?>... params) {
-    return WrappedClass.of(clazz).getMethod(name, params);
-  }
-
-  /**
-   * Wrap a method finding it from a class which will be found using the qualified name
-   *
-   * @param className the fully qualified name of the class
-   * @param name the name to match the method
-   * @param params the parameters to match the method
-   * @return a wrapper of the method
-   */
-  @NonNull
-  public static WrappedMethod of(
-      @NonNull String className, @NonNull String name, @NonNull Class<?> params) {
-    return WrappedClass.forName(className).getMethod(params, name);
+  public static <T> WrappedMethod<T> of(Method method, @NonNull Class<T> returnType) {
+    if (method != null) method.setAccessible(true);
+    return new WrappedMethod<>(method, returnType);
   }
 
   /**
@@ -64,17 +46,21 @@ public class WrappedMethod extends LangWrapper<Method> {
    * @param object the instance of the object to invoke the method if the method is static it may be
    *     null
    * @param params the parameters to invoke the method
-   * @return if the method returns a type it will return the object if the method could not be
-   *     invoked or it is a void method {@code null}
+   * @return a {@link HandledExpression} returning the object which the method returns and handles
+   *     {@link IllegalAccessException} {@link InvocationTargetException} and {@link
+   *     ClassCastException} in case the return type does not match {@link #returnType}
    */
-  public Object invoke(Object object, Object... params) {
-    if (this.reference == null) return null;
-    try {
-      return this.reference.invoke(object, params);
-    } catch (IllegalAccessException | InvocationTargetException e) {
-      e.printStackTrace();
-    }
-    return null;
+  @NonNull
+  public HandledExpression<T> invoke(Object object, Object... params) {
+    return HandledExpression.using(
+        () -> {
+          T obj = null;
+          if (this.reference != null) {
+            Object invoke = this.reference.invoke(object, params);
+            if (invoke != null) obj = returnType.cast(invoke);
+          }
+          return obj;
+        });
   }
 
   /**
@@ -107,12 +93,13 @@ public class WrappedMethod extends LangWrapper<Method> {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || this.getClass() != o.getClass()) return false;
-    WrappedMethod that = (WrappedMethod) o;
-    return Objects.equals(reference, that.reference);
+    if (!super.equals(o)) return false;
+    WrappedMethod<?> that = (WrappedMethod<?>) o;
+    return Objects.equals(returnType, that.returnType) && super.equals(o);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(reference);
+    return Objects.hash(super.hashCode(), returnType) + super.hashCode();
   }
 }

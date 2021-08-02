@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import me.googas.io.StarboxFile;
-import me.googas.starbox.HandledExpression;
+import me.googas.starbox.expressions.HandledExpression;
 
 /**
  * Reads '.json' files to return any type of object that can be deserialized or serialized check

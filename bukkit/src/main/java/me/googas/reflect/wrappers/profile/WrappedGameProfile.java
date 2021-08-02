@@ -7,25 +7,24 @@ import me.googas.reflect.StarboxWrapper;
 import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedConstructor;
 import me.googas.reflect.wrappers.WrappedMethod;
-import me.googas.reflect.wrappers.WrappedReturnMethod;
 import me.googas.reflect.wrappers.properties.WrappedPropertyMap;
 
-public class WrappedGameProfile extends StarboxWrapper {
+public class WrappedGameProfile extends StarboxWrapper<Object> {
 
   @NonNull
   private static final WrappedClass GAME_PROFILE =
       WrappedClass.forName("com.mojang.authlib.GameProfile");
 
   @NonNull
-  private static final WrappedConstructor CONSTRUCTOR =
+  private static final WrappedConstructor<?> CONSTRUCTOR =
       WrappedGameProfile.GAME_PROFILE.getConstructor(UUID.class, String.class);
 
   @NonNull
-  private static final WrappedReturnMethod<UUID> GET_ID =
+  private static final WrappedMethod<UUID> GET_ID =
       WrappedGameProfile.GAME_PROFILE.getMethod(UUID.class, "getNode");
 
   @NonNull
-  private static final WrappedReturnMethod<String> GET_NAME =
+  private static final WrappedMethod<String> GET_NAME =
       WrappedGameProfile.GAME_PROFILE.getMethod(String.class, "getName");
 
   @NonNull
@@ -52,12 +51,13 @@ public class WrappedGameProfile extends StarboxWrapper {
   public UUID getId() {
     return WrappedGameProfile.GET_ID
         .invoke(this.get())
+        .provide()
         .orElseThrow(() -> new IllegalStateException("Could not invoke #getId"));
   }
 
   @NonNull
   public Optional<String> getName() {
-    return WrappedGameProfile.GET_NAME.invoke(this.get());
+    return WrappedGameProfile.GET_NAME.invoke(this.get()).provide();
   }
 
   @NonNull

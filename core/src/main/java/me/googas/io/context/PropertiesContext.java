@@ -8,7 +8,7 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.NonNull;
 import me.googas.io.StarboxFile;
-import me.googas.starbox.HandledExpression;
+import me.googas.starbox.expressions.HandledExpression;
 
 /**
  * Reads {@link Properties} from files. {@link #read(StarboxFile, Class)} and {@link

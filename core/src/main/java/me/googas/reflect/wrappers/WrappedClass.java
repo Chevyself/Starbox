@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.StringJoiner;
 import lombok.NonNull;
 import me.googas.reflect.utility.ReflectUtil;
@@ -43,9 +42,8 @@ public class WrappedClass extends LangWrapper<Class<?>> {
     try {
       return new WrappedClass(Class.forName(name));
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      return new WrappedClass();
     }
-    return new WrappedClass();
   }
 
   /**
@@ -67,14 +65,15 @@ public class WrappedClass extends LangWrapper<Class<?>> {
    */
   @NonNull
   public WrappedConstructor getConstructor(Class<?>... params) {
-    if (this.reference != null && this.hasConstructor(params)) {
+    Constructor<?> constructor = null;
+    if (this.hasConstructor(params)) {
       try {
-        return WrappedConstructor.of(this.reference.getConstructor(params));
+        constructor = this.reference.getConstructor(params);
       } catch (NoSuchMethodException e) {
-        e.printStackTrace();
+        throw new IllegalStateException("Constructor was not found even after check was true");
       }
     }
-    return new WrappedConstructor();
+    return WrappedConstructor.of(constructor);
   }
 
   /**
@@ -85,14 +84,15 @@ public class WrappedClass extends LangWrapper<Class<?>> {
    */
   @NonNull
   public WrappedField getField(@NonNull String name) {
-    if (this.reference != null && this.hasField(name)) {
+    Field field = null;
+    if (this.hasField(name)) {
       try {
-        return WrappedField.of(this.reference.getField(name));
+        field = this.reference.getField(name);
       } catch (NoSuchFieldException e) {
-        e.printStackTrace();
+        throw new IllegalStateException("Field was not found even after check was true");
       }
     }
-    return new WrappedField();
+    return WrappedField.of(field);
   }
 
   /**
@@ -103,14 +103,15 @@ public class WrappedClass extends LangWrapper<Class<?>> {
    */
   @NonNull
   public WrappedField getDeclaredField(@NonNull String name) {
-    if (this.reference != null && this.hasDeclaredField(name)) {
+    Field field = null;
+    if (this.hasDeclaredField(name)) {
       try {
-        return WrappedField.of(this.reference.getDeclaredField(name));
+        field = this.reference.getDeclaredField(name);
       } catch (NoSuchFieldException e) {
-        e.printStackTrace();
+        throw new IllegalStateException("Field was not found even after check was true");
       }
     }
-    return new WrappedField();
+    return WrappedField.of(field);
   }
 
   /**
@@ -121,15 +122,8 @@ public class WrappedClass extends LangWrapper<Class<?>> {
    * @return a {@link WrappedMethod} instance containing the method or empty if not found
    */
   @NonNull
-  public WrappedMethod getMethod(@NonNull String name, Class<?>... params) {
-    if (this.reference != null && this.hasMethod(name, params)) {
-      try {
-        return WrappedMethod.of(this.reference.getMethod(name, params));
-      } catch (NoSuchMethodException e) {
-        e.printStackTrace();
-      }
-    }
-    return new WrappedMethod();
+  public WrappedMethod<?> getMethod(@NonNull String name, Class<?>... params) {
+    return this.getMethod(null, name, params);
   }
 
   /**
@@ -139,18 +133,20 @@ public class WrappedClass extends LangWrapper<Class<?>> {
    * @param name the name to match the method with
    * @param params the parameters to math the method with
    * @param <T> the type of return
-   * @return a {@link WrappedReturnMethod} instance containing the method or empty if not found
+   * @return a {@link WrappedMethod} instance containing the method or empty if not found
    */
   @NonNull
-  public <T> WrappedReturnMethod<T> getMethod(
+  public <T> WrappedMethod<T> getMethod(
       Class<T> returnType, @NonNull String name, Class<?>... params) {
-    WrappedMethod method = this.getMethod(name, params);
-    if (method.getMethod() != null && returnType != null) {
-      Optional<Class<?>> optionalReturnType = method.getReturnType();
-      if (optionalReturnType.isPresent() && returnType.isAssignableFrom(optionalReturnType.get()))
-        return WrappedReturnMethod.of(method.getMethod(), returnType);
+    Method method = null;
+    if (this.hasMethod(returnType, name, params)) {
+      try {
+        method = this.reference.getMethod(name, params);
+      } catch (NoSuchMethodException e) {
+        throw new IllegalStateException("Method was not found even after check was true");
+      }
     }
-    return WrappedReturnMethod.of(null, returnType);
+    return WrappedMethod.of(method, returnType);
   }
 
   /**
@@ -160,12 +156,16 @@ public class WrappedClass extends LangWrapper<Class<?>> {
    * @param params the parameters of the method to find
    * @return true if the method is found false otherwise
    */
-  public boolean hasMethod(@NonNull String name, Class<?>... params) {
-    if (this.reference == null) return false;
-    for (Method method : this.reference.getMethods()) {
-      if (method.getName().equals(name)) {
-        Class<?>[] paramTypes = method.getParameterTypes();
-        if (ReflectUtil.compareParameters(paramTypes, params)) return true;
+  public boolean hasMethod(Class<?> returnType, @NonNull String name, Class<?>... params) {
+    if (this.reference != null) {
+      for (Method method : this.reference.getMethods()) {
+        if (method.getName().equals(name)) {
+          Class<?>[] paramTypes = method.getParameterTypes();
+          Class<?> methodReturnType = method.getReturnType();
+          if (ReflectUtil.compareParameters(paramTypes, params)
+              && (returnType == null || returnType.isAssignableFrom(method.getReturnType())))
+            return true;
+        }
       }
     }
     return false;
@@ -208,10 +208,11 @@ public class WrappedClass extends LangWrapper<Class<?>> {
    * @return true if the constructor is found false otherwise
    */
   public boolean hasConstructor(Class<?>... params) {
-    if (this.reference == null) return false;
-    for (Constructor<?> constructor : this.reference.getConstructors()) {
-      Class<?>[] paramTypes = constructor.getParameterTypes();
-      return ReflectUtil.compareParameters(paramTypes, params);
+    if (this.reference != null) {
+      for (Constructor<?> constructor : this.reference.getConstructors()) {
+        Class<?>[] paramTypes = constructor.getParameterTypes();
+        return ReflectUtil.compareParameters(paramTypes, params);
+      }
     }
     return false;
   }

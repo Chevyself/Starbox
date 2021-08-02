@@ -22,7 +22,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Delegate;
 import me.googas.io.context.FileContext;
-import me.googas.starbox.HandledExpression;
+import me.googas.starbox.expressions.HandledExpression;
 
 /**
  * This is an "extension" of the {@link File} includes methods for reading and writing with the use

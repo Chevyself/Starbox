@@ -1,5 +1,6 @@
 package me.googas.reflect.wrappers;
 
+import java.util.Objects;
 import java.util.Optional;
 import lombok.NonNull;
 import me.googas.reflect.Wrapper;
@@ -25,5 +26,18 @@ public class LangWrapper<T> implements Wrapper<T> {
   @Override
   public void set(T object) {
     throw new UnsupportedOperationException("References in LangWrappers are final");
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || this.getClass() != o.getClass()) return false;
+    LangWrapper<?> that = (LangWrapper<?>) o;
+    return Objects.equals(reference, that.reference);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(reference);
   }
 }

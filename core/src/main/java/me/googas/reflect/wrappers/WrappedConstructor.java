@@ -1,19 +1,17 @@
 package me.googas.reflect.wrappers;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Objects;
-import java.util.StringJoiner;
 import lombok.NonNull;
+import me.googas.starbox.expressions.HandledExpression;
 
 /** This class wraps a {@link Constructor} to invoke it and create instances of a class */
-public class WrappedConstructor extends LangWrapper<Constructor<?>> {
+public class WrappedConstructor<T> extends LangWrapper<Constructor<T>> {
 
-  private WrappedConstructor(Constructor<?> reference) {
+  private WrappedConstructor(Constructor<T> reference) {
     super(reference);
   }
 
-  WrappedConstructor() {
+  private WrappedConstructor() {
     this(null);
   }
 
@@ -24,26 +22,28 @@ public class WrappedConstructor extends LangWrapper<Constructor<?>> {
    * @return the wrapper of constructor
    */
   @NonNull
-  public static WrappedConstructor of(Constructor<?> constructor) {
+  public static <T> WrappedConstructor<T> of(Constructor<T> constructor) {
     if (constructor != null) constructor.setAccessible(true);
-    return new WrappedConstructor(constructor);
+    return new WrappedConstructor<>(constructor);
   }
 
   /**
    * Invoke the constructor to create a new instance of an object
    *
    * @param args the required arguments to invoke the constructor
-   * @return the created object or null if an error was thrown
+   * @return a {@link HandledExpression} that returns the invoked object or handles the exception in
+   *     case the constructor could not be invoked
    */
-  public Object invoke(Object... args) {
-    if (this.reference != null) {
-      try {
-        return this.reference.newInstance(args);
-      } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-        e.printStackTrace();
-      }
-    }
-    return null;
+  @NonNull
+  public HandledExpression<T> invoke(Object... args) {
+    return HandledExpression.using(
+        () -> {
+          T other = null;
+          if (this.reference != null) {
+            other = this.reference.newInstance(args);
+          }
+          return other;
+        });
   }
 
   /**
@@ -51,27 +51,7 @@ public class WrappedConstructor extends LangWrapper<Constructor<?>> {
    *
    * @return the wrapped constructor
    */
-  public Constructor<?> getConstructor() {
+  public Constructor<T> getConstructor() {
     return reference;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || this.getClass() != o.getClass()) return false;
-    WrappedConstructor that = (WrappedConstructor) o;
-    return Objects.equals(reference, that.reference);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(reference);
-  }
-
-  @Override
-  public String toString() {
-    return new StringJoiner(", ", WrappedConstructor.class.getSimpleName() + "[", "]")
-        .add("constructor=" + reference)
-        .toString();
   }
 }

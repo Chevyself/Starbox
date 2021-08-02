@@ -7,7 +7,6 @@ import lombok.NonNull;
 import me.googas.reflect.APIVersion;
 import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedMethod;
-import me.googas.reflect.wrappers.WrappedReturnMethod;
 import me.googas.reflect.wrappers.attributes.WrappedAttribute;
 import me.googas.reflect.wrappers.attributes.WrappedAttributeInstance;
 import org.bukkit.Bukkit;
@@ -23,43 +22,43 @@ public class Players {
   @NonNull public static WrappedClass PLAYER_INVENTORY = WrappedClass.of(PlayerInventory.class);
 
   @APIVersion(value = 8)
-  public static WrappedReturnMethod<String> SPIGOT_GET_LANG =
+  public static WrappedMethod<String> SPIGOT_GET_LANG =
       Players.SPIGOT_PLAYER.getMethod(String.class, "getLang");
 
   @APIVersion(value = 9)
-  public static WrappedMethod GET_ATTRIBUTE =
+  public static WrappedMethod<?> GET_ATTRIBUTE =
       Players.PLAYER.getMethod("getAttribute", WrappedAttribute.ATTRIBUTE.getClazz());
 
   @APIVersion(value = 8)
-  public static WrappedMethod GET_MAX_HEALTH = Players.PLAYER.getMethod("getMaxHealth");
+  public static WrappedMethod<?> GET_MAX_HEALTH = Players.PLAYER.getMethod("getMaxHealth");
 
   @APIVersion(value = 8)
-  public static WrappedReturnMethod<ItemStack> GET_ITEM_IN_HAND =
+  public static WrappedMethod<ItemStack> GET_ITEM_IN_HAND =
       Players.PLAYER.getMethod(ItemStack.class, "getItemInHand");
 
   @APIVersion(value = 9)
-  public static WrappedReturnMethod<ItemStack> GET_ITEM_IN_MAIN_HAND =
+  public static WrappedMethod<ItemStack> GET_ITEM_IN_MAIN_HAND =
       Players.PLAYER_INVENTORY.getMethod(ItemStack.class, "getItemInMainHand");
 
   @APIVersion(value = 9, max = 11)
-  public static WrappedReturnMethod<String> SPIGOT_GET_LOCALE =
+  public static WrappedMethod<String> SPIGOT_GET_LOCALE =
       Players.SPIGOT_PLAYER.getMethod(String.class, "getLocale");
 
   @APIVersion(12)
-  public static WrappedReturnMethod<String> GET_LOCALE =
+  public static WrappedMethod<String> GET_LOCALE =
       Players.PLAYER.getMethod(String.class, "getLocale");
 
   @NonNull
   public static String getLocale(@NonNull Player player) {
     switch (Versions.BUKKIT) {
       case 8:
-        return Players.SPIGOT_GET_LANG.invoke(player.spigot()).orElse("en");
+        return Players.SPIGOT_GET_LANG.invoke(player.spigot()).provide().orElse("en");
       case 9:
       case 10:
       case 11:
-        return Players.SPIGOT_GET_LOCALE.invoke(player.spigot()).orElse("en");
+        return Players.SPIGOT_GET_LOCALE.invoke(player.spigot()).provide().orElse("en");
       default:
-        return Players.GET_LOCALE.invoke(player).orElse("en");
+        return Players.GET_LOCALE.invoke(player).provide().orElse("en");
     }
   }
 
@@ -91,9 +90,9 @@ public class Players {
   @NonNull
   public static Optional<ItemStack> getItemInMainHand(@NonNull Player player) {
     if (Versions.BUKKIT < 9) {
-      return Players.GET_ITEM_IN_HAND.invoke(player);
+      return Players.GET_ITEM_IN_HAND.invoke(player).provide();
     } else {
-      return Players.GET_ITEM_IN_MAIN_HAND.invoke(player.getInventory());
+      return Players.GET_ITEM_IN_MAIN_HAND.invoke(player.getInventory()).provide();
     }
   }
 
