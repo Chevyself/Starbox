@@ -34,7 +34,7 @@ public class JavaAddonClassLoader extends URLClassLoader {
    *     addon does not include the 'addon.json'
    */
   @NonNull
-  public JavaAddonInformation getAddonInfo() throws IOException {
+  public JavaAddonInformation getAddonInformation() throws IOException {
     InputStream resource = this.getResourceAsStream("addon.properties");
     if (resource != null) {
       return JavaAddonInformation.parse(resource);

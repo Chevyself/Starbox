@@ -18,7 +18,7 @@ public class JavaAddonInformation implements AddonInformation {
 
   @NonNull @Getter private final String main;
 
-  public JavaAddonInformation(
+  private JavaAddonInformation(
       @NonNull String name,
       @NonNull String version,
       @NonNull String description,

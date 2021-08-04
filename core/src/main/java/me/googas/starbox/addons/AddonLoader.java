@@ -1,6 +1,7 @@
 package me.googas.starbox.addons;
 
 import java.util.Collection;
+import java.util.Optional;
 import lombok.NonNull;
 
 /** This object loads addons into the bot. It also can provide them */
@@ -51,11 +52,11 @@ public interface AddonLoader {
    * @param name the name to match
    * @return the addon if the name matches
    */
-  default Addon getAddon(@NonNull String name) {
-    for (Addon addon : this.getLoaded()) {
-      if (addon.getInformation().getName().equalsIgnoreCase(name)) return addon;
-    }
-    return null;
+  @NonNull
+  default Optional<Addon> getAddon(@NonNull String name) {
+    return this.getLoaded().stream()
+        .filter(addon -> addon.getInformation().getName().equalsIgnoreCase(name))
+        .findFirst();
   }
 
   /**
