@@ -1,5 +1,6 @@
 package me.googas.starbox.addons.dependencies;
 
+import java.util.StringJoiner;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.starbox.addons.AddonInformation;
@@ -20,19 +21,11 @@ public class DependencyInformation implements AddonInformation {
 
   @Override
   public String toString() {
-    return "DependencyInformation{"
-        + "name='"
-        + this.name
-        + '\''
-        + ", version='"
-        + this.version
-        + '\''
-        + ", description='"
-        + this.description
-        + '\''
-        + ", main='"
-        + this.main
-        + '\''
-        + '}';
+    return new StringJoiner(", ", DependencyInformation.class.getSimpleName() + "[", "]")
+        .add("name='" + name + "'")
+        .add("version='" + version + "'")
+        .add("description='" + description + "'")
+        .add("main='" + main + "'")
+        .toString();
   }
 }

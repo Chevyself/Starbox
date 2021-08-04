@@ -68,7 +68,7 @@ public interface DependencyManager extends AddonLoader {
       DependencyInformation information = dependency.getInformation();
       String name = information.getName();
       String version = information.getVersion();
-      if (dependency.download(this.getLogger()) && this.initialize(dependency)) {
+      if (dependency.download().provide().orElse(false) && this.initialize(dependency)) {
         loaded.add(dependency);
         Logging.info(this.getLogger(), "Dependency %s-%s has been loaded", name, version);
       } else {
