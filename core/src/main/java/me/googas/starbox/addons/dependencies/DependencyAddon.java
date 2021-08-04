@@ -53,7 +53,7 @@ public class DependencyAddon implements Addon {
     @Getter private boolean completed = false;
 
     private DownloadTask(@NonNull StarboxFile file, @NonNull URL url) {
-      this.file = file; // TODO check that it exists or create
+      this.file = file;
       this.url = url;
     }
 
@@ -62,6 +62,10 @@ public class DependencyAddon implements Addon {
       return HandledExpression.using(
               () -> {
                 if (!this.completed) {
+                  if (!this.file.exists()) {
+                    this.file.getParentFile().mkdirs();
+                    this.file.createNewFile();
+                  }
                   this.channel = Channels.newChannel(this.url.openStream());
                   this.stream = new FileOutputStream(this.file.getFile());
                   this.stream.getChannel().transferFrom(this.channel, 0, Long.MAX_VALUE);
@@ -81,8 +85,7 @@ public class DependencyAddon implements Addon {
   }
 
   public static class DependencyAddonBuilder
-      implements SuppliedBuilder<DependencyManager, DependencyAddon>,
-          Builder<DependencyInformation> {
+      implements SuppliedBuilder<StarboxFile, DependencyAddon>, Builder<DependencyInformation> {
 
     @NonNull private final URL url;
     @NonNull private String name = "No name";
@@ -105,8 +108,7 @@ public class DependencyAddon implements Addon {
 
     @NonNull
     public DependencyAddon build(@NonNull DependencyManager manager) {
-      DependencyInformation information = this.build();
-      return new DependencyAddon(this.url, manager.getDependencyFile(information), information);
+      return this.build(manager.getDependencyFile(this.build()));
     }
 
     @NonNull

@@ -8,31 +8,32 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 import lombok.NonNull;
 import me.googas.io.StarboxFile;
 import me.googas.starbox.addons.Addon;
 import me.googas.starbox.addons.AddonLoader;
-import me.googas.starbox.log.Logging;
+import me.googas.starbox.addons.exceptions.AddonCouldNotBeLoadedException;
 
 public interface DependencyManager extends AddonLoader {
 
-  default boolean initialize(@NonNull DependencyAddon dependency) {
+  @NonNull
+  default DependencyAddon initialize(@NonNull DependencyAddon dependency)
+      throws AddonCouldNotBeLoadedException {
     StarboxFile file = dependency.getFile();
     try {
-      Logging.fine(this.getLogger(), "Initializing Dependency from %s", file.getName());
       Method addURL = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
       addURL.setAccessible(true);
       addURL.invoke(URLClassLoader.getSystemClassLoader(), file.toURI().toURL());
-      Logging.fine(this.getLogger(), "Accessed %s successfully", file.getName());
-      return true;
-    } catch (MalformedURLException
-        | IllegalAccessException
-        | InvocationTargetException
-        | NoSuchMethodException e) {
-      Logging.process(this.getLogger(), e);
+      return dependency;
+    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+      throw new AddonCouldNotBeLoadedException(
+          "Could not load dependency addon into current classpath");
+    } catch (MalformedURLException e) {
+      throw new AddonCouldNotBeLoadedException(
+          "There's been an error while trying to get the url for the file " + file, e);
     }
-    return false;
   }
 
   @NonNull
@@ -60,19 +61,25 @@ public interface DependencyManager extends AddonLoader {
   @NonNull
   StarboxFile getParent();
 
+  /** @return */
+  @NonNull
+  Consumer<AddonCouldNotBeLoadedException> getNotLoadedHandler();
+
   @Override
   @NonNull
   default Collection<Addon> load() {
     List<Addon> loaded = new ArrayList<>();
     for (DependencyAddon dependency : this.getDependencies()) {
-      DependencyInformation information = dependency.getInformation();
-      String name = information.getName();
-      String version = information.getVersion();
-      if (dependency.download().provide().orElse(false) && this.initialize(dependency)) {
-        loaded.add(dependency);
-        Logging.info(this.getLogger(), "Dependency %s-%s has been loaded", name, version);
+      boolean downloaded = dependency.download().provide().orElse(false);
+      if (downloaded) {
+        try {
+          this.initialize(dependency);
+        } catch (AddonCouldNotBeLoadedException e) {
+          this.getNotLoadedHandler().accept(e);
+        }
       } else {
-        Logging.severe(this.getLogger(), "Dependency %s-%s could not be loaded", name, version);
+        this.getNotLoadedHandler()
+            .accept(new AddonCouldNotBeLoadedException(dependency + " could not be downloaded"));
       }
     }
     this.getLoaded().addAll(loaded);
