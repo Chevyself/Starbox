@@ -157,6 +157,15 @@ public class JavaAddonLoader implements AddonLoader {
     Logger create(@NonNull AddonInformation info);
   }
 
+  @NonNull
+  public static LoaderBuilder at(@NonNull StarboxFile directory) throws IOException {
+    if (!directory.exists() && !directory.mkdir())
+      throw new IOException(directory.getName() + " could not be created!");
+    if (!directory.isDirectory())
+      throw new IllegalArgumentException(directory + " is not a directory!");
+    return new LoaderBuilder(directory);
+  }
+
   public static class LoaderBuilder implements Builder<JavaAddonLoader> {
 
     @NonNull @Getter private final StarboxFile directory;
@@ -164,7 +173,7 @@ public class JavaAddonLoader implements AddonLoader {
     @NonNull private Consumer<Throwable> throwableHandler;
     @NonNull private Consumer<AddonCouldNotBeLoadedException> notLoadedConsumer;
 
-    public LoaderBuilder(@NonNull StarboxFile directory) {
+    private LoaderBuilder(@NonNull StarboxFile directory) {
       this.directory = directory;
       this.loggerSupplier = info -> Logger.getLogger(info.getName());
       this.throwableHandler = Throwable::printStackTrace;
@@ -192,7 +201,13 @@ public class JavaAddonLoader implements AddonLoader {
 
     @Override
     public @NonNull JavaAddonLoader build() {
-      return null;
+      return new JavaAddonLoader(
+          this.directory,
+          this.getClass().getClassLoader(),
+          new ArrayList<>(),
+          this.loggerSupplier,
+          this.throwableHandler,
+          this.notLoadedConsumer);
     }
   }
 }
