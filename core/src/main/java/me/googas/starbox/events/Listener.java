@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * The annotation that is used in a method to know that it purpose is listening to an event. Check
- * how it is parsed in {@link ListenerManager#registerListeners(Object)}
+ * how it is parsed in {@link ListenerManager#parseAndRegister(Object)}
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

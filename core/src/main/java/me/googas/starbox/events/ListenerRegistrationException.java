@@ -3,7 +3,7 @@ package me.googas.starbox.events;
 import lombok.NonNull;
 
 /**
- * Thrown when a listener cannot be registered in {@link ListenerManager#registerListeners(Object)}
+ * Thrown when a listener cannot be registered in {@link ListenerManager#parseAndRegister(Object)}
  */
 public class ListenerRegistrationException extends RuntimeException {
 

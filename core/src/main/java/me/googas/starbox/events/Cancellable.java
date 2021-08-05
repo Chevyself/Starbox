@@ -1,7 +1,7 @@
 package me.googas.starbox.events;
 
 /** An {@link Event} that can be cancelled */
-public interface Cancellable {
+public interface Cancellable extends Event {
 
   /**
    * Sets whether the event is cancelled

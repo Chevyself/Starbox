@@ -1,6 +1,5 @@
 package me.googas.starbox.events;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Collection;
@@ -21,6 +20,18 @@ public class ListenerManager {
   /** The listeners registered in the manager */
   @NonNull @Getter private final Collection<EventListener> listeners = new HashSet<>();
 
+  @NonNull
+  public ListenerManager register(@NonNull EventListener listener) {
+    this.listeners.add(listener);
+    return this;
+  }
+
+  @NonNull
+  public ListenerManager unregister(@NonNull EventListener listener) {
+    listeners.remove(listener);
+    return this;
+  }
+
   /**
    * Register the listeners from the object.
    *
@@ -30,11 +41,13 @@ public class ListenerManager {
    * @param object to get the class and methods to create the listeners
    * @throws ListenerRegistrationException if the method does not have parameters, if the method has
    *     more than one parameters and if the parameter does not extend {@link Event}
+   * @return this same instance of listener manager
    */
   // Suppressed the warning for the cast of the event class but it is check by using the Event class
   // to see if the class of the parameter can be assigned
   @SuppressWarnings("unchecked")
-  public void registerListeners(@NonNull Object object) {
+  @NonNull
+  public ListenerManager parseAndRegister(@NonNull Object object) {
     Class<?> aClass = object.getClass();
     for (Method method : aClass.getMethods()) {
       Listener annotation = method.getAnnotation(Listener.class);
@@ -55,19 +68,21 @@ public class ListenerManager {
                   + aClass
                   + " has more than one parameter which will cause an exception when trying to prepare the method");
         } else if (Event.class.isAssignableFrom(parameters[0].getType())) {
-          this.listeners.add(
-              new EventListener(
+          ReflectEventListener eventListener =
+              new ReflectEventListener(
                   object,
                   method,
                   // This is the cast that is "unchecked"
                   (Class<? extends Event>) parameters[0].getType(),
-                  annotation.priority()));
+                  annotation.priority());
+          this.register(eventListener);
         } else {
           throw new ListenerRegistrationException(
               "Method " + method + " in " + aClass + " parameter does not extend " + Event.class);
         }
       }
     }
+    return this;
   }
 
   /**
@@ -78,12 +93,16 @@ public class ListenerManager {
    */
   @NonNull
   public List<EventListener> getListeners(@NonNull Class<? extends Event> clazz) {
-    List<EventListener> listeners =
-        this.listeners.stream()
-            .filter(listener -> listener.getEvent().isAssignableFrom(clazz))
-            .sorted(Comparator.comparingInt(EventListener::getPriority))
-            .collect(Collectors.toList());
-    return listeners;
+    return this.listeners.stream()
+        .filter(
+            listener -> {
+              if (listener instanceof ReflectEventListener) {
+                return ((ReflectEventListener) listener).getEvent().isAssignableFrom(clazz);
+              }
+              return true;
+            })
+        .sorted(Comparator.comparingInt(EventListener::getPriority))
+        .collect(Collectors.toList());
   }
 
   /**
@@ -93,7 +112,10 @@ public class ListenerManager {
    *     listeners
    */
   public void unregister(@NonNull Object object) {
-    this.listeners.removeIf(listener -> listener.getListener() == object);
+    this.listeners.removeIf(
+        listener ->
+            listener instanceof ReflectEventListener
+                && ((ReflectEventListener) listener).getListener() == object);
   }
 
   /**
@@ -103,11 +125,7 @@ public class ListenerManager {
    */
   public void call(@NonNull Event event) {
     for (EventListener listener : this.getListeners(event.getClass())) {
-      try {
-        listener.getMethod().invoke(listener.getListener(), event);
-      } catch (IllegalAccessException | InvocationTargetException e) {
-        throw new IllegalStateException("Could not prepare listener for " + event, e);
-      }
+      listener.call(event);
     }
   }
 
@@ -116,13 +134,9 @@ public class ListenerManager {
    *
    * @param cancellable the event to be called
    * @return true if the event was cancelled
-   * @throws IllegalArgumentException if the parameter cancellable is not an instance of {@link
-   *     Event}
    */
-  public boolean call(@NonNull Cancellable cancellable) {
-    if (!(cancellable instanceof Event))
-      throw new IllegalArgumentException(cancellable + " must extend " + Event.class);
-    this.call((Event) cancellable);
+  public boolean callAndGet(@NonNull Cancellable cancellable) {
+    this.call(cancellable);
     return cancellable.isCancelled();
   }
 }
