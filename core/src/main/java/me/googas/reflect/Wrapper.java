@@ -22,6 +22,8 @@ public interface Wrapper<T> {
    * Set the wrapped object.
    *
    * @param object the new wrapped object
+   * @return this same instance
    */
-  void set(T object);
+  @NonNull
+  Wrapper<T> set(T object);
 }

@@ -2,6 +2,7 @@ package me.googas.reflect;
 
 import java.util.Optional;
 import java.util.StringJoiner;
+import lombok.NonNull;
 
 /**
  * An implementation for wrapper.
@@ -27,9 +28,10 @@ public class StarboxWrapper<T> implements Wrapper<T> {
   }
 
   @Override
-  public void set(T object) {
-    // TODO builder setter
+  @NonNull
+  public StarboxWrapper<T> set(T object) {
     this.reference = object;
+    return this;
   }
 
   @Override

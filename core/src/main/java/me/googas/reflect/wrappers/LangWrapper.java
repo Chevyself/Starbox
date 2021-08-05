@@ -24,7 +24,8 @@ public class LangWrapper<T> implements Wrapper<T> {
   }
 
   @Override
-  public void set(T object) {
+  @NonNull
+  public LangWrapper<T> set(T object) {
     throw new UnsupportedOperationException("References in LangWrappers are final");
   }
 
