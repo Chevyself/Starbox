@@ -32,7 +32,7 @@ public @interface TimeAmount {
 
   /**
    * Get the {@link String} to forName the amount of time instead of using {@link #value()} and
-   * {@link #unit()}
+   * {@link #unit()}.
    *
    * @return the {@link String} that can be parsed using {@link
    *     me.googas.starbox.time.Time#parse(String, boolean)}

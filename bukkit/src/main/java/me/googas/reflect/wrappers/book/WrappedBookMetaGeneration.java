@@ -7,6 +7,7 @@ import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.starbox.utility.Versions;
 
 @APIVersion(12)
+@Deprecated
 public enum WrappedBookMetaGeneration {
   ORIGINAL,
   COPY_OF_ORIGINAL,

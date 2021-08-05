@@ -11,7 +11,7 @@ import org.bukkit.inventory.InventoryHolder;
 public interface UI extends InventoryHolder {
 
   /**
-   * Get the button of the given position
+   * Get the button of the given position.
    *
    * @param position the position to get the button on
    * @return the button if there's one in the position else null
@@ -20,7 +20,7 @@ public interface UI extends InventoryHolder {
   Button getButton(int position);
 
   /**
-   * Set the button in the given position
+   * Set the button in the given position.
    *
    * @param position the position to set the button on
    * @param button the button to be set in the position
@@ -30,7 +30,7 @@ public interface UI extends InventoryHolder {
   UI set(int position, @NonNull Button button);
 
   /**
-   * Removes the button in the given position
+   * Removes the button in the given position.
    *
    * @param position the position to remove the button
    * @return this same instance

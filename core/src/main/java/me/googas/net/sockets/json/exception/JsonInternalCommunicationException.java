@@ -2,7 +2,7 @@ package me.googas.net.sockets.json.exception;
 
 import java.security.PrivilegedActionException;
 
-/** Thrown when there's an internal error in communication */
+/** Thrown when there's an internal error in communication. */
 public class JsonInternalCommunicationException extends JsonCommunicationException {
 
   /**

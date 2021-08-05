@@ -16,10 +16,11 @@ public class WrappedConstructor<T> extends LangWrapper<Constructor<T>> {
   }
 
   /**
-   * Wrap a {@link Constructor} instance
+   * Wrap a {@link Constructor} instance.
    *
    * @param constructor the constructor to wrap
    * @return the wrapper of constructor
+   * @param <T> the type that the constructor initializes
    */
   @NonNull
   public static <T> WrappedConstructor<T> of(Constructor<T> constructor) {
@@ -28,7 +29,7 @@ public class WrappedConstructor<T> extends LangWrapper<Constructor<T>> {
   }
 
   /**
-   * Invoke the constructor to create a new instance of an object
+   * Invoke the constructor to create a new instance of an object.
    *
    * @param args the required arguments to prepare the constructor
    * @return a {@link HandledExpression} that returns the invoked object or handles the exception in
@@ -47,7 +48,7 @@ public class WrappedConstructor<T> extends LangWrapper<Constructor<T>> {
   }
 
   /**
-   * Get the wrapped constructor
+   * Get the wrapped constructor.
    *
    * @return the wrapped constructor
    */

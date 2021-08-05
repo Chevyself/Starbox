@@ -8,6 +8,7 @@ import me.googas.net.cache.Catchable;
 import me.googas.starbox.time.Time;
 import me.googas.starbox.time.unit.Unit;
 
+/** Mock class. */
 public class Person implements Catchable {
 
   @Getter private final int id;
@@ -16,6 +17,15 @@ public class Person implements Catchable {
   @NonNull @Getter private final String email;
   @Getter private final int age;
 
+  /**
+   * Create a person
+   *
+   * @param id the id of the person
+   * @param username the username of the person
+   * @param name the complete name of the person
+   * @param email the mail of the person
+   * @param age the age of the person
+   */
   public Person(
       int id, @NonNull String username, @NonNull String name, @NonNull String email, int age) {
     this.id = id;
@@ -55,7 +65,7 @@ public class Person implements Catchable {
   }
 
   @Override
-  public void onRemove() throws Throwable {
+  public void onRemove() {
     System.out.println(username + " has been unloaded from cache");
   }
 }

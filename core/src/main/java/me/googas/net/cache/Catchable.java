@@ -3,7 +3,7 @@ package me.googas.net.cache;
 import lombok.NonNull;
 import me.googas.starbox.time.Time;
 
-/** An object which can be stored inside {@link Cache} */
+/** An object which can be stored inside {@link Cache}. */
 public interface Catchable {
 
   /**
@@ -15,7 +15,7 @@ public interface Catchable {
   default void onRemove() throws Throwable {}
 
   /**
-   * Get the time for the object to be removed from cache
+   * Get the time for the object to be removed from cache.
    *
    * @return the time to be removed
    */

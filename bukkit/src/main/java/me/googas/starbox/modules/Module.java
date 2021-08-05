@@ -12,12 +12,12 @@ import org.bukkit.event.Listener;
  */
 public interface Module extends Listener {
 
-  /** Called when the module is engaged in the {@link ModuleRegistry} */
+  /** Called when the module is engaged in the {@link ModuleRegistry}. */
   default void onEnable() {
     Starbox.getPlugin().getLogger().info(this.getName() + " has been engaged");
   }
 
-  /** Called when the module is disengaged in the {@link ModuleRegistry} */
+  /** Called when the module is disengaged in the {@link ModuleRegistry}. */
   default void onDisable() {
     Starbox.getPlugin().getLogger().info(this.getName() + " has been disengaged");
   }

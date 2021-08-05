@@ -17,15 +17,27 @@ import lombok.NonNull;
  */
 public class ListenerManager {
 
-  /** The listeners registered in the manager */
+  /** The listeners registered in the manager. */
   @NonNull @Getter private final Collection<EventListener> listeners = new HashSet<>();
 
+  /**
+   * Register a listener.
+   *
+   * @param listener the listener to register
+   * @return this same instance
+   */
   @NonNull
   public ListenerManager register(@NonNull EventListener listener) {
     this.listeners.add(listener);
     return this;
   }
 
+  /**
+   * Unregister a listener.
+   *
+   * @param listener the listener to unregister
+   * @return this same instance
+   */
   @NonNull
   public ListenerManager unregister(@NonNull EventListener listener) {
     listeners.remove(listener);
@@ -106,7 +118,7 @@ public class ListenerManager {
   }
 
   /**
-   * Unregisters a listener
+   * Unregisters a listener.
    *
    * @param object the listener to unregister, this is the object used to prepare the methods of the
    *     listeners

@@ -9,6 +9,7 @@ import me.googas.reflect.wrappers.WrappedConstructor;
 import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.reflect.wrappers.properties.WrappedPropertyMap;
 
+/** Wraps the 'com.mojang.authlib.GameProfile' class. */
 public class WrappedGameProfile extends StarboxWrapper<Object> {
 
   @NonNull
@@ -31,6 +32,11 @@ public class WrappedGameProfile extends StarboxWrapper<Object> {
   private static final WrappedMethod<?> GET_PROPERTIES =
       WrappedGameProfile.GAME_PROFILE.getMethod("getProperties");
 
+  /**
+   * Create the wrap.
+   *
+   * @param reference the referenced GameProfile.
+   */
   public WrappedGameProfile(@NonNull Object reference) {
     super(reference);
     if (!reference.getClass().equals(WrappedGameProfile.GAME_PROFILE.getClazz())) {
@@ -38,6 +44,13 @@ public class WrappedGameProfile extends StarboxWrapper<Object> {
     }
   }
 
+  /**
+   * Create a GameProfile and wrap it.
+   *
+   * @param uuid the uuid of the profile
+   * @param name the name of the profile
+   * @return The wrapped profile
+   */
   @NonNull
   public static WrappedGameProfile construct(@NonNull UUID uuid, String name) {
     Object object =
@@ -48,6 +61,11 @@ public class WrappedGameProfile extends StarboxWrapper<Object> {
     return new WrappedGameProfile(object);
   }
 
+  /**
+   * Get the id of the profile.
+   *
+   * @return the id
+   */
   @NonNull
   public UUID getId() {
     return WrappedGameProfile.GET_ID
@@ -56,11 +74,21 @@ public class WrappedGameProfile extends StarboxWrapper<Object> {
         .orElseThrow(() -> new IllegalStateException("Could not prepare #getId"));
   }
 
+  /**
+   * Get the name of the profile.
+   *
+   * @return the name
+   */
   @NonNull
   public Optional<String> getName() {
     return WrappedGameProfile.GET_NAME.prepare(this.get()).provide();
   }
 
+  /**
+   * Get the property map of the profile.
+   *
+   * @return the property map
+   */
   @NonNull
   public WrappedPropertyMap getProperties() {
     Object object =

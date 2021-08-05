@@ -16,8 +16,19 @@ import me.googas.starbox.addons.Addon;
 import me.googas.starbox.addons.AddonLoader;
 import me.googas.starbox.addons.exceptions.AddonCouldNotBeLoadedException;
 
+/**
+ * Manages {@link DependencyAddon}. This manages stuff as whether they are initialized and
+ * downloaded
+ */
 public interface DependencyManager extends AddonLoader {
 
+  /**
+   * Initialize the dependency. This adds all its classes to the current class path
+   *
+   * @param dependency the dependency to initialize
+   * @return the initialized dependency
+   * @throws AddonCouldNotBeLoadedException if the dependency cannot be initialized
+   */
   @NonNull
   default DependencyAddon initialize(@NonNull DependencyAddon dependency)
       throws AddonCouldNotBeLoadedException {
@@ -36,12 +47,25 @@ public interface DependencyManager extends AddonLoader {
     }
   }
 
+  /**
+   * Get a file to use for a {@link DependencyAddon}. This will create the jar file of the
+   * dependency using the parent as {@link #getParent()} and the name of the file will be: {@link
+   * DependencyInformation#getName()} + "-" + {@link DependencyInformation#getVersion()} + ".jar"
+   *
+   * @param information the information of the dependency
+   * @return the file for the dependency
+   */
   @NonNull
   default StarboxFile getDependencyFile(@NonNull DependencyInformation information) {
     return new StarboxFile(
         this.getParent(), information.getName() + "-" + information.getVersion() + ".jar");
   }
 
+  /**
+   * Get the dependencies which this manager is handling.
+   *
+   * @return the collection of dependencies
+   */
   @NonNull
   Collection<DependencyAddon> getDependencies();
 
@@ -54,14 +78,19 @@ public interface DependencyManager extends AddonLoader {
   Logger getLogger();
 
   /**
-   * Get the parent to which files may be created
+   * Get the parent to which files may be created.
    *
    * @return the file to where the parent must be created
    */
   @NonNull
   StarboxFile getParent();
 
-  /** @return */
+  /**
+   * This is a handler to use in {@link #load()}. This will handle exceptions thrown in {@link
+   * #initialize(DependencyAddon)} and {@link DependencyAddon.DownloadTask#download()}
+   *
+   * @return the consumer for exceptions
+   */
   @NonNull
   Consumer<AddonCouldNotBeLoadedException> getNotLoadedHandler();
 

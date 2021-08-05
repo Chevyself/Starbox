@@ -34,7 +34,7 @@ public interface StarboxUnit extends TemporalUnit {
   }
 
   /**
-   * Get a single character which may be used to represent the unit such as:
+   * Get a single character which may be used to represent the unit. Such as:
    *
    * <ul>
    *   <li>'M' minute
@@ -48,7 +48,7 @@ public interface StarboxUnit extends TemporalUnit {
   char getSingle();
 
   /**
-   * Get this unit as millis such as:
+   * Get this unit as millis. Such as:
    *
    * <ul>
    *   <li>second = 1000
@@ -80,7 +80,7 @@ public interface StarboxUnit extends TemporalUnit {
   }
 
   /**
-   * Get an instance of time based on this unit
+   * Get an instance of time based on this unit.
    *
    * @return the instance of time based in this unit
    */

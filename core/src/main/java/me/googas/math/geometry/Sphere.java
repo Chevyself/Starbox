@@ -9,17 +9,17 @@ import lombok.NonNull;
 import lombok.Setter;
 import me.googas.math.MathUtils;
 
-/** A sphere */
+/** A sphere. */
 public class Sphere implements Shape {
 
   private final String id;
-  /** The center of the sphere */
+  /** The center of the sphere. */
   @NonNull @Getter @Setter private Point center;
-  /** The radius of the sphere */
+  /** The radius of the sphere. */
   @Getter @Setter private double radius;
 
   /**
-   * Create the sphere
+   * Create the sphere.
    *
    * @param id the id of the sphere
    * @param center the center of the sphere

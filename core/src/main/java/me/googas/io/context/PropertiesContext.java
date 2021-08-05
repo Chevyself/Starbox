@@ -18,7 +18,7 @@ import me.googas.starbox.expressions.HandledExpression;
 public class PropertiesContext implements FileContext<Properties> {
 
   /**
-   * Write the {@link Properties} to the given file
+   * Write the {@link Properties} to the given file.
    *
    * @param file the file to write the properties on
    * @param properties the properties to write on the file

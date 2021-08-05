@@ -3,13 +3,12 @@ package me.googas.reflect.wrappers.attributes;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.reflect.APIVersion;
 import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedConstructor;
 import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.starbox.utility.Versions;
 
-@APIVersion(9)
+@Deprecated
 public class WrappedAttributeModifier {
 
   @NonNull
@@ -61,6 +60,7 @@ public class WrappedAttributeModifier {
         .orElse(null);
   }
 
+  @Deprecated
   public enum WrappedOperation {
     ADD_NUMBER,
     ADD_SCALAR,

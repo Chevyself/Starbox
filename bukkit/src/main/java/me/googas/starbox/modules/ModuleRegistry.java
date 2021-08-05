@@ -22,7 +22,7 @@ public class ModuleRegistry {
   @NonNull @Getter private final List<Module> engaged = new ArrayList<>();
 
   /**
-   * Create the module registry
+   * Create the module registry.
    *
    * @param plugin the plugin that registers the modules
    */
@@ -31,7 +31,7 @@ public class ModuleRegistry {
   }
 
   /**
-   * Get a module by its class
+   * Get a module by its class.
    *
    * @param clazz the class of the module to get
    * @param <T> the type of the module
@@ -45,7 +45,7 @@ public class ModuleRegistry {
   }
 
   /**
-   * Engage a collection of modules
+   * Engage a collection of modules.
    *
    * @param modules the modules to engage
    * @return true if at least one module was engaged
@@ -59,7 +59,7 @@ public class ModuleRegistry {
   }
 
   /**
-   * Disengage a collection of modules
+   * Disengage a collection of modules.
    *
    * @param modules the modules to disengage
    * @return true if at least one module was disengaged
@@ -73,7 +73,7 @@ public class ModuleRegistry {
   }
 
   /**
-   * Engage an array of modules
+   * Engage an array of modules.
    *
    * @param modules the modules to engage
    * @return true if at least one module was engaged
@@ -83,7 +83,7 @@ public class ModuleRegistry {
   }
 
   /**
-   * Disengage an array of modules
+   * Disengage an array of modules.
    *
    * @param modules the modules to disengage
    * @return true if at least one module was disengaged
@@ -121,6 +121,14 @@ public class ModuleRegistry {
     return false;
   }
 
+  /**
+   * Get a module by its class and require that it is not null.
+   *
+   * @param typeOfT the class of module to get
+   * @param <T> the type of the module
+   * @return the required module
+   * @throws NullPointerException if the module is not found
+   */
   @NonNull
   public <T extends Module> T require(@NonNull Class<T> typeOfT) {
     return Objects.requireNonNull(this.get(typeOfT), typeOfT + " module has not been engaged");

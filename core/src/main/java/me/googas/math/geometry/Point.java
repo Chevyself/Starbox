@@ -11,15 +11,15 @@ import me.googas.math.MathUtils;
  */
 public class Point {
 
-  /** The x position of the point */
+  /** The x position of the point. */
   @Getter @Setter private double x;
-  /** The y position of the point */
+  /** The y position of the point. */
   @Getter @Setter private double y;
-  /** The z position of the point */
+  /** The z position of the point. */
   @Getter @Setter private double z;
 
   /**
-   * Create the point
+   * Create the point.
    *
    * @param x the x position of the point
    * @param y the y position of the point
@@ -32,7 +32,7 @@ public class Point {
   }
 
   /**
-   * Creates a new instance of this same point
+   * Creates a new instance of this same point.
    *
    * @return the new instance of this point
    */
@@ -42,7 +42,7 @@ public class Point {
   }
 
   /**
-   * Get the distance between two points
+   * Get the distance between two points.
    *
    * @param another another point to check the distance
    * @return the distance between the two points
@@ -107,7 +107,7 @@ public class Point {
   }
 
   /**
-   * Checks if this point is bigger than another point
+   * Checks if this point is bigger than another point.
    *
    * @param point the point to check if it is smaller than this one
    * @return true if this point is bigger than the queried one

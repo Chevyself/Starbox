@@ -2,11 +2,11 @@ package me.googas.starbox.addons;
 
 import lombok.NonNull;
 
-/** This class represents the information that the bot needs to enable an Addon */
+/** This class represents the information that the bot needs to enable an Addon. */
 public interface AddonInformation {
 
   /**
-   * Get the name of the addon
+   * Get the name of the addon.
    *
    * @return the name of the addon
    */
@@ -14,7 +14,7 @@ public interface AddonInformation {
   String getName();
 
   /**
-   * Get the version of the addon
+   * Get the version of the addon.
    *
    * @return the version of the addon
    */
@@ -22,7 +22,7 @@ public interface AddonInformation {
   String getVersion();
 
   /**
-   * Get the description of the addon
+   * Get the description of the addon.
    *
    * @return the description of the addon
    */
@@ -30,7 +30,7 @@ public interface AddonInformation {
   String getDescription();
 
   /**
-   * Get the main class of the addon
+   * Get the main class of the addon.
    *
    * @return the main class of the addon
    */

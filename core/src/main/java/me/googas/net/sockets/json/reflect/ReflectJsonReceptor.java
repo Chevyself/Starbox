@@ -21,20 +21,20 @@ import me.googas.reflect.utility.ReflectUtil;
  */
 public class ReflectJsonReceptor implements JsonReceptor {
 
-  /** The method which request must use to prepare this receptor */
+  /** The method which request must use to prepare this receptor. */
   @NonNull private final String requestMethod;
 
-  /** The object required to prepare the method */
+  /** The object required to prepare the method. */
   @NonNull private final Object object;
 
   /** The method to prepare. This is the annotated method with {@link JsonReceptor} */
   @NonNull private final Method method;
 
-  /** The parameters that the receptor requires to be executed */
+  /** The parameters that the receptor requires to be executed. */
   @NonNull private final List<JsonReceptorParameter<?>> parameters;
 
   /**
-   * Create the receptor
+   * Create the receptor.
    *
    * @param requestMethod the method which request use to prepare this receptor
    * @param object the object required to prepare the method
@@ -53,7 +53,7 @@ public class ReflectJsonReceptor implements JsonReceptor {
   }
 
   /**
-   * Get all the receptors given from certain object
+   * Get all the receptors given from certain object.
    *
    * @param object the object to get the receptors from
    * @return the list of receptors
@@ -81,12 +81,12 @@ public class ReflectJsonReceptor implements JsonReceptor {
   }
 
   /**
-   * Invokes the receptor
+   * Invokes the receptor.
    *
    * @param objects the parameters which the receptor needs
    * @return the object can be either any object or nothing if it is void
-   * @throws InvocationTargetException if the method throws an exception when executed
-   * @throws IllegalAccessException if the method is private
+   * @throws JsonInternalCommunicationException if the method cannot be accessed
+   * @throws JsonExternalCommunicationException if the method was not executed correctly
    */
   public Object invoke(@NonNull Object... objects)
       throws JsonInternalCommunicationException, JsonExternalCommunicationException {
@@ -100,7 +100,7 @@ public class ReflectJsonReceptor implements JsonReceptor {
   }
 
   /**
-   * Get the method which request must use to prepare this receptor
+   * Get the method which request must use to prepare this receptor.
    *
    * @return the method as a string
    */
@@ -110,7 +110,7 @@ public class ReflectJsonReceptor implements JsonReceptor {
   }
 
   /**
-   * Get the parameters that the receptor needs to be executed
+   * Get the parameters that the receptor needs to be executed.
    *
    * @return the list of parameters that the receptor needs to be executed
    */

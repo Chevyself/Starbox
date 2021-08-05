@@ -8,13 +8,13 @@ import lombok.NonNull;
 import me.googas.starbox.time.Time;
 import me.googas.starbox.time.unit.Unit;
 
-/** An scheduler is an object used to create and manage {@link Task} */
+/** An scheduler is an object used to create and manage {@link Task}. */
 public interface Scheduler {
 
   @NonNull Random random = new Random();
 
   /**
-   * Get a task by its id
+   * Get a task by its id.
    *
    * @param id the id of the task
    * @return the task if the id matches else null
@@ -25,7 +25,7 @@ public interface Scheduler {
   }
 
   /**
-   * Create a countdown
+   * Create a countdown.
    *
    * @param repetition how often should the countdown repeat. This means that how ofter should the
    *     countdown decrease its time. For example: In a {@link StarboxCountdown} which has a seconds
@@ -37,7 +37,7 @@ public interface Scheduler {
   Countdown countdown(@NonNull Time repetition, @NonNull Countdown countdown);
 
   /**
-   * Create a countdown
+   * Create a countdown.
    *
    * @param time the time for the countdown to finish
    * @param onSecond a consumer that runs every second that passes and has the time left as the
@@ -57,7 +57,7 @@ public interface Scheduler {
   }
 
   /**
-   * Run a method later
+   * Run a method later.
    *
    * @param in how long until we run this method
    * @param later the run later task to run
@@ -67,7 +67,7 @@ public interface Scheduler {
   RunLater later(@NonNull Time in, @NonNull RunLater later);
 
   /**
-   * Run a method later
+   * Run a method later.
    *
    * @param in how long until we run this method
    * @param later the run later task to run
@@ -79,7 +79,7 @@ public interface Scheduler {
   }
 
   /**
-   * Create a repetitive task
+   * Create a repetitive task.
    *
    * @param initial the initial time until the task repeats
    * @param period the period in which the task will repeat
@@ -90,7 +90,7 @@ public interface Scheduler {
   Repetitive repeat(@NonNull Time initial, @NonNull Time period, @NonNull Repetitive repetitive);
 
   /**
-   * Create a repetitive task
+   * Create a repetitive task.
    *
    * @param initial the initial time until the task repeats
    * @param period the period in which the task will repeat
@@ -104,7 +104,7 @@ public interface Scheduler {
   }
 
   /**
-   * Get a new id for a task
+   * Get a new id for a task.
    *
    * @return the new id
    */
@@ -115,7 +115,7 @@ public interface Scheduler {
   }
 
   /**
-   * Get all the tasks that are running in the scheduler
+   * Get all the tasks that are running in the scheduler.
    *
    * @return the tasks running in the scheduler
    */

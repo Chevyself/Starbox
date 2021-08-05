@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 public interface Button {
 
   /**
-   * Get the listener of the button
+   * Get the listener of the button.
    *
    * @return the listener of the button
    */
@@ -23,7 +23,7 @@ public interface Button {
   ButtonListener getListener();
 
   /**
-   * Get the item that represents the button
+   * Get the item that represents the button.
    *
    * @return the item
    */

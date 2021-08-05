@@ -19,7 +19,7 @@ import me.googas.starbox.expressions.HandledExpression;
 public class Txt implements FileContext<String> {
 
   /**
-   * Reads an String from a {@link BufferedReader}
+   * Reads an String from a {@link BufferedReader}.
    *
    * @param reader the reader to read the string from
    * @return a {@link HandledExpression} which on {@link HandledExpression#provide()} returns the
@@ -40,7 +40,7 @@ public class Txt implements FileContext<String> {
   }
 
   /**
-   * Write the {@link String} to the given file
+   * Write the {@link String} to the given file.
    *
    * @param file the file to write the string on
    * @param string the string to write on the file
@@ -72,7 +72,7 @@ public class Txt implements FileContext<String> {
             () -> {
               BufferedReader reader = file.getBufferedReader();
               StringBuilder builder = new StringBuilder();
-              String line = null;
+              String line;
               while ((line = reader.readLine()) != null) {
                 builder.append(line);
               }
@@ -95,7 +95,7 @@ public class Txt implements FileContext<String> {
               BufferedReader reader =
                   new BufferedReader(new InputStreamReader(resource.openStream()));
               StringBuilder builder = new StringBuilder();
-              String line = null;
+              String line;
               while ((line = reader.readLine()) != null) {
                 builder.append(line);
               }

@@ -3,9 +3,9 @@ package me.googas.starbox;
 import lombok.NonNull;
 
 /**
- * Static utilities for JSON
+ * Static utilities for JSON.
  *
- * <p>Used for Bukkit and Bungee BaseComponents
+ * <p>Used mostly for Bukkit and Bungee BaseComponents
  */
 public class JsonUtils {
 

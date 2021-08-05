@@ -7,6 +7,7 @@ import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedMethod;
 
 @APIVersion(9)
+@Deprecated
 public class WrappedAttributeInstance extends StarboxWrapper<Object> {
 
   @NonNull

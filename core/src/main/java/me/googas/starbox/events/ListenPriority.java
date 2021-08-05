@@ -7,18 +7,18 @@ package me.googas.starbox.events;
  */
 public class ListenPriority {
 
-  /** The lowest priority to listen the event */
+  /** The lowest priority to listen the event. */
   public static final int LOWEST = 0;
 
-  /** The low priority to listen the event */
+  /** The low priority to listen the event. */
   public static final int LOW = 1;
 
-  /** The medium priority to listen the event */
+  /** The medium priority to listen the event. */
   public static final int MEDIUM = 2;
 
-  /** The high priority to listen the event */
+  /** The high priority to listen the event. */
   public static final int HIGH = 3;
 
-  /** The highest priority to listen the event */
+  /** The highest priority to listen the event. */
   public static final int HIGHEST = 4;
 }

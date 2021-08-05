@@ -8,6 +8,7 @@ import lombok.NonNull;
 import lombok.experimental.Delegate;
 import me.googas.starbox.builders.Builder;
 
+@Deprecated
 public class WrappedAttributes implements Builder<Multimap<Object, Object>> {
 
   @NonNull @Delegate

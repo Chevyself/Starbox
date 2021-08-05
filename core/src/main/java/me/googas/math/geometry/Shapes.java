@@ -4,11 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.NonNull;
 
-/** Static utilities for shapes */
+/** Static utilities for shapes. */
 public class Shapes {
 
   /**
-   * Get all the points that are inside a shape from a minimum and a maximum point
+   * Get all the points that are inside a shape from a minimum and a maximum point.
    *
    * @param shape the shape to check if the point is inside
    * @param min the minimum point

@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import me.googas.starbox.time.unit.StarboxUnit;
 
-/** Represents Minecraft time units such as the 'TICK' */
+/** Represents Minecraft time units such as the 'TICK'. */
 public enum MinecraftUnit implements StarboxUnit {
   TICK('T', 50, Duration.ofMillis(50));
 

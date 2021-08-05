@@ -14,20 +14,20 @@ import me.googas.net.api.Messenger;
  */
 public class AwaitingRequest<T> {
 
-  /** The request waiting for the response */
+  /** The request waiting for the response. */
   @NonNull @Getter private final Request<T> request;
 
-  /** The class of the object requested */
+  /** The class of the object requested. */
   @NonNull @Getter private final Class<T> clazz;
 
-  /** The consumer to execute when the response is received */
+  /** The consumer to execute when the response is receive. */
   @NonNull @Getter private final Consumer<Optional<T>> consumer;
 
-  /** The consumer in case an exception happens */
+  /** The consumer in case an exception happens. */
   @NonNull @Getter private final Consumer<Throwable> exceptionConsumer;
 
   /**
-   * Create the awaiting request
+   * Create the awaiting request.
    *
    * @param request the request that is waiting for a response
    * @param clazz the class of the object that the request is waiting

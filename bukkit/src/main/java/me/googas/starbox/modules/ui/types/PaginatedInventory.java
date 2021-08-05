@@ -19,7 +19,7 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * A paginated inventory has different sizes depending on the buttons size and has pages if there is
- * too many buttons
+ * too many buttons.
  */
 public class PaginatedInventory implements UI {
 
@@ -31,20 +31,44 @@ public class PaginatedInventory implements UI {
   @NonNull @Getter @Setter private Button empty;
   private Inventory inventory;
 
+  /**
+   * Create the inventory.
+   *
+   * @param defaultSize the size of items per page
+   * @param title the tile of the inventory
+   * @param empty the button filling empty spaces
+   */
   public PaginatedInventory(int defaultSize, @NonNull String title, @NonNull Button empty) {
     this.defaultSize = defaultSize;
     this.title = title;
     this.empty = empty;
   }
 
+  /**
+   * Create the inventory.
+   *
+   * @param defaultSize the size of items per page
+   * @param title the tile of the inventory
+   */
   public PaginatedInventory(int defaultSize, @NonNull String title) {
     this(defaultSize, title, StarboxButton.empty());
   }
 
+  /**
+   * Create the inventory.
+   *
+   * @param title the tile of the inventory
+   * @param empty the button filling empty spaces
+   */
   public PaginatedInventory(@NonNull String title, @NonNull Button empty) {
     this(0, title, empty);
   }
 
+  /**
+   * Create the inventory.
+   *
+   * @param title the tile of the inventory
+   */
   public PaginatedInventory(@NonNull String title) {
     this(0, title);
   }
@@ -83,7 +107,7 @@ public class PaginatedInventory implements UI {
   }
 
   /**
-   * Get the size which can be used by {@Link #buttons}. This is the size of the Minecraft inventory
+   * Get the size which can be used by {@link #buttons}. This is the size of the Minecraft inventory
    * without the 9 extra slots of the toolbar
    *
    * @return the size which can be used by buttons
@@ -93,7 +117,7 @@ public class PaginatedInventory implements UI {
   }
 
   /**
-   * Get the last occupied slot there is
+   * Get the last occupied slot there is.
    *
    * @return the last occupied slot 0 if none or just the first one is occupied
    */
@@ -108,7 +132,7 @@ public class PaginatedInventory implements UI {
   }
 
   /**
-   * Get the last available slot there is for a button
+   * Get the last available slot there is for a button.
    *
    * @return the last slot
    */
@@ -117,7 +141,7 @@ public class PaginatedInventory implements UI {
   }
 
   /**
-   * Get the page where an slot is in
+   * Get the page where an slot is in.
    *
    * @param slot the slot to get in which page it is in
    * @return the page that contains the slot
@@ -162,7 +186,7 @@ public class PaginatedInventory implements UI {
   }
 
   /**
-   * Get the last page of the inventory
+   * Get the last page of the inventory.
    *
    * @return the last page as an integer
    */
@@ -171,7 +195,7 @@ public class PaginatedInventory implements UI {
   }
 
   /**
-   * Get the slot in which a button is on
+   * Get the slot in which a button is on.
    *
    * @param button the button to get the slot of
    * @return the slot of the button if it is in the UI else -1
@@ -186,7 +210,7 @@ public class PaginatedInventory implements UI {
   }
 
   /**
-   * Go to the previous page
+   * Go to the previous page.
    *
    * <p>If there's no previous page it will got to the last page
    */
@@ -199,7 +223,7 @@ public class PaginatedInventory implements UI {
   }
 
   /**
-   * Go to the previous page
+   * Go to the previous page.
    *
    * <p>If there's no next page it will got to the first
    */
@@ -212,7 +236,7 @@ public class PaginatedInventory implements UI {
   }
 
   /**
-   * Add a button to the last empty spot
+   * Add a button to the last empty spot.
    *
    * @param button the button to add
    */
@@ -221,7 +245,7 @@ public class PaginatedInventory implements UI {
   }
 
   /**
-   * Add an item to the toolbar
+   * Add an item to the toolbar.
    *
    * @param position the position to add the item in the toolbar
    * @param button the button to add in the toolbar
@@ -240,7 +264,7 @@ public class PaginatedInventory implements UI {
     }
   }
 
-  /** Sets the buttons in the toolbar */
+  /** Sets the buttons in the toolbar. */
   private void addToolbar() {
     if (this.inventory == null) return;
     this.toolbar.forEach(
@@ -248,7 +272,7 @@ public class PaginatedInventory implements UI {
             this.inventory.setItem(position + this.buttonSize(), button.getItem()));
   }
 
-  /** Sets the rest of the buttons */
+  /** Sets the rest of the buttons. */
   private void addItems() {
     if (this.inventory == null) return;
     this.buttons.forEach(
@@ -260,6 +284,12 @@ public class PaginatedInventory implements UI {
         });
   }
 
+  /**
+   * Removes a button from the inventory.
+   *
+   * @param button the button to remove
+   * @param updateSlots whether to make other buttons find a new spot
+   */
   public void remove(@NonNull Button button, boolean updateSlots) {
     int slot = this.getSlot(button);
     this.remove(slot);
@@ -281,6 +311,12 @@ public class PaginatedInventory implements UI {
     }
   }
 
+  /**
+   * Get a position in the actual position of the map.
+   *
+   * @param position the position to get its interface position
+   * @return the interface position
+   */
   public int getInterfacePosition(int position) {
     if (position < this.buttonSize()) {
       return (this.page * this.buttonSize()) + position;

@@ -7,6 +7,7 @@ import lombok.Setter;
 import me.googas.starbox.time.Time;
 import me.googas.starbox.time.unit.Unit;
 
+/** An implementation for {@link Countdown}. */
 public class StarboxCountdown implements Countdown {
 
   @Setter private long start = System.currentTimeMillis();
@@ -22,6 +23,14 @@ public class StarboxCountdown implements Countdown {
 
   @Setter private boolean paused = false;
 
+  /**
+   * Create the countdown.
+   *
+   * @param time the time to count down
+   * @param id the id of the task
+   * @param onSecondPassed a consumer to run when a second has passed of the countdown
+   * @param onFinish a runnable to execute when the time has been completed
+   */
   public StarboxCountdown(
       @NonNull Time time,
       @NonNull int id,

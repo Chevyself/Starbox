@@ -9,17 +9,17 @@ import lombok.NonNull;
 import me.googas.net.api.auth.Authenticator;
 import me.googas.net.api.messages.Request;
 
-/** This object represents the server {@link Messenger} connects to */
+/** This object represents the server {@link Messenger} connects to. */
 public interface Server<M extends Messenger> {
   /**
-   * Closes the server
+   * Closes the server.
    *
    * @throws IOException some objects when closed can cause this exception
    */
   void close() throws IOException;
 
   /**
-   * Whether clients need authentication to use
+   * Whether clients need authentication to use.
    *
    * @return whether the server requires the client to be authenticated
    */
@@ -28,7 +28,7 @@ public interface Server<M extends Messenger> {
   }
 
   /**
-   * Send a request and accept the consumer for each client
+   * Send a request and accept the consumer for each client.
    *
    * @param request the request to send
    * @param consumer the consumer to accept
@@ -37,7 +37,7 @@ public interface Server<M extends Messenger> {
   <T> void sendRequest(@NonNull Request<T> request, BiConsumer<M, Optional<T>> consumer);
 
   /**
-   * Send a request and get the response for each client
+   * Send a request and get the response for each client.
    *
    * @param request the request to send
    * @param <T> the type of object request
@@ -46,20 +46,21 @@ public interface Server<M extends Messenger> {
   @NonNull
   <T> Map<M, Optional<T>> sendRequest(@NonNull Request<T> request);
 
-  /** Makes the server start listening */
+  /** Makes the server start listening. */
   void start();
 
   /**
-   * Set the authenticator for request
+   * Set the authenticator for request.
    *
    * @param authenticator the new authenticator
+   * @return this same instance
    */
   @NonNull
   Server<M> setAuthenticator(@NonNull Authenticator<M> authenticator);
 
   /**
    * Get an {@link Optional} instance containing the authenticator for the client to send requests
-   * to the server
+   * to the server.
    *
    * @return the authenticator to send requests to the server
    */
@@ -67,7 +68,7 @@ public interface Server<M extends Messenger> {
   Optional<Authenticator<M>> getAuthenticator();
 
   /**
-   * Get the clients that are connected to the server
+   * Get the clients that are connected to the server.
    *
    * @return the set of clients connected to the server
    */

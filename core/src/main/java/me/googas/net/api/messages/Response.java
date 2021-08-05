@@ -6,23 +6,23 @@ import lombok.Getter;
 import lombok.NonNull;
 
 /**
- * This object represents the message to send a client when it is waiting for a {@link Response}
+ * This object represents the message to send a client when it is waiting for a {@link Response}.
  *
  * @param <T> the type of object that the response expected
  */
 public class Response<T> implements Message {
 
-  /** The id of the message */
+  /** The id of the message. */
   @NonNull @Getter private final UUID id;
 
-  /** The object which this is responding with */
+  /** The object which this is responding with. */
   private T object;
 
-  /** Whether the response ended with an error */
+  /** Whether the response ended with an error. */
   @Getter private boolean error = true;
 
   /**
-   * Create the response
+   * Create the response.
    *
    * @param id the id of the response
    * @param object the object with which this is responding with
@@ -33,7 +33,7 @@ public class Response<T> implements Message {
   }
 
   /**
-   * Create the response
+   * Create the response.
    *
    * @param id the id of the response
    */
@@ -47,9 +47,10 @@ public class Response<T> implements Message {
   }
 
   /**
-   * Set the object given by the response
+   * Set the object given by the response.
    *
    * @param object the new object given by the response
+   * @return the the object that the response holds
    */
   @NonNull
   public Response<T> setObject(T object) {
@@ -58,7 +59,7 @@ public class Response<T> implements Message {
   }
 
   /**
-   * Set whether the response is an error
+   * Set whether the response is an error.
    *
    * @param error the new value if the response was an error
    */
@@ -67,7 +68,7 @@ public class Response<T> implements Message {
   }
 
   /**
-   * Get the object which was given by the response
+   * Get the object which was given by the response.
    *
    * @return an {@link Optional} instance containing the object from the response or empty
    */

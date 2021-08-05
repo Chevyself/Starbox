@@ -21,7 +21,7 @@ import me.googas.starbox.time.Time;
 public interface Cache extends Runnable {
 
   /**
-   * Creates a copy of the current cache
+   * Creates a copy of the current cache.
    *
    * @return the copy of the current cache
    */
@@ -46,7 +46,7 @@ public interface Cache extends Runnable {
   }
 
   /**
-   * Create a {@link Stream} of filtered {@link Catchable} using the predicate
+   * Create a {@link Stream} of filtered {@link Catchable} using the predicate.
    *
    * @param clazz the class of catchables to get
    * @param predicate the predicate to filter the catchables
@@ -67,7 +67,7 @@ public interface Cache extends Runnable {
   }
 
   /**
-   * Get an object from cache and select whether to refresh it
+   * Get an object from cache and select whether to refresh it.
    *
    * @param clazz the clazz of the catchable for casting
    * @param predicate the predicate to match the catchable
@@ -133,7 +133,7 @@ public interface Cache extends Runnable {
   }
 
   /**
-   * Checks whether an object is inside the cache
+   * Checks whether an object is inside the cache.
    *
    * @param catchable the object to check if it is inside the cache
    * @return true if the object is inside the cache
@@ -151,7 +151,7 @@ public interface Cache extends Runnable {
   }
 
   /**
-   * Adds an object to the cache
+   * Adds an object to the cache.
    *
    * @param catchable the object to be added
    * @throws IllegalStateException if there's an instance of the object in cache already
@@ -165,7 +165,7 @@ public interface Cache extends Runnable {
   }
 
   /**
-   * Get the time left of an object inside of cache
+   * Get the time left of an object inside of cache.
    *
    * @param catchable the object to check the time
    * @return the time of the object inside of cache. If the object is null it will return 0 seconds
@@ -185,7 +185,7 @@ public interface Cache extends Runnable {
   }
 
   /**
-   * Removes an object from cache
+   * Removes an object from cache.
    *
    * @param catchable the object to be removed
    * @return whether the object was removed from cache
@@ -202,7 +202,7 @@ public interface Cache extends Runnable {
   }
 
   /**
-   * Refreshes a catchable object
+   * Refreshes a catchable object.
    *
    * @param catchable the object to be cached
    */
@@ -215,7 +215,7 @@ public interface Cache extends Runnable {
   }
 
   /**
-   * Get the time in which an object must be removed
+   * Get the time in which an object must be removed.
    *
    * @param catchable the object to get the removal time
    * @return the removal time of the object
@@ -236,16 +236,7 @@ public interface Cache extends Runnable {
   }
 
   /**
-   * This map contains the reference to the cache object and the time in millis for the object to be
-   * removed
-   *
-   * @return the map with the reference and time of the objects
-   */
-  @NonNull
-  Map<SoftReference<Catchable>, Long> getMap();
-
-  /**
-   * Set the consumer to be used in exceptions
+   * Set the consumer to be used in exceptions.
    *
    * @see #getHandler()
    * @param handler the handler
@@ -255,8 +246,17 @@ public interface Cache extends Runnable {
   Cache handle(@NonNull Consumer<Throwable> handler);
 
   /**
+   * This map contains the reference to the cache object and the time in millis for the object to be
+   * removed.
+   *
+   * @return the map with the reference and time of the objects
+   */
+  @NonNull
+  Map<SoftReference<Catchable>, Long> getMap();
+
+  /**
    * This consumer for {@link Throwable} is for try and catches that may be used in for {@link
-   * Catchable#onRemove()}
+   * Catchable#onRemove()}.
    *
    * @return the consumer handler for {@link Throwable}
    */

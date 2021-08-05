@@ -12,16 +12,28 @@ import org.bukkit.Material;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
+/** Implementation for {@link Button}. */
 public class StarboxButton implements Button {
 
   @Getter @NonNull private final ButtonListener listener;
   @Getter @NonNull private final ItemStack item;
 
+  /**
+   * Create the button.
+   *
+   * @param listener the listener of the button
+   * @param item the item that represents the button.
+   */
   public StarboxButton(@NonNull ButtonListener listener, @NonNull ItemStack item) {
     this.listener = listener;
     this.item = item;
   }
 
+  /**
+   * Create a button that represents a page back for a {@link PaginatedInventory}.
+   *
+   * @return the button
+   */
   @NonNull
   public static Button back() {
     return new ItemBuilder(Material.ARROW, 1)
@@ -34,6 +46,11 @@ public class StarboxButton implements Button {
             });
   }
 
+  /**
+   * Create a button that represents a page forward for a {@link PaginatedInventory}.
+   *
+   * @return the button
+   */
   @NonNull
   public static Button next() {
     return new ItemBuilder(Material.ARROW, 1)
@@ -46,11 +63,22 @@ public class StarboxButton implements Button {
             });
   }
 
+  /**
+   * Create an empty button.
+   *
+   * @return an empty button
+   */
   @NonNull
   public static Button empty() {
     return new ItemBuilder(Material.AIR).build((event) -> event.setCancelled(true));
   }
 
+  /**
+   * Create an empty button with a representative item.
+   *
+   * @param item the item to represent the button
+   * @return the button
+   */
   @NonNull
   public static Button empty(@NonNull ItemStack item) {
     return new StarboxButton(event -> event.setCancelled(true), item);

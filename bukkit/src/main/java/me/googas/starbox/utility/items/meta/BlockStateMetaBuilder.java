@@ -8,14 +8,26 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+/** Builds {@link BlockStateMeta} */
 public class BlockStateMetaBuilder extends ItemMetaBuilder {
 
   @Getter private BlockState state;
 
+  /**
+   * Create the builder.
+   *
+   * @param itemBuilder the item builder to which this meta will be built
+   */
   public BlockStateMetaBuilder(@NonNull ItemBuilder itemBuilder) {
     super(itemBuilder);
   }
 
+  /**
+   * Set the state of the meta.
+   *
+   * @param state the new value to set
+   * @return this same instance
+   */
   @NonNull
   public BlockStateMetaBuilder setState(BlockState state) {
     this.state = state;

@@ -10,20 +10,20 @@ import lombok.NonNull;
 import me.googas.net.api.Messenger;
 import me.googas.net.api.messages.StarboxRequest;
 
-/** This object represents a request that is being read by a {@link Messenger} */
+/** This object represents a request that is being read by a {@link Messenger}. */
 public class ReceivedJsonRequest implements StarboxRequest {
 
-  /** The id of the request/response */
+  /** The id of the request/response. */
   @NonNull @Getter private final UUID id;
 
-  /** The method which should match one from a receptor */
+  /** The method which should match one from a receptor. */
   @NonNull @Getter private final String method;
 
-  /** The parameters provided by the messenger */
+  /** The parameters provided by the messenger. */
   @NonNull @Getter private final Map<String, JsonElement> parameters;
 
   /**
-   * Create the request
+   * Create the request.
    *
    * @param id the id the request given by the messenger
    * @param method the method to get the receptor

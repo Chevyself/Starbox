@@ -33,11 +33,11 @@ import me.googas.net.sockets.json.exception.JsonInternalCommunicationException;
 import me.googas.net.sockets.json.reflect.JsonReceptorParameter;
 import me.googas.net.sockets.json.server.JsonClientThread;
 
-/** A {@link Messenger} that works with json messages */
+/** A {@link Messenger} that works with json messages. */
 public interface JsonMessenger extends Messenger, Runnable {
 
   /**
-   * Prints a line in the output stream
+   * Prints a line in the output stream.
    *
    * @param line the line to print
    */
@@ -46,7 +46,7 @@ public interface JsonMessenger extends Messenger, Runnable {
   }
 
   /**
-   * Get the awaiting request matching the uuid
+   * Get the awaiting request matching the uuid.
    *
    * @param uuid the uuid to match
    * @return the matched request
@@ -59,7 +59,7 @@ public interface JsonMessenger extends Messenger, Runnable {
   }
 
   /**
-   * Get the matching receptor for a request
+   * Get the matching receptor for a request.
    *
    * @param request the request that needs a receptor
    * @return the receptor if found else null
@@ -70,7 +70,7 @@ public interface JsonMessenger extends Messenger, Runnable {
   }
 
   /**
-   * Get a receptor by its method
+   * Get a receptor by its method.
    *
    * @param method the method to match
    * @return the receptor if one with the method is found, null otherwise
@@ -83,7 +83,7 @@ public interface JsonMessenger extends Messenger, Runnable {
   }
 
   /**
-   * Accepts a request
+   * Accepts a request.
    *
    * @param request the request to be accepted
    */
@@ -117,7 +117,7 @@ public interface JsonMessenger extends Messenger, Runnable {
   }
 
   /**
-   * Get the parameters to prepare the receptor to get the response
+   * Get the parameters to prepare the receptor to get the response.
    *
    * @param receptor the receptor to prepare
    * @param request the request that is using the receptor
@@ -156,13 +156,8 @@ public interface JsonMessenger extends Messenger, Runnable {
   }
 
   /**
-   * Set whether this messenger is closed
+   * Send a request.
    *
-   * @param bol the new value of closed
-   */
-  void setClosed(boolean bol);
-
-  /**
    * @see Messenger#sendRequest(Request, Consumer). This method will give you the option to change
    *     what to do in case of an exception such as a timeout
    * @param request the request to send
@@ -182,7 +177,21 @@ public interface JsonMessenger extends Messenger, Runnable {
   }
 
   /**
-   * Get the output line to send messages
+   * Set whether this messenger is closed.
+   *
+   * @param bol the new value of closed
+   */
+  void setClosed(boolean bol);
+
+  /**
+   * Set the millis of the last message sent.
+   *
+   * @param millis the millis of the last message sent
+   */
+  void setLastMessage(long millis);
+
+  /**
+   * Get the output line to send messages.
    *
    * @return the output line to send messages
    */
@@ -190,7 +199,7 @@ public interface JsonMessenger extends Messenger, Runnable {
   PrintWriter getOutput();
 
   /**
-   * Get the input line to receive messages
+   * Get the input line to receive messages.
    *
    * @return the input line
    */
@@ -198,7 +207,7 @@ public interface JsonMessenger extends Messenger, Runnable {
   BufferedReader getInput();
 
   /**
-   * Get the receptors that the messenger is capable of using
+   * Get the receptors that the messenger is capable of using.
    *
    * @return the collection of receptors
    */
@@ -206,34 +215,26 @@ public interface JsonMessenger extends Messenger, Runnable {
   Collection<JsonReceptor> getReceptors();
 
   /**
-   * Get when request may timeout
+   * Get when request may timeout.
    *
    * @return the time to timeout in millis
    */
   long getTimeout();
 
   /**
-   * Get whether this messenger is closed
+   * Get whether this messenger is closed.
    *
    * @return true if the messenger is closed
    */
   boolean isClosed();
 
   /**
-   * Get the request that this messenger has sent and the time when they were sent
+   * Get the request that this messenger has sent and the time when they were sent.
    *
    * @return the request that this messenger has sent
    */
   @NonNull
   Map<AwaitingRequest<?>, Long> getRequests();
-
-  /**
-   * Get the gson instance that this messenger may use
-   *
-   * @return the gson instance
-   */
-  @NonNull
-  Gson getGson();
 
   /** Checks if there's request that can are taking too low. if so timeout */
   default void checkTimeout() {
@@ -260,14 +261,15 @@ public interface JsonMessenger extends Messenger, Runnable {
   }
 
   /**
-   * Set the millis of the last message sent
+   * Get the gson instance that this messenger may use.
    *
-   * @param millis the millis of the last message sent
+   * @return the gson instance
    */
-  void setLastMessage(long millis);
+  @NonNull
+  Gson getGson();
 
   /**
-   * Get the socket that this messenger is on
+   * Get the socket that this messenger is on.
    *
    * @return the messenger
    */
@@ -275,7 +277,7 @@ public interface JsonMessenger extends Messenger, Runnable {
   Socket getSocket();
 
   /**
-   * Get the throwable handler that this messenger uses in case of a wrong request
+   * Get the throwable handler that this messenger uses in case of a wrong request.
    *
    * @return the throwable handler
    */
@@ -283,7 +285,7 @@ public interface JsonMessenger extends Messenger, Runnable {
   Consumer<Throwable> getThrowableHandler();
 
   /**
-   * Get the string builder that the messenger can use
+   * Get the string builder that the messenger can use.
    *
    * @return the string builder
    */
@@ -318,7 +320,7 @@ public interface JsonMessenger extends Messenger, Runnable {
   }
 
   /**
-   * Get the millis since the last message was sent
+   * Get the millis since the last message was sent.
    *
    * @return the millis of the last message sent
    */

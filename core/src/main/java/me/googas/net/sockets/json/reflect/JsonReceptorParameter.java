@@ -3,20 +3,20 @@ package me.googas.net.sockets.json.reflect;
 import lombok.NonNull;
 
 /**
- * A parameter that the receptor needs to be used
+ * A parameter that the receptor needs to be used.
  *
  * @param <T> the type of object that the parameter uses
  */
 public class JsonReceptorParameter<T> {
 
-  /** The name of the parameter */
+  /** The name of the parameter. */
   @NonNull private final String name;
 
-  /** The class that is required for the receptor to be executed */
+  /** The class that is required for the receptor to be executed. */
   @NonNull private final Class<T> clazz;
 
   /**
-   * Create the receptor parameter
+   * Create the receptor parameter.
    *
    * @param name the name of the parameter
    * @param clazz the class required of the parameter
@@ -27,7 +27,7 @@ public class JsonReceptorParameter<T> {
   }
 
   /**
-   * Get the name of the parameter
+   * Get the name of the parameter.
    *
    * @return the name of the parameter
    */
@@ -37,7 +37,7 @@ public class JsonReceptorParameter<T> {
   }
 
   /**
-   * Get the class that is required for the receptor to be executed
+   * Get the class that is required for the receptor to be executed.
    *
    * @return the class
    */

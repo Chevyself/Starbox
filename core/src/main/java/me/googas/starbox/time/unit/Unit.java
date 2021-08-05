@@ -14,21 +14,21 @@ import me.googas.starbox.time.Time;
  * java.time.temporal.ChronoUnit#ERAS}
  */
 public enum Unit implements StarboxUnit {
-  /** Unit that represents a millisecond */
+  /** Unit that represents a millisecond. */
   MILLIS('L', 1, Duration.ofMillis(1)),
-  /** Unit that represents a second */
+  /** Unit that represents a second. */
   SECONDS('S', 1000, Duration.ofSeconds(1)),
-  /** Unit that represents a minute */
+  /** Unit that represents a minute. */
   MINUTES('M', 60000, Duration.ofMinutes(1)),
-  /** Unit that represents an hour */
+  /** Unit that represents an hour. */
   HOURS('H', 3600000, Duration.ofHours(1)),
-  /** Unit that represents a day */
+  /** Unit that represents a day. */
   DAYS('D', 86400000, Duration.ofDays(1)),
-  /** Unit that represents a week */
+  /** Unit that represents a week. */
   WEEKS('W', 604800000, Duration.ofMillis(604800000)),
-  /** Unit that represents a month */
+  /** Unit that represents a month. */
   MONTH('O', 2629800000L, Duration.ofMillis(2629800000L)),
-  /** Unit that represents a year */
+  /** Unit that represents a year. */
   YEARS('Y', 31557600000L, Duration.ofMillis(31557600000L));
 
   @Getter private final char single;

@@ -7,6 +7,7 @@ import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.starbox.utility.Versions;
 
 @APIVersion(9)
+@Deprecated
 public enum WrappedAttribute {
   GENERIC_MAX_HEALTH,
   GENERIC_FOLLOW_RANGE,
@@ -28,7 +29,7 @@ public enum WrappedAttribute {
       WrappedAttribute.ATTRIBUTE.getMethod("valueOf", String.class);
 
   /**
-   * Get as the actual attribute
+   * Get as the actual attribute.
    *
    * @return the actual attribute
    */

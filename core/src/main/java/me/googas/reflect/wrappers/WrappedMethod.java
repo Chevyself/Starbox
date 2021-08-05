@@ -8,24 +8,31 @@ import java.util.StringJoiner;
 import lombok.NonNull;
 import me.googas.starbox.expressions.HandledExpression;
 
-/** This class wraps a {@link Method} to prepare */
+/** This class wraps a {@link Method} to prepare. */
 public class WrappedMethod<T> extends LangWrapper<Method> {
 
   private final Class<T> returnType;
 
+  /**
+   * Wrap a method.
+   *
+   * @param reference the method to be wrapped
+   * @param returnType the return type of the method
+   */
   protected WrappedMethod(Method reference, Class<T> returnType) {
     super(reference);
     this.returnType = returnType;
   }
 
-  public WrappedMethod() {
+  private WrappedMethod() {
     this(null, null);
   }
 
   /**
-   * Wrap a {@link Method} instance
+   * Wrap a {@link Method} instance.
    *
    * @param method the method to wrap
+   * @param <T> the type that the method returns
    * @return the wrapper of the method
    */
   @NonNull
@@ -34,6 +41,14 @@ public class WrappedMethod<T> extends LangWrapper<Method> {
     return new WrappedMethod<>(method, null);
   }
 
+  /**
+   * Wrap a {@link Method} instance which returns a type.
+   *
+   * @param method the method to wrap
+   * @param returnType the type that the method returns
+   * @param <T> the type that the method returns
+   * @return the wrap of the method
+   */
   @NonNull
   public static <T> WrappedMethod<T> of(Method method, @NonNull Class<T> returnType) {
     if (method != null) method.setAccessible(true);
@@ -41,7 +56,7 @@ public class WrappedMethod<T> extends LangWrapper<Method> {
   }
 
   /**
-   * Invoke the method
+   * Invoke the method.
    *
    * @param object the instance of the object to prepare the method if the method is static it may
    *     be null
@@ -74,7 +89,7 @@ public class WrappedMethod<T> extends LangWrapper<Method> {
   }
 
   /**
-   * Get the wrapped method
+   * Get the wrapped method.
    *
    * @return the wrapped method instance
    */

@@ -9,20 +9,20 @@ import lombok.NonNull;
 import lombok.Setter;
 import me.googas.math.MathUtils;
 
-/** A cylinder */
+/** A cylinder. */
 public class Cylinder implements Shape {
 
   private final String id;
 
-  /** The base of the cylinder */
+  /** The base of the cylinder. */
   @NonNull @Getter @Setter private Point base;
-  /** The radius of the cylinder */
+  /** The radius of the cylinder. */
   @Getter @Setter private double radius;
-  /** The height of the cylinder */
+  /** The height of the cylinder. */
   @Getter @Setter private double height;
 
   /**
-   * Create a cylinder
+   * Create a cylinder.
    *
    * @param id the id of the cylinder
    * @param base the base of the cylinder
@@ -37,7 +37,7 @@ public class Cylinder implements Shape {
   }
 
   /**
-   * Get the height + the y coordinate of the base
+   * Get the height + the y coordinate of the base.
    *
    * @return the total height
    */

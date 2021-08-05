@@ -13,7 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-/** A custom inventory is a fixed size UI */
+/** A custom inventory is a fixed size UI. */
 public class CustomInventory implements UI {
 
   public static final int EXTRA_SMALL = 9;
@@ -28,7 +28,7 @@ public class CustomInventory implements UI {
   @NonNull @Getter @Setter private Button empty;
 
   /**
-   * Create the inventory
+   * Create the inventory.
    *
    * @param size the size of the inventory
    * @param title the title to be displayed in the inventory
@@ -48,7 +48,7 @@ public class CustomInventory implements UI {
   }
 
   /**
-   * Create the inventory
+   * Create the inventory.
    *
    * @param size the size of the inventory
    * @param title the title to be displayed in the inventory
@@ -57,6 +57,14 @@ public class CustomInventory implements UI {
     this(size, title, StarboxButton.empty());
   }
 
+  /**
+   * Checks if the given size can be used in an inventor.
+   *
+   * <p>Sizes which may be used are: 9, 18, 27, 36, 46, 54
+   *
+   * @param size the size to check
+   * @return true if size can be used
+   */
   public static boolean checkSize(int size) {
     return size == CustomInventory.EXTRA_SMALL
         || size == CustomInventory.SMALL

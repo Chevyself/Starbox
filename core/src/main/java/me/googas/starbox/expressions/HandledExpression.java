@@ -17,11 +17,11 @@ import lombok.NonNull;
  */
 public class HandledExpression<O> {
 
-  /** The expression to execute in the try block */
+  /** The expression to execute in the try block. */
   @NonNull private final Expression<O> expression;
-  /** The expressions to execute in the finally block */
+  /** The expressions to execute in the finally block. */
   @NonNull private final List<RunnableExpression> nexts;
-  /** The consumer which will handle the thrown exceptions */
+  /** The consumer which will handle the thrown exceptions. */
   @NonNull private Consumer<Throwable> handle;
 
   private HandledExpression(
@@ -34,7 +34,7 @@ public class HandledExpression<O> {
   }
 
   /**
-   * Start handling an expression
+   * Start handling an expression.
    *
    * @param expression the expression to handle
    * @param <O> the type to return after the expression is handled
@@ -46,7 +46,7 @@ public class HandledExpression<O> {
   }
 
   /**
-   * Run the expression and provide the returned object from {@link Expression#run()}
+   * Run the expression and provide the returned object from {@link Expression#run()}.
    *
    * @return an {@link Optional} instance with the object from the expression or empty if an
    *     exception was thrown
@@ -72,13 +72,13 @@ public class HandledExpression<O> {
     return Optional.ofNullable(other);
   }
 
-  /** Run the expression */
+  /** Run the expression. */
   public void run() {
     this.provide();
   }
 
   /**
-   * Assign the handle for the expression
+   * Assign the handle for the expression.
    *
    * @param handle the consumer which will handle exceptions thrown by the expression
    * @return this same object
@@ -90,7 +90,7 @@ public class HandledExpression<O> {
   }
 
   /**
-   * Assign an expression to be run in the finally block
+   * Assign an expression to be run in the finally block.
    *
    * @param next the expression to be run in the finally block
    * @return this same object
@@ -102,13 +102,13 @@ public class HandledExpression<O> {
   }
 
   /**
-   * This interface represents an expression which when run may thrown an exception
+   * This interface represents an expression which when run may thrown an exception.
    *
    * @param <O> the type of object that the expression returns when run correctly
    */
   public interface Expression<O> {
     /**
-     * Run the expression
+     * Run the expression.
      *
      * @return any object
      * @throws Throwable any exception
@@ -117,10 +117,10 @@ public class HandledExpression<O> {
     O run() throws Throwable;
   }
 
-  /** This interface represents an expression that does not return an object when ran */
+  /** This interface represents an expression that does not return an object when ran. */
   public interface RunnableExpression {
     /**
-     * Run the expression
+     * Run the expression.
      *
      * @throws Throwable any exception
      */

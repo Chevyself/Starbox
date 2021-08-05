@@ -1,12 +1,17 @@
 package me.googas.io.mocks.events;
 
-import lombok.Getter;
 import lombok.NonNull;
 import me.googas.io.mocks.Person;
 
+/** Mock person event. */
 public class NewPersonEvent extends PersonEvent {
 
-    public NewPersonEvent(@NonNull Person person) {
-        super(person);
-    }
+  /**
+   * Create the event.
+   *
+   * @param person the person that participates in this event
+   */
+  public NewPersonEvent(@NonNull Person person) {
+    super(person);
+  }
 }

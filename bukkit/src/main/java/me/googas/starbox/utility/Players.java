@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+/** Utility for {@link Player}. */
 public class Players {
 
   @NonNull public static final WrappedClass PLAYER = WrappedClass.of(Player.class);
@@ -51,6 +52,12 @@ public class Players {
   public static final WrappedMethod<String> GET_LOCALE =
       Players.PLAYER.getMethod(String.class, "getLocale");
 
+  /**
+   * Get the locale language of a players game.
+   *
+   * @param player the player to get its locale language
+   * @return the locale language of a player
+   */
   @NonNull
   public static String getLocale(@NonNull Player player) {
     switch (Versions.BUKKIT) {
@@ -65,6 +72,13 @@ public class Players {
     }
   }
 
+  /**
+   * Reset a player. This will set its max health and saturation reduce its levels to 0 and remove
+   * the ability to pick up items
+   *
+   * @param player the player to reset
+   * @param gameMode the gamemode to set the player to
+   */
   public static void reset(@NonNull Player player, @NonNull GameMode gameMode) {
     Players.setHealthToMax(player);
     player.setSaturation(25);
@@ -72,14 +86,26 @@ public class Players {
     player.setTotalExperience(0);
     player.setFoodLevel(25);
     player.setLevel(0);
-    player.setCanPickupItems(false);
+    player.setCanPickupItems(false); // ?
     player.setGameMode(gameMode);
   }
 
+  /**
+   * Reset a player and set its gamemode to {@link GameMode#SURVIVAL}.
+   *
+   * @param player the player to reset
+   */
   public static void reset(@NonNull Player player) {
     Players.reset(player, GameMode.SURVIVAL);
   }
 
+  /**
+   * Get the attribute instance of a player.
+   *
+   * @param player the player to get the attribute
+   * @param attribute the attribute to get it instance
+   * @return the attribute instance if bukkit version is above 8 else null
+   */
   public static WrappedAttributeInstance getAttribute(
       @NonNull Player player, @NonNull WrappedAttribute attribute) {
     if (Versions.BUKKIT == 8) return null;
@@ -91,6 +117,12 @@ public class Players {
     return null;
   }
 
+  /**
+   * Get the item in hand of a player.
+   *
+   * @param player the player to get its item in hand
+   * @return the item in hand of the player
+   */
   @NonNull
   public static Optional<ItemStack> getItemInMainHand(@NonNull Player player) {
     if (Versions.BUKKIT < 9) {
@@ -100,6 +132,11 @@ public class Players {
     }
   }
 
+  /**
+   * Set the health of a player to the maximum.
+   *
+   * @param player the player to set the health to maximum
+   */
   public static void setHealthToMax(@NonNull Player player) {
     double maxHealth = 20;
     if (Versions.BUKKIT < 9) {
@@ -114,6 +151,11 @@ public class Players {
     player.setHealth(maxHealth);
   }
 
+  /**
+   * Get the names of all the players online.
+   *
+   * @return the names of the online players.
+   */
   @NonNull
   public static List<String> getOnlinePlayersNames() {
     List<String> names = new ArrayList<>();

@@ -12,13 +12,19 @@ import me.googas.scheduler.Task;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class StarboxScheduler implements Scheduler {
+/** A Bukkit implementation for {@link Scheduler}. */
+public class StarboxBukkitScheduler implements Scheduler {
 
   @NonNull private final Plugin plugin;
 
   @NonNull private final Set<Task> tasks = new HashSet<>();
 
-  public StarboxScheduler(@NonNull Plugin plugin) {
+  /**
+   * Create the scheduler.
+   *
+   * @param plugin the plugin to register the tasks
+   */
+  public StarboxBukkitScheduler(@NonNull Plugin plugin) {
     this.plugin = plugin;
   }
 
@@ -34,7 +40,7 @@ public class StarboxScheduler implements Scheduler {
       public void run() {
         if (task.isCancelled()) {
           this.cancel();
-          StarboxScheduler.this.tasks.remove(task);
+          StarboxBukkitScheduler.this.tasks.remove(task);
           return;
         }
         task.run();
@@ -54,7 +60,7 @@ public class StarboxScheduler implements Scheduler {
       public void run() {
         if (task.isCancelled()) {
           this.cancel();
-          StarboxScheduler.this.tasks.remove(task);
+          StarboxBukkitScheduler.this.tasks.remove(task);
           return;
         }
         task.run();

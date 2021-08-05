@@ -1,6 +1,6 @@
 package me.googas.net.sockets.json.exception;
 
-/** Thrown when a given argument is illegal */
+/** Thrown when a given argument is illegal. */
 public class JsonIllegalArgumentException extends JsonExternalCommunicationException {
 
   /**

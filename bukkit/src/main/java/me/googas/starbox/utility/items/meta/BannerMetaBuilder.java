@@ -10,10 +10,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+/** Builds {@link BannerMeta}. */
 public class BannerMetaBuilder extends ItemMetaBuilder {
 
   @NonNull @Delegate private final List<Pattern> patterns = new ArrayList<>();
 
+  /**
+   * Create the builder.
+   *
+   * @param itemBuilder the item builder to which this meta will be built
+   */
   public BannerMetaBuilder(@NonNull ItemBuilder itemBuilder) {
     super(itemBuilder);
   }

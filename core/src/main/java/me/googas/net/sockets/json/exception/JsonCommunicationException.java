@@ -3,7 +3,7 @@ package me.googas.net.sockets.json.exception;
 import java.security.PrivilegedActionException;
 import lombok.NonNull;
 
-/** Thrown when there's been a communication error between json messengers */
+/** Thrown when there's been a communication error between json messengers. */
 public class JsonCommunicationException extends Exception {
 
   /**
@@ -56,7 +56,7 @@ public class JsonCommunicationException extends Exception {
   }
 
   /**
-   * Get this exception as an error
+   * Get this exception as an error.
    *
    * @return the exception as an error
    */

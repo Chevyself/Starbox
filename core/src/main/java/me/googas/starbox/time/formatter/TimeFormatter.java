@@ -15,7 +15,7 @@ import me.googas.starbox.time.Time;
 public interface TimeFormatter {
 
   /**
-   * Format the given time into a readable {@link String}
+   * Format the given time into a readable {@link String}.
    *
    * @param time the instance of time to convert
    * @return the formatted string

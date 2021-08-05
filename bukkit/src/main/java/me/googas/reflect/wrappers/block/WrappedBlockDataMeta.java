@@ -5,6 +5,7 @@ import me.googas.reflect.APIVersion;
 import org.bukkit.Material;
 
 @APIVersion(14)
+@Deprecated
 public class WrappedBlockDataMeta {
 
   private WrappedBlockData data;

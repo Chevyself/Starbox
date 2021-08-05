@@ -4,11 +4,11 @@ import java.util.Collection;
 import java.util.Optional;
 import lombok.NonNull;
 
-/** This object loads addons into the bot. It also can provide them */
+/** This object loads addons into the bot. It also can provide them. */
 public interface AddonLoader {
 
   /**
-   * Load new addons
+   * Load new addons.
    *
    * @return the collection of the new addons loaded
    */
@@ -16,7 +16,7 @@ public interface AddonLoader {
   Collection<Addon> load();
 
   /**
-   * Unload all the loaded addons
+   * Unload all the loaded addons.
    *
    * @return the collection of the addons that were unloaded
    */
@@ -24,7 +24,7 @@ public interface AddonLoader {
   Collection<Addon> unload();
 
   /**
-   * Unload the given addon
+   * Unload the given addon.
    *
    * @param addon the addon to unload
    * @return the same addon instance
@@ -40,14 +40,14 @@ public interface AddonLoader {
     return addon;
   }
 
-  /** Reloads addons */
+  /** Reloads addons. */
   default void reload() {
     this.unload();
     this.load();
   }
 
   /**
-   * Get an addon by name
+   * Get an addon by name.
    *
    * @param name the name to match
    * @return the addon if the name matches
@@ -60,7 +60,7 @@ public interface AddonLoader {
   }
 
   /**
-   * Get the collection of loaded addons
+   * Get the collection of loaded addons.
    *
    * @return the collection of addons that have been loaded
    */

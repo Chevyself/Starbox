@@ -20,6 +20,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+/** Builds {@link ItemMeta}. */
 public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
 
   @NonNull private static final WrappedClass ITEM_META = WrappedClass.of(ItemMeta.class);
@@ -56,6 +57,11 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
   @Getter private WrappedAttributes attributes;
   @Getter private boolean unbreakable;
 
+  /**
+   * Create the builder.
+   *
+   * @param builder the item builder to which this meta will be built
+   */
   public ItemMetaBuilder(@NonNull ItemBuilder builder) {
     this.builder = builder;
     ItemMetaBuilder metaBuilder = this.builder.getMetaBuilder();
@@ -66,32 +72,67 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
     }
   }
 
+  /**
+   * Build this meta and the item stack.
+   *
+   * @return the item stack with this meta
+   */
   public @NonNull ItemStack buildAll() {
     return this.builder.build();
   }
 
+  /**
+   * Build this meta and the item stack as a {@link Button}.
+   *
+   * @param listener the listener of the button
+   * @return the new button
+   */
   public @NonNull Button buildAll(@NonNull ButtonListener listener) {
     return new StarboxButton(listener, this.buildAll());
   }
 
+  /**
+   * Set the name of the item.
+   *
+   * @param name the new name
+   * @return this same instance
+   */
   @NonNull
   public ItemMetaBuilder setName(String name) {
     this.name = name;
     return this;
   }
 
+  /**
+   * Set the lore of the item.
+   *
+   * @param lore the new lore
+   * @return this same instance
+   */
   @NonNull
   public ItemMetaBuilder setLore(String lore) {
     this.lore = lore;
     return this;
   }
 
+  /**
+   * Set the attributes of this item.
+   *
+   * @param attributes the new attributes of this item
+   * @return this same instance
+   */
   @NonNull
   public ItemMetaBuilder setAttributes(WrappedAttributes attributes) {
     this.attributes = attributes;
     return this;
   }
 
+  /**
+   * Set whether this item is unbreakable.
+   *
+   * @param unbreakable the new value
+   * @return this same instance
+   */
   @NonNull
   public ItemMetaBuilder setUnbreakable(boolean unbreakable) {
     this.unbreakable = unbreakable;
@@ -123,6 +164,10 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
     return meta;
   }
 
+  /**
+   * This must be replaced by a builder for {@link org.bukkit.inventory.meta.EnchantmentStorageMeta}
+   */
+  @Deprecated
   public static class EnchantmentsBuilder extends MapBuilder<Enchantment, Integer> {
 
     @NonNull @Getter private final ItemMetaBuilder meta;

@@ -34,9 +34,9 @@ import me.googas.starbox.expressions.HandledExpression;
  */
 public class StarboxFile {
 
-  /** The directory where the program is running */
+  /** The directory where the program is running. */
   @NonNull public static final String DIR_PATH = System.getProperty("user.dir");
-  /** The directory where the program is running as a {@link StarboxFile} */
+  /** The directory where the program is running as a {@link StarboxFile}. */
   @NonNull public static final StarboxFile DIR = new StarboxFile(StarboxFile.DIR_PATH);
 
   @NonNull
@@ -58,6 +58,11 @@ public class StarboxFile {
     this(new File(pathname));
   }
 
+  /**
+   * Create a new StarboxFile instance copying from another instance.
+   *
+   * @param file the file to be copied.
+   */
   public StarboxFile(@NonNull StarboxFile file) {
     this(file.getFile());
   }
@@ -68,7 +73,7 @@ public class StarboxFile {
 
   /**
    * Create a new StarboxFile instance from the path of the parent and child as {@link
-   * #StarboxFile(String)} for both
+   * #StarboxFile(String)} for both.
    *
    * @param parent the path string of the parent
    * @param child the path string of the child
@@ -78,7 +83,7 @@ public class StarboxFile {
   }
 
   /**
-   * Create a new StarboxFile instance with an instance of a parent file and the path of the child
+   * Create a new StarboxFile instance with an instance of a parent file and the path of the child.
    *
    * @param parent the instance of StarboxFile of the parent
    * @param child the path string of the child
@@ -88,11 +93,11 @@ public class StarboxFile {
   }
 
   /**
-   * Prepare a {@link FileWriter} this will check that the file exists else it will be created
+   * Prepare a {@link FileWriter} this will check that the file exists else it will be created.
    *
    * @param append whether to append the strings appended to the writer or empty the file to write
    * @return the {@link FileWriter}
-   * @throws IllegalStateException in case that the file could not be created
+   * @throws IOException if the file cannot be created
    */
   @NonNull
   public FileWriter getPreparedWriter(boolean append) throws IOException {
@@ -111,7 +116,7 @@ public class StarboxFile {
   }
 
   /**
-   * Reads the file using the given {@link FileContext}
+   * Reads the file using the given {@link FileContext}.
    *
    * <p>// TODO example
    *
@@ -145,7 +150,7 @@ public class StarboxFile {
 
   /**
    * Reads the file using the given {@link FileContext} and if the read object is null it will copy
-   * the {@link URL} resource and read it to give the object
+   * the {@link URL} resource and read it to give the object.
    *
    * @param context the context to read the file and the resource stream with
    * @param clazz the clazz of the object that the {@link FileContext} must return upon read
@@ -187,12 +192,13 @@ public class StarboxFile {
   }
 
   /**
-   * Reads the file using the given {@link FileContext} providing its default type
+   * Reads the file using the given {@link FileContext} providing its default type.
    *
    * <p>// TODO example
    *
    * @param context the context to read the file with
    * @return an optional wrapping the object or null if it could not be read
+   * @param <O> the type of object that the context reads
    */
   @NonNull
   public <O> HandledExpression<O> read(@NonNull FileContext<O> context) {
@@ -220,6 +226,7 @@ public class StarboxFile {
    * @param context the context to read the file with
    * @param resource the resource to copy the default object from
    * @return the object from the file or the copy from the resource
+   * @param <O> the type of object that the context reads
    */
   @NonNull
   public <O> O readOr(@NonNull FileContext<O> context, @NonNull URL resource) {
@@ -250,7 +257,7 @@ public class StarboxFile {
   }
 
   /**
-   * Writes the file using the given {@link FileContext}
+   * Writes the file using the given {@link FileContext}.
    *
    * <p>// TODO example
    *
@@ -265,7 +272,7 @@ public class StarboxFile {
   }
 
   /**
-   * Copies the parameter {@link URL} to the file
+   * Copies the parameter {@link URL} to the file.
    *
    * @param resource the resource to copy into the file
    * @return whether it was copied successfully false otherwise
@@ -292,20 +299,37 @@ public class StarboxFile {
     return starboxFiles;
   }
 
+  /**
+   * List the files inside this if it is a directory.
+   *
+   * @return the files inside this directory or null if this is not a directory
+   */
   public StarboxFile[] listFiles() {
     return this.listFiles(this.file.listFiles());
   }
 
+  /**
+   * List the files inside this if it is a directory.
+   *
+   * @param filter a filter to filter out files
+   * @return the files inside this directory or null if this is not a directory
+   */
   public StarboxFile[] listFiles(FileFilter filter) {
     return this.listFiles(this.file.listFiles(filter));
   }
 
+  /**
+   * List the files inside this if it is a directory.
+   *
+   * @param filter a name filter to filter out files
+   * @return the files inside this directory or null if this is not a directory
+   */
   public StarboxFile[] listFiles(FilenameFilter filter) {
     return this.listFiles(this.file.listFiles(filter));
   }
 
   /**
-   * Copies the bytes of another file to this one
+   * Copies the bytes of another file to this one.
    *
    * @param source the source file to copy the bytes from
    * @return a {@link HandledExpression} that returns whether the source has been copied and handles
@@ -343,8 +367,8 @@ public class StarboxFile {
   }
 
   /**
-   * Copies a complete directory to this one and each file using {@link #copy(StarboxFile)} this
-   * method is recursive and copies every directory inside the source directory
+   * Copies a complete directory to this one and each file. Using {@link #copy(StarboxFile)} this
+   * method is recursive and copies every directory inside the source directory.
    *
    * @param source the source directory to copy from
    * @return this same instance
@@ -380,9 +404,10 @@ public class StarboxFile {
   }
 
   /**
-   * Deletes this file and if it is a directory it will delete everything inside of it
+   * Deletes this file and if it is a directory it will delete everything inside of it.
    *
    * @return whether the file or directory has been deleted
+   * @throws IOException if a file or more cannot be deleted
    */
   public boolean deleteAll() throws IOException {
     StarboxFile[] files = this.listFiles();
@@ -415,7 +440,7 @@ public class StarboxFile {
 
   /**
    * Get a {@link BufferedReader} for the file this will check that the file exists else {@link
-   * IllegalStateException} will be thrown
+   * IllegalStateException} will be thrown.
    *
    * @return the {@link BufferedReader} for the file
    * @throws FileNotFoundException if the file does not exists, or it is a directory or for any

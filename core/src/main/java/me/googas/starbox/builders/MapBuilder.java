@@ -4,13 +4,13 @@ import java.util.Map;
 import java.util.StringJoiner;
 import lombok.NonNull;
 
-/** Helps with single line {@link Map} building */
+/** Helps with single line {@link Map} building. */
 public class MapBuilder<K, V> implements Builder<Map<K, V>> {
 
   @NonNull private final Map<K, V> map;
 
   /**
-   * Create a map builder
+   * Create a map builder.
    *
    * @param map the map that is being built
    */
@@ -20,7 +20,7 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
   }
 
   /**
-   * Appends a property to the map
+   * Appends a property to the map.
    *
    * @param key the key of hte property
    * @param value the value associated with the key
@@ -33,7 +33,7 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
   }
 
   /**
-   * Appends another map to the builder
+   * Appends another map to the builder.
    *
    * @param map mappings to be stored in this map
    * @return this same instance

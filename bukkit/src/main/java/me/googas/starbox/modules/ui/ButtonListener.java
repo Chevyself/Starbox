@@ -4,7 +4,7 @@ import lombok.NonNull;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 /**
- * This makes the button work and is called by {@link
+ * This makes the button work and get called. by {@link
  * UIModule#onInventoryClick(InventoryClickEvent)} when it is found inside a {@link UI}
  */
 public interface ButtonListener {

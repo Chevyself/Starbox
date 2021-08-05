@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+/** Builds {@link BookMeta}. */
 public class BookMetaBuilder extends ItemMetaBuilder {
 
   @NonNull
@@ -30,16 +31,33 @@ public class BookMetaBuilder extends ItemMetaBuilder {
   @NonNull @Getter
   private WrappedBookMetaGeneration wrappedGeneration = WrappedBookMetaGeneration.ORIGINAL;
 
+  /**
+   * Create the builder.
+   *
+   * @param itemBuilder the item builder to which this meta will be built
+   */
   public BookMetaBuilder(@NonNull ItemBuilder itemBuilder) {
     super(itemBuilder);
   }
 
+  /**
+   * Set the author.
+   *
+   * @param author the author of the book
+   * @return this same instance
+   */
   @NonNull
   public BookMetaBuilder setAuthor(String author) {
     this.author = author;
     return this;
   }
 
+  /**
+   * Set the generation of the book.
+   *
+   * @param wrappedGeneration the generation of the book
+   * @return this same instance
+   */
   @NonNull
   public BookMetaBuilder setWrappedGeneration(WrappedBookMetaGeneration wrappedGeneration) {
     this.wrappedGeneration = wrappedGeneration;

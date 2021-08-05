@@ -10,17 +10,17 @@ import lombok.NonNull;
 import lombok.Setter;
 import me.googas.math.MathUtils;
 
-/** A box */
+/** A box. */
 public class Box implements Shape {
 
   private final String id;
-  /** The minimum position of the cube */
+  /** The minimum position of the cube. */
   @NonNull @Setter private Point minimum;
-  /** The maximum position of the cube */
+  /** The maximum position of the cube. */
   @NonNull @Setter private Point maximum;
 
   /**
-   * Create the box
+   * Create the box.
    *
    * @param minimum the minimum position of the box
    * @param maximum the maximum position of the box
@@ -41,7 +41,7 @@ public class Box implements Shape {
   }
 
   /**
-   * Get the height of the box
+   * Get the height of the box.
    *
    * @return the height
    */
@@ -50,7 +50,7 @@ public class Box implements Shape {
   }
 
   /**
-   * Get the width of the box
+   * Get the width of the box.
    *
    * @return the width
    */
@@ -59,7 +59,7 @@ public class Box implements Shape {
   }
 
   /**
-   * Get the length of the box
+   * Get the length of the box.
    *
    * @return the length
    */

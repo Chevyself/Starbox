@@ -17,6 +17,7 @@ import me.googas.starbox.addons.AddonLoader;
 import me.googas.starbox.addons.exceptions.AddonCouldNotBeLoadedException;
 import me.googas.starbox.builders.Builder;
 
+/** Loader for {@link Addon} made in java. */
 public class JavaAddonLoader implements AddonLoader {
 
   @NonNull @Getter private final StarboxFile directory;
@@ -66,7 +67,24 @@ public class JavaAddonLoader implements AddonLoader {
   }
 
   /**
-   * Initialize the addon that is supposed too be inside of the parameter file
+   * Create a builder for a loader.
+   *
+   * @param directory the directory in which it will load addons
+   * @return the builder for the loader
+   * @throws IOException if the directory cannot be created or it is not a directory
+   */
+  @NonNull
+  public static JavaAddonLoader.JavaAddonLoaderBuilder at(@NonNull StarboxFile directory)
+      throws IOException {
+    if (!directory.exists() && !directory.mkdir())
+      throw new IOException(directory.getName() + " could not be created!");
+    if (!directory.isDirectory())
+      throw new IllegalArgumentException(directory + " is not a directory!");
+    return new JavaAddonLoaderBuilder(directory);
+  }
+
+  /**
+   * Initialize the addon that is supposed too be inside of the parameter file.
    *
    * @param file the file which must be a jar containing the addon
    * @return the addon if it was initialized null otherwise
@@ -106,23 +124,6 @@ public class JavaAddonLoader implements AddonLoader {
     }
   }
 
-  /**
-   * Get the jar files inside {@link #directory}
-   *
-   * @return the jar files inside a list
-   */
-  @NonNull
-  private List<StarboxFile> getJars() {
-    List<StarboxFile> jars = new ArrayList<>();
-    StarboxFile[] files = this.directory.listFiles();
-    if (files != null) {
-      for (StarboxFile file : files) {
-        if (file.getName().endsWith(".jar")) jars.add(file);
-      }
-    }
-    return jars;
-  }
-
   @NonNull
   public Collection<Addon> load() {
     List<Addon> loaded = new ArrayList<>();
@@ -152,48 +153,83 @@ public class JavaAddonLoader implements AddonLoader {
     return unloaded;
   }
 
+  /**
+   * Get the jar files inside {@link #directory}.
+   *
+   * @return the jar files inside a list
+   */
+  @NonNull
+  private List<StarboxFile> getJars() {
+    List<StarboxFile> jars = new ArrayList<>();
+    StarboxFile[] files = this.directory.listFiles();
+    if (files != null) {
+      for (StarboxFile file : files) {
+        if (file.getName().endsWith(".jar")) jars.add(file);
+      }
+    }
+    return jars;
+  }
+
+  /** Supply loaded addons with a logger. */
   public interface LoggerSupplier {
+    /**
+     * Create the logger for an addon.
+     *
+     * @param info the addon to create the logger
+     * @return the logger for the addon
+     */
     @NonNull
     Logger create(@NonNull AddonInformation info);
   }
 
-  @NonNull
-  public static LoaderBuilder at(@NonNull StarboxFile directory) throws IOException {
-    if (!directory.exists() && !directory.mkdir())
-      throw new IOException(directory.getName() + " could not be created!");
-    if (!directory.isDirectory())
-      throw new IllegalArgumentException(directory + " is not a directory!");
-    return new LoaderBuilder(directory);
-  }
-
-  public static class LoaderBuilder implements Builder<JavaAddonLoader> {
+  /** Builds {@link JavaAddonLoader}. */
+  public static class JavaAddonLoaderBuilder implements Builder<JavaAddonLoader> {
 
     @NonNull @Getter private final StarboxFile directory;
     @NonNull private LoggerSupplier loggerSupplier;
     @NonNull private Consumer<Throwable> throwableHandler;
     @NonNull private Consumer<AddonCouldNotBeLoadedException> notLoadedConsumer;
 
-    private LoaderBuilder(@NonNull StarboxFile directory) {
+    private JavaAddonLoaderBuilder(@NonNull StarboxFile directory) {
       this.directory = directory;
       this.loggerSupplier = info -> Logger.getLogger(info.getName());
       this.throwableHandler = Throwable::printStackTrace;
       this.notLoadedConsumer = Throwable::printStackTrace;
     }
 
+    /**
+     * Set the logger supplier.
+     *
+     * @param loggerSupplier the new logger supplier
+     * @return this same instance
+     */
     @NonNull
-    public LoaderBuilder supply(@NonNull LoggerSupplier loggerSupplier) {
+    public JavaAddonLoader.JavaAddonLoaderBuilder supply(@NonNull LoggerSupplier loggerSupplier) {
       this.loggerSupplier = loggerSupplier;
       return this;
     }
 
+    /**
+     * Set the handler for exceptions thrown by loading or unloading addons.
+     *
+     * @param throwableHandler the new handler
+     * @return this same instance
+     */
     @NonNull
-    public LoaderBuilder handle(@NonNull Consumer<Throwable> throwableHandler) {
+    public JavaAddonLoader.JavaAddonLoaderBuilder handle(
+        @NonNull Consumer<Throwable> throwableHandler) {
       this.throwableHandler = throwableHandler;
       return this;
     }
 
+    /**
+     * Set the handler for {@link AddonCouldNotBeLoadedException}.
+     *
+     * @param notLoadedConsumer the new handler
+     * @return this same instance
+     */
     @NonNull
-    public LoaderBuilder handleNotLoaded(
+    public JavaAddonLoader.JavaAddonLoaderBuilder handleNotLoaded(
         @NonNull Consumer<AddonCouldNotBeLoadedException> notLoadedConsumer) {
       this.notLoadedConsumer = notLoadedConsumer;
       return this;

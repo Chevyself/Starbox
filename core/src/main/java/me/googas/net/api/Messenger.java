@@ -7,20 +7,20 @@ import me.googas.net.api.exception.MessengerListenFailException;
 import me.googas.net.api.messages.Message;
 import me.googas.net.api.messages.Request;
 
-/** This object is used to give and receive {@link Message} */
+/** This object is used to give and receive {@link Message}. */
 public interface Messenger {
   /**
-   * Listens for incoming messages
+   * Listens for incoming messages.
    *
    * @throws MessengerListenFailException if the messenger fails to listen to new messages
    */
   void listen() throws MessengerListenFailException;
 
-  /** Closes the messenger */
+  /** Closes the messenger. */
   void close();
 
   /**
-   * Sends a request to this messenger asynchronously
+   * Sends a request to this messenger asynchronously.
    *
    * @param request the request that was send and must be processed by this messenger
    * @param consumer the consumer to provide the object when the request gets a response
@@ -29,7 +29,7 @@ public interface Messenger {
   <T> void sendRequest(@NonNull Request<T> request, @NonNull Consumer<Optional<T>> consumer);
 
   /**
-   * Sends a request to get the requested object
+   * Sends a request to get the requested object.
    *
    * @param request the request that was send and must provided the object
    * @param <T> the type of the object

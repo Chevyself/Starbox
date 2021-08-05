@@ -3,14 +3,14 @@ package me.googas.net.api;
 import lombok.Getter;
 import lombok.NonNull;
 
-/** This object represents an error */
+/** This object represents an error. */
 public class Error {
 
-  /** The description on what caused the error */
+  /** The description on what caused the error. */
   @NonNull @Getter private final String cause;
 
   /**
-   * Create the error
+   * Create the error.
    *
    * @param cause the cause of the error
    */

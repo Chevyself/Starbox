@@ -30,6 +30,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 
+/** Tests for the package 'me.googas.net' */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class NetTest {
 
@@ -78,7 +79,7 @@ public class NetTest {
   }
 
   @AfterAll
-  static void close() throws IOException, InterruptedException, MessengerListenFailException {
+  static void close() throws IOException {
     NetTest.client.close();
     NetTest.server.close();
     Assertions.assertTrue(NetTest.client.isClosed());
@@ -151,13 +152,26 @@ public class NetTest {
                                 "Async: Ping from server to %s is: %dms", client, ping))));
   }
 
+  /** Testing mock receptors. */
   public static class TestingReceptors {
 
+    /**
+     * Get a person.
+     *
+     * @param id the id of the person
+     * @return the person matching the id
+     */
     @Receptor("person")
     public Person person(@ParamName("id") int id) {
       return NetTest.mocks.getPerson(id).orElse(null);
     }
 
+    /**
+     * Check the ping between the two messengers.
+     *
+     * @param init the initial {@link System#currentTimeMillis()}
+     * @return the {@link System#currentTimeMillis()} - initial
+     */
     @Receptor("ping")
     public int ping(@ParamName("init") long init) {
       return (int) (System.currentTimeMillis() - init);

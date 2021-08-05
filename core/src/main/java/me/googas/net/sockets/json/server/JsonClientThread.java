@@ -30,40 +30,40 @@ import me.googas.net.sockets.json.ReceivedJsonRequest;
  */
 public class JsonClientThread extends Thread implements JsonMessenger {
 
-  /** The builder to build json strings */
+  /** The builder to build json strings. */
   @NonNull @Getter private final StringBuilder builder = new StringBuilder();
 
-  /** The socket that is connected to the client */
+  /** The socket that is connected to the client. */
   @NonNull @Getter private final Socket socket;
 
-  /** The line that is being an input into the server */
+  /** The line that is being an input into the server. */
   @NonNull @Getter private final BufferedReader input;
 
-  /** The output used to send requests to the client */
+  /** The output used to send requests to the client. */
   @NonNull @Getter private final PrintWriter output;
 
-  /** The server to which this client is connected to */
+  /** The server to which this client is connected to. */
   @NonNull @Getter private final JsonSocketServer server;
 
-  /** The request that are waiting for a response */
+  /** The request that are waiting for a response. */
   @NonNull @Getter private final Map<AwaitingRequest<?>, Long> requests = new HashMap<>();
 
-  /** The time to timeout requests */
+  /** The time to timeout requests. */
   @Getter private final long timeout;
 
-  /** Whether the messenger is closed */
+  /** Whether the messenger is closed. */
   @Getter @Setter private boolean closed;
 
-  /** The millis of when the last message was sent */
+  /** The millis of when the last message was sent. */
   @Getter @Setter private long lastMessage;
 
   /**
-   * Create the client thread
+   * Create the client thread.
    *
    * @param socket the socket that connected to the server
    * @param server the server to which this client is connected to
    * @param timeout the time to timeout requests
-   * @throws IOException in case the streams are already closed
+   * @throws IOException in case the streams are already closed or cannot be opened
    */
   public JsonClientThread(Socket socket, @NonNull JsonSocketServer server, long timeout)
       throws IOException {

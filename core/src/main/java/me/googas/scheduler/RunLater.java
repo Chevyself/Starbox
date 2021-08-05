@@ -1,6 +1,6 @@
 package me.googas.scheduler;
 
-/** This task is scheduled to run later */
+/** This task is scheduled to run later. */
 public interface RunLater extends Task {
 
   @Override

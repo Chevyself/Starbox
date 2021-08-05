@@ -20,7 +20,7 @@ public class ReflectEventListener implements EventListener {
 
   /**
    * Create an event listener instance which can be used inside the {@link ListenerManager} to be
-   * called
+   * called.
    *
    * @param listener the object used to prepare the method
    * @param method the method that is listening to the event

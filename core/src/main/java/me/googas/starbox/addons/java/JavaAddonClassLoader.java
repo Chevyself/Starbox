@@ -9,12 +9,12 @@ import java.net.URLClassLoader;
 import lombok.NonNull;
 import me.googas.io.StarboxFile;
 
-/** The class loader for addons */
+/** The class loader for addons. */
 public class JavaAddonClassLoader extends URLClassLoader {
 
   @NonNull private final StarboxFile addonFile;
   /**
-   * Create the class loader for addons
+   * Create the class loader for addons.
    *
    * @param addonFile the jar file of the addon
    * @param parent the parent class loader for the addon
@@ -27,7 +27,7 @@ public class JavaAddonClassLoader extends URLClassLoader {
   }
 
   /**
-   * Get the addon information
+   * Get the addon information.
    *
    * @return the addon information
    * @throws IOException if the reader could not be closed or {@link FileNotFoundException} if the

@@ -9,30 +9,30 @@ import me.googas.starbox.events.ListenerManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+/** Contains tests for the 'me.googas.starbox.events' package. */
 public class EventsTest {
 
-    @NonNull
-    private static final Person mock = new Person(0, "Foo", "Bar", "a@a.com", 18);
-    @NonNull
-    private static final ListenerManager manager = new ListenerManager();
+  @NonNull private static final Person mock = new Person(0, "Foo", "Bar", "a@a.com", 18);
+  @NonNull private static final ListenerManager manager = new ListenerManager();
 
-    @BeforeAll
-    static void beforeAll() {
-        EventsTest.manager.parseAndRegister(new Listeners());
-        EventsTest.manager.register(event -> {
+  @BeforeAll
+  static void beforeAll() {
+    EventsTest.manager.parseAndRegister(new Listeners());
+    EventsTest.manager.register(
+        event -> {
           if (event instanceof PersonMessageEvent) {
-              // Lets not allow goodbyes
-              if (((PersonMessageEvent) event).getMessage().contains("bye")) {
-                  ((PersonMessageEvent) event).setCancelled(true);
-              }
+            // Lets not allow goodbyes
+            if (((PersonMessageEvent) event).getMessage().contains("bye")) {
+              ((PersonMessageEvent) event).setCancelled(true);
+            }
           }
         });
-    }
+  }
 
-    @Test
-    void call() {
-        EventsTest.manager.call(new NewPersonEvent(EventsTest.mock));
-        EventsTest.manager.call(new PersonMessageEvent(EventsTest.mock, "Hello world!"));
-        EventsTest.manager.call(new PersonMessageEvent(EventsTest.mock, "Goodbye world!"));
-    }
+  @Test
+  void call() {
+    EventsTest.manager.call(new NewPersonEvent(EventsTest.mock));
+    EventsTest.manager.call(new PersonMessageEvent(EventsTest.mock, "Hello world!"));
+    EventsTest.manager.call(new PersonMessageEvent(EventsTest.mock, "Goodbye world!"));
+  }
 }

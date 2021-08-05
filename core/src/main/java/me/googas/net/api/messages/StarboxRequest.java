@@ -7,7 +7,7 @@ import lombok.NonNull;
 public interface StarboxRequest extends Message {
 
   /**
-   * Get the method of the receptor this request is trying to prepare
+   * Get the method of the receptor this request is trying to prepare.
    *
    * @return the method as a string
    */
@@ -15,7 +15,7 @@ public interface StarboxRequest extends Message {
   String getMethod();
 
   /**
-   * Get the parameters that the receptor needs to give a response
+   * Get the parameters that the receptor needs to give a response.
    *
    * @return the parameters
    */

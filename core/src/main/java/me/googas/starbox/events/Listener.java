@@ -13,8 +13,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Listener {
   /**
-   * Get the priority for the event to be called in the listener
+   * Get the priority for the event to be called in the listener.
    *
+   * @see EventListener#getPriority()
    * @return the priority for the event to be called in the listener
    */
   int priority() default 1;

@@ -28,7 +28,7 @@ import me.googas.starbox.time.unit.Unit;
  */
 public class Time implements TemporalAmount {
 
-  /** A constant for a duration of 0 milliseconds */
+  /** A constant for a duration of 0 milliseconds. */
   @NonNull public static final Time ZERO = new Time(0, Unit.MILLIS);
 
   @Getter private final double value;
@@ -182,7 +182,7 @@ public class Time implements TemporalAmount {
   }
 
   /**
-   * Duplicate this same instance
+   * Duplicate this same instance.
    *
    * @return the duplicated instance of this time
    */
@@ -192,7 +192,7 @@ public class Time implements TemporalAmount {
   }
 
   /**
-   * Get the value of this amount of time in millis so: 10 seconds = 10000 millis
+   * Get the value of this amount of time in millis so: 10 seconds = 10000 millis.
    *
    * @return the amount of time in millis
    */
@@ -201,7 +201,7 @@ public class Time implements TemporalAmount {
   }
 
   /**
-   * Same as {@link #toMillis()} but the result will be rounded using {@link Math#round(double)}
+   * Same as {@link #toMillis()} but the result will be rounded using {@link Math#round(double)}.
    *
    * @see Math#round(double)
    * @return the result from {@link #toMillis()} rounded
@@ -230,7 +230,7 @@ public class Time implements TemporalAmount {
   }
 
   /**
-   * Format this time in the given formatter
+   * Format this time in the given formatter.
    *
    * @see me.googas.starbox.time.formatter.HhMmSsFormatter
    * @see TimeFormatter#format(Time)
@@ -243,7 +243,7 @@ public class Time implements TemporalAmount {
   }
 
   /**
-   * Get this amount of time in a different {@link StarboxUnit}
+   * Get this amount of time in a different {@link StarboxUnit}.
    *
    * @param unit the unit to convert the time to
    * @return a new time instance with the new unit
@@ -253,6 +253,11 @@ public class Time implements TemporalAmount {
     return new Time(this.toMillis() / unit.getMillis(), unit);
   }
 
+  /**
+   * Get the value of this time and {@link Math#round(double)}.
+   *
+   * @return the value rounded
+   */
   public long getValueRound() {
     return Math.round(this.value);
   }

@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.NonNull;
 
-/** Static utilities for {@link String} */
+/** Static utilities for {@link String}. */
 public class Strings {
 
   /**
@@ -101,7 +101,7 @@ public class Strings {
   }
 
   /**
-   * Copy the matching strings from a list to a new one:
+   * Copy the matching strings from a list to a new one.
    *
    * <p>If you have the next string to match: "Hello" and your list contains the elements:
    *
@@ -147,7 +147,7 @@ public class Strings {
   }
 
   /**
-   * Builds the aliases usage from an array of Strings
+   * Builds the aliases usage from an array of Strings.
    *
    * @see #buildUsageAliases(Collection)
    * @param aliases the array of aliases for the string
@@ -159,7 +159,7 @@ public class Strings {
   }
 
   /**
-   * Divides the given string to different strings of the given length
+   * Divides the given string to different strings of the given length.
    *
    * @param string the string to divide
    * @param length the length that each string must be
@@ -177,6 +177,14 @@ public class Strings {
     return split;
   }
 
+  /**
+   * Get the similarity between two string.
+   *
+   * @param longer the first string
+   * @param shorter the second string
+   * @return the similarity between the two strings 0f being no similarity and 1f being that the two
+   *     strings are the same
+   */
   public static float similarity(@NonNull String longer, @NonNull String shorter) {
     String temp = longer;
     if (longer.length() < shorter.length()) {
@@ -188,6 +196,15 @@ public class Strings {
     return (longerLength - Strings.editDistance(longer, shorter)) / longerLength;
   }
 
+  /**
+   * Get the similarity between two strings ignoring casing.
+   *
+   * @see #similarity(String, String)
+   * @param longer the first string
+   * @param shorter the second string
+   * @return the similarity between the two strings 0f being no similarity and 1f being that the two
+   *     strings are the same
+   */
   public static float similarityIgnoreCase(@NonNull String longer, @NonNull String shorter) {
     return Strings.similarity(longer.toLowerCase(), shorter.toLowerCase());
   }

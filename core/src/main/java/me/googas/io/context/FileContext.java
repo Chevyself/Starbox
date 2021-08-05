@@ -21,7 +21,7 @@ import me.googas.starbox.expressions.HandledExpression;
 public interface FileContext<O> {
 
   /**
-   * Read the object from the given file
+   * Read the object from the given file.
    *
    * @param file the file to read the object from
    * @param type the type to return when the file is read
@@ -33,7 +33,7 @@ public interface FileContext<O> {
   <T> HandledExpression<T> read(@NonNull StarboxFile file, @NonNull Class<T> type);
 
   /**
-   * Read the object from the given reader
+   * Read the object from the given reader.
    *
    * @param reader the reader to read the object from
    * @param type the type to return when the reader has been finished reading
@@ -45,7 +45,7 @@ public interface FileContext<O> {
   <T> HandledExpression<T> read(@NonNull Reader reader, @NonNull Class<T> type);
 
   /**
-   * Write the object to the given file
+   * Write the object to the given file.
    *
    * @param file the file to write the object to
    * @param object the object to write the file to
@@ -56,7 +56,7 @@ public interface FileContext<O> {
   HandledExpression<Boolean> write(@NonNull StarboxFile file, @NonNull Object object);
 
   /**
-   * Write the object using the given writer
+   * Write the object using the given writer.
    *
    * @param writer the write to write the object to
    * @param object the object to be written
@@ -67,7 +67,7 @@ public interface FileContext<O> {
   HandledExpression<Boolean> write(@NonNull Writer writer, @NonNull Object object);
 
   /**
-   * Read the object from the given input stream
+   * Read the object from the given input stream.
    *
    * @param resource the resource to read the object from
    * @param type the type to return when the file is ready
@@ -89,7 +89,7 @@ public interface FileContext<O> {
   HandledExpression<O> read(@NonNull StarboxFile file);
 
   /**
-   * Read the default object given by the context from a {@link URL}
+   * Read the default object given by the context from a {@link URL}.
    *
    * @param resource the resource to read the object from
    * @return a {@link HandledExpression} which on {@link HandledExpression#provide()} returns the

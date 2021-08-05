@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import me.googas.starbox.addons.AddonInformation;
 
-/** Each addon has important information which is required to initialize it */
+/** Each addon has important information which is required to initialize it. */
 public class JavaAddonInformation implements AddonInformation {
 
   @NonNull @Getter private final String name;
@@ -30,7 +30,7 @@ public class JavaAddonInformation implements AddonInformation {
   }
 
   /**
-   * Get the information of an addon from the stream of the resource
+   * Get the information of an addon from the stream of the resource.
    *
    * @param stream the stream of the resource
    * @return the addon information

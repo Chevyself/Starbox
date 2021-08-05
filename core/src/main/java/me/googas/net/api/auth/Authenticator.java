@@ -4,11 +4,11 @@ import lombok.NonNull;
 import me.googas.net.api.Messenger;
 import me.googas.net.api.messages.StarboxRequest;
 
-/** This authenticates a request */
+/** This authenticates a request. */
 public interface Authenticator<T extends Messenger> {
 
   /**
-   * Get whether a request is authenticated
+   * Get whether a request is authenticated.
    *
    * @param client the client that is doing the request
    * @param request the request to check if it is authenticated

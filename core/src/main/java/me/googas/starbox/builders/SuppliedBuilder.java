@@ -13,7 +13,7 @@ import lombok.NonNull;
 public interface SuppliedBuilder<T, O> {
 
   /**
-   * Build the object
+   * Build the object.
    *
    * @param t the parameter that takes the builder to build the object
    * @return the built object
@@ -35,7 +35,7 @@ public interface SuppliedBuilder<T, O> {
 
   /**
    * Build the object or get a default instance using a {@link Supplier} in case that {@link
-   * #build(Object)} is null
+   * #build(Object)} is null.
    *
    * @param t the parameter that takes the builder to build the object
    * @param supplier the supplier of the default instance of the type to build in case that the
@@ -49,7 +49,7 @@ public interface SuppliedBuilder<T, O> {
   }
 
   /**
-   * Build the object and if it is not null the consumer will accept the object
+   * Build the object and if it is not null the consumer will accept the object.
    *
    * @param t the parameter that takes the builder to build the object
    * @param consumer the consumer which accepts the object if it is present

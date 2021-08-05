@@ -5,14 +5,14 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Delegate;
 
-/** A set of points inside a region */
+/** A set of points inside a region. */
 public class Points {
 
-  /** The contained points */
+  /** The contained points . */
   @NonNull @Delegate @Getter private final Set<Point> points;
 
   /**
-   * Create the collection of points
+   * Create the collection of points.
    *
    * @param points the set of points
    */
@@ -21,7 +21,7 @@ public class Points {
   }
 
   /**
-   * Add all the points contained in other collection of points
+   * Add all the points contained in other collection of points.
    *
    * @param points the other collection of points
    * @return true if at least one point was added
@@ -31,7 +31,7 @@ public class Points {
   }
 
   /**
-   * Get the smallest point
+   * Get the smallest point.
    *
    * <p>The default value is a point x=0, y=0, z=0
    *
@@ -49,7 +49,7 @@ public class Points {
   }
 
   /**
-   * Get whether the contained points are infinite
+   * Get whether the contained points are infinite.
    *
    * @return true if there's an infinite amount of points
    */
@@ -58,7 +58,7 @@ public class Points {
   }
 
   /**
-   * Get the biggest point
+   * Get the biggest point.
    *
    * <p>The default value is a point x=0, y=0, z=0
    *

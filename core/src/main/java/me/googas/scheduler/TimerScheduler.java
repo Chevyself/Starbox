@@ -13,14 +13,14 @@ import me.googas.starbox.time.Time;
 /** An scheduler using {@link java.util.Timer} */
 public class TimerScheduler implements Scheduler {
 
-  /** The timer to use in the scheduler */
+  /** The timer to use in the scheduler. */
   @NonNull @Getter @Delegate private final Timer timer;
 
-  /** The list of tasks running by this scheduler */
+  /** The list of tasks running by this scheduler. */
   @NonNull private final List<Task> tasks = new ArrayList<>();
 
   /**
-   * Create the timer scheduler
+   * Create the timer scheduler.
    *
    * @param timer the timer to use
    */
@@ -28,7 +28,7 @@ public class TimerScheduler implements Scheduler {
     this.timer = timer;
   }
 
-  /** Create the scheduler with a new timer instance */
+  /** Create the scheduler with a new timer instance. */
   public TimerScheduler() {
     this(new Timer());
   }

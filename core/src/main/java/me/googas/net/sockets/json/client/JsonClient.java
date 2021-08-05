@@ -26,44 +26,58 @@ import me.googas.net.sockets.json.adapters.MessageDeserializer;
 import me.googas.net.sockets.json.reflect.ReflectJsonReceptor;
 import me.googas.net.sockets.json.server.JsonSocketServer;
 
-/** This object represents a client that can be used to connect to the {@link JsonSocketServer} */
+/** This object represents a client that can be used to connect to the {@link JsonSocketServer}. */
 public class JsonClient extends Thread implements JsonMessenger {
 
-  /** The builder to build json strings */
+  /** The builder to build json strings. */
   @NonNull @Getter private final StringBuilder builder = new StringBuilder();
 
-  /** The socket that the client is using */
+  /** The socket that the client is using. */
   @NonNull @Getter private final Socket socket;
 
-  /** The output channel */
+  /** The output channel. */
   @NonNull @Getter private final PrintWriter output;
-  /** The input channel */
+  /** The input channel. */
   @NonNull @Getter private final BufferedReader input;
 
   /**
-   * The throwable handler in case something goes wrong and the user wants to handle it differently
+   * The throwable handler in case something goes wrong and the user wants to handle it differently.
    */
   @NonNull @Getter private final Consumer<Throwable> throwableHandler;
 
-  /** The gson instance to serialize and deserialize objects */
+  /** The gson instance to serialize and deserialize objects. */
   @NonNull @Getter private final Gson gson;
 
-  /** The receptors to accept requests */
+  /** The receptors to accept requests. */
   @NonNull @Getter private final Set<JsonReceptor> receptors;
 
-  /** The request that are waiting for a response */
+  /** The request that are waiting for a response. */
   @NonNull @Getter private final HashMap<AwaitingRequest<?>, Long> requests = new HashMap<>();
 
-  /** The time to timeout requests */
+  /** The time to timeout requests. */
   @Getter private final long timeout;
 
-  /** Whether the messenger is closed */
+  /** Whether the messenger is closed. */
   @Getter @Setter private boolean closed;
 
-  /** The millis of when the last message was sent */
+  /** The millis of when the last message was sent. */
   @Getter @Setter private long lastMessage;
 
-  public JsonClient(
+  /**
+   * Create the client.
+   *
+   * @param socket the socket to listen for messages
+   * @param output the output streams to send messages
+   * @param input the input stream to receive messages
+   * @param throwableHandler the handler for exceptions
+   * @param gson the gson instance to serialize and deserialize messages
+   * @param receptors the receptors to listen for requests
+   * @param timeout the amount of time to wait until a message timeout in millis
+   * @param closed whether this client is closed
+   * @param lastMessage the {@link System#currentTimeMillis()} in which the last message was
+   *     received
+   */
+  protected JsonClient(
       @NonNull Socket socket,
       @NonNull PrintWriter output,
       @NonNull BufferedReader input,
@@ -152,7 +166,7 @@ public class JsonClient extends Thread implements JsonMessenger {
   }
 
   /**
-   * Starts the builder for a client
+   * Starts the builder for a client.
    *
    * @param host the host to which the client will be connected
    * @param port the port of the host
@@ -168,7 +182,7 @@ public class JsonClient extends Thread implements JsonMessenger {
     JsonMessenger.super.run();
   }
 
-  /** This class is used to create instances of clients in a neat way */
+  /** This class is used to create instances of clients in a neat way. */
   public static class ClientBuilder {
 
     @NonNull private final String host;
@@ -179,7 +193,7 @@ public class JsonClient extends Thread implements JsonMessenger {
     private long timeout;
 
     /**
-     * Create the builder
+     * Create the builder.
      *
      * @param host the host to which the client will be connected
      * @param port the port of the host
@@ -209,7 +223,7 @@ public class JsonClient extends Thread implements JsonMessenger {
     }
 
     /**
-     * Adds all the given receptors
+     * Adds all the given receptors.
      *
      * @param receptors the receptors to add
      * @return this same builder instance
@@ -221,7 +235,7 @@ public class JsonClient extends Thread implements JsonMessenger {
     }
 
     /**
-     * Adds all the given receptors
+     * Adds all the given receptors.
      *
      * @param receptors the receptors to add
      * @return this same builder instance
@@ -233,7 +247,7 @@ public class JsonClient extends Thread implements JsonMessenger {
     }
 
     /**
-     * Set the exception handler that the client may use
+     * Set the exception handler that the client may use.
      *
      * @param handler the new exception handler
      * @return this same builder instance
@@ -245,7 +259,7 @@ public class JsonClient extends Thread implements JsonMessenger {
     }
 
     /**
-     * Set the maximum time that the client will tolerate
+     * Set the maximum time that the client will tolerate.
      *
      * @param timeout the new maximum time in millis
      * @return this same builder instance
@@ -257,7 +271,7 @@ public class JsonClient extends Thread implements JsonMessenger {
     }
 
     /**
-     * Starts the client
+     * Starts the client.
      *
      * @return the client instance
      * @throws IOException if the server could not be found or the input/output could not be open
@@ -283,7 +297,7 @@ public class JsonClient extends Thread implements JsonMessenger {
     }
 
     /**
-     * Set the instance of {@link GsonBuilder}
+     * Set the instance of {@link GsonBuilder}.
      *
      * @see #getGsonBuilder()
      * @param gson the new builder
@@ -296,8 +310,8 @@ public class JsonClient extends Thread implements JsonMessenger {
     }
 
     /**
-     * Get the instance of {@link GsonBuilder} that will create the {@link Gson} of the client to
-     * read messages
+     * Get the instance of {@link GsonBuilder}. It will create the {@link Gson} of the client to
+     * read messages.
      *
      * @return the builder
      */

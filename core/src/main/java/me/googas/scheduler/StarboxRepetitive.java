@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+/** Implementation for {@link Repetitive}. */
 public class StarboxRepetitive implements Repetitive {
 
   private final int id;
@@ -15,6 +16,12 @@ public class StarboxRepetitive implements Repetitive {
 
   @NonNull @Getter @Setter private Runnable repetitive;
 
+  /**
+   * Create a repetitive task.
+   *
+   * @param id the id of the task
+   * @param repetitive the action to repeat
+   */
   public StarboxRepetitive(int id, @NonNull Runnable repetitive) {
     this.id = id;
     this.repetitive = repetitive;

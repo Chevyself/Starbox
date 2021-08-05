@@ -20,6 +20,10 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+/**
+ * Utility class which helps with the creation of {@link ItemStack}. Create items or buttons in a
+ * neat way
+ */
 public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonListener, Button> {
 
   @Getter
@@ -29,25 +33,54 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
   @NonNull @Getter private Material material = Material.GLASS;
   @Getter private int amount = 1;
 
+  /** Create the builder. */
   public ItemBuilder() {}
 
+  /**
+   * Create the builder with an initial amount and material.
+   *
+   * @param material the material of the item
+   * @param amount the amount of items in the stack
+   */
   public ItemBuilder(@NonNull Material material, int amount) {
     this.amount = amount;
     this.setMaterial(material);
   }
 
+  /**
+   * Create the builder with an initial material.
+   *
+   * @param material the material of the item
+   */
   public ItemBuilder(@NonNull Material material) {
     this.setMaterial(material);
   }
 
+  /**
+   * Create the builder with an initial amount.
+   *
+   * @param amount the amount of items in the stack
+   */
   public ItemBuilder(int amount) {
     this.amount = amount;
   }
 
+  /**
+   * Build this as a {@link ItemButton}.
+   *
+   * @param listener the listener that handles actions of the button
+   * @return the created button
+   */
   public @NonNull ItemButton buildAsButton(@NonNull ItemButtonListener listener) {
     return new StarboxItemButton(listener, this.build());
   }
 
+  /**
+   * Set the material of the item.
+   *
+   * @param material the new material
+   * @return this same instance
+   */
   @NonNull
   public ItemBuilder setMaterial(Material material) {
     this.material = material;
@@ -65,6 +98,12 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
     return this;
   }
 
+  /**
+   * Set the amount of the stack.
+   *
+   * @param amount the new amount of items in the stack
+   * @return this same instance
+   */
   @NonNull
   public ItemBuilder setAmount(int amount) {
     this.amount = amount;

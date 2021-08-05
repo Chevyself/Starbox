@@ -9,15 +9,16 @@ import lombok.NonNull;
 import me.googas.net.sockets.json.reflect.JsonReceptorParameter;
 
 /**
- * The normal behaviour while parsing a {@link JsonReceptorParameter} is using {@link
- * Parameter#getName()} but in case that something else wants to be used this has to be used
+ * Use a custom name for a parameter. The normal behaviour while parsing a {@link
+ * JsonReceptorParameter} is using {@link Parameter#getName()} but in case that something else wants
+ * to be used this has to be used
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 public @interface ParamName {
 
   /**
-   * The name to use in the parameter
+   * The name to use in the parameter.
    *
    * @return the name
    */

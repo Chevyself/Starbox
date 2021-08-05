@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+/** Builds {@link SkullMeta}. */
 public class SkullMetaBuilder extends ItemMetaBuilder {
 
   @NonNull private static final WrappedClass SKULL_META = WrappedClass.of(SkullMeta.class);
@@ -31,6 +32,11 @@ public class SkullMetaBuilder extends ItemMetaBuilder {
   private OfflinePlayer owner;
   private String skin;
 
+  /**
+   * Create the builder.
+   *
+   * @param itemBuilder the item to which the meta will be built
+   */
   public SkullMetaBuilder(@NonNull ItemBuilder itemBuilder) {
     super(itemBuilder);
   }
@@ -46,12 +52,24 @@ public class SkullMetaBuilder extends ItemMetaBuilder {
     }
   }
 
+  /**
+   * Set the owner of the skull.
+   *
+   * @param owner the new owner of the skull
+   * @return this same instance
+   */
   @NonNull
   public SkullMetaBuilder setOwner(OfflinePlayer owner) {
     this.owner = owner;
     return this;
   }
 
+  /**
+   * Set the skin to use in this skull.
+   *
+   * @param skin the skin to use in the skull
+   * @return this same instance
+   */
   @NonNull
   public SkullMetaBuilder setSkin(String skin) {
     this.skin = skin;

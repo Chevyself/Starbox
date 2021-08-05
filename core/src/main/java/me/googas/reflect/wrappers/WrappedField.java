@@ -6,7 +6,7 @@ import java.util.StringJoiner;
 import lombok.NonNull;
 import me.googas.starbox.expressions.HandledExpression;
 
-/** This class wraps a {@link Field} to set or get the declaration */
+/** This class wraps a {@link Field} to set or get the declaration. */
 public class WrappedField extends LangWrapper<Field> {
 
   private WrappedField(Field reference) {
@@ -18,7 +18,7 @@ public class WrappedField extends LangWrapper<Field> {
   }
 
   /**
-   * Wrap a {@link Field} instance
+   * Wrap a {@link Field} instance.
    *
    * @param field the field to wrap
    * @return the wrapper of the field
@@ -30,7 +30,7 @@ public class WrappedField extends LangWrapper<Field> {
   }
 
   /**
-   * Get the value that is stored in the field for the parameter object
+   * Get the value that is stored in the field for the parameter object.
    *
    * @param obj the object to get the value of the field from
    * @return a {@link HandledExpression} which gets the object in the field or handles a {@link
@@ -49,7 +49,7 @@ public class WrappedField extends LangWrapper<Field> {
   }
 
   /**
-   * Set the value of the field in an object
+   * Set the value of the field in an object.
    *
    * @param object the object to set the value of the field to
    * @param value the new value to set on the field
@@ -70,7 +70,7 @@ public class WrappedField extends LangWrapper<Field> {
   }
 
   /**
-   * Get the instance of wrapped {@link Field}
+   * Get the instance of wrapped {@link Field}.
    *
    * @return the wrapped field if present else null
    */

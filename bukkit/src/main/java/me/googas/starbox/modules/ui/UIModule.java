@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.Delegate;
 import me.googas.starbox.modules.Module;
 import me.googas.starbox.modules.ui.item.ItemButton;
 import me.googas.starbox.utility.Players;
@@ -21,8 +22,14 @@ import org.bukkit.inventory.ItemStack;
  */
 public class UIModule implements Module {
 
-  @NonNull @Getter private final List<ItemButton> items = new ArrayList<>();
+  @NonNull @Getter @Delegate private final List<ItemButton> items = new ArrayList<>();
 
+  /**
+   * Check if inventory click is in a {@link UI}. if the inventory holder is an {@link UI} it will
+   * get its button and run
+   *
+   * @param event the event of an inventory being clicked
+   */
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onInventoryClick(InventoryClickEvent event) {
     final InventoryHolder holder = event.getInventory().getHolder();
@@ -30,6 +37,12 @@ public class UIModule implements Module {
     ((UI) holder).getButton(event.getRawSlot()).getListener().onClick(event);
   }
 
+  /**
+   * Check if an interaction is done with a button item. If the item happens to be a button the
+   * event will fire its listener
+   *
+   * @param event the event of a player interacting
+   */
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onPlayerInteractEvent(PlayerInteractEvent event) {
     Players.getItemInMainHand(event.getPlayer())
@@ -37,6 +50,12 @@ public class UIModule implements Module {
         .ifPresent(button -> button.getListener().onClick(event));
   }
 
+  /**
+   * Get a button from its ItemStack.
+   *
+   * @param stack the stack to match the button
+   * @return a {@link Optional} instance holding the matched button
+   */
   @NonNull
   public Optional<ItemButton> getButton(@NonNull ItemStack stack) {
     return this.items.stream().filter(button -> button.getItem().isSimilar(stack)).findFirst();

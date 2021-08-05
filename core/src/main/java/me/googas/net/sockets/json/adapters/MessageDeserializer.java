@@ -12,7 +12,7 @@ import me.googas.net.api.messages.Message;
 import me.googas.net.api.messages.Response;
 import me.googas.net.sockets.json.ReceivedJsonRequest;
 
-/** Deserializes messages */
+/** Deserializes messages. */
 public class MessageDeserializer implements JsonSerializer<Message>, JsonDeserializer<Message> {
 
   @Override

@@ -3,11 +3,11 @@ package me.googas.net.api.exception;
 import lombok.NonNull;
 import me.googas.net.api.Messenger;
 
-/** Thrown when the {@link Messenger} fails to {@link Messenger#listen()} */
+/** Thrown when the {@link Messenger} fails to {@link Messenger#listen()}. */
 public class MessengerListenFailException extends Exception {
 
   /**
-   * Create the exception
+   * Create the exception.
    *
    * @param message the message to why it failed
    */
@@ -16,7 +16,7 @@ public class MessengerListenFailException extends Exception {
   }
 
   /**
-   * Create the exception
+   * Create the exception.
    *
    * @param message the message to why it failed
    * @param cause the throwable that made if fail

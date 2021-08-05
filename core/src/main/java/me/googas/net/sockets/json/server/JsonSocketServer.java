@@ -27,27 +27,38 @@ import me.googas.net.sockets.json.JsonReceptor;
 import me.googas.net.sockets.json.adapters.MessageDeserializer;
 import me.googas.net.sockets.json.reflect.ReflectJsonReceptor;
 
-/** An implementation for socket servers for guido */
+/** An implementation for socket servers for guido. */
 public class JsonSocketServer extends Thread implements Server<JsonClientThread> {
 
-  /** The actual server socket */
+  /** The actual server socket. */
   @NonNull private final ServerSocket server;
 
-  /** The set of clients that are connected to the server */
+  /** The set of clients that are connected to the server. */
   @NonNull @Getter private final Set<JsonClientThread> clients = new HashSet<>();
 
-  /** The receptors to accept requests */
+  /** The receptors to accept requests. */
   @NonNull @Getter private final Set<JsonReceptor> receptors;
 
-  /** To handle exceptions thrown */
+  /** To handle exceptions thrown. */
   @NonNull @Getter private final Consumer<Throwable> throwableHandler;
-  /** the gson instance for the server and clients deserialization */
+  /** the gson instance for the server and clients deserialization . */
   @NonNull @Getter private final Gson gson;
-  /** The time to timeout requests */
+  /** The time to timeout requests. */
   @Getter private final long timeout;
-  /** The authenticator for the requests */
+  /** The authenticator for the requests. */
   private Authenticator<JsonClientThread> authenticator;
 
+  /**
+   * Create the server.
+   *
+   * @param server the socket server which will send rand receive messages
+   * @param receptors the receptors to handle requests
+   * @param throwableHandler the handler for exceptions
+   * @param gson the gson to serialize and deserialize objects
+   * @param timeout the maximum timeout for messages in millis
+   * @param authenticator the authentication methods that clients must complete to connect in the
+   *     server
+   */
   protected JsonSocketServer(
       @NonNull ServerSocket server,
       @NonNull Set<JsonReceptor> receptors,
@@ -113,7 +124,18 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
   }
 
   /**
-   * Remove a client from the set of clients
+   * Start a builder for a server.
+   *
+   * @param port the port to which the server will listen to
+   * @return the builder instance
+   */
+  @NonNull
+  public static ServerBuilder listen(int port) {
+    return new ServerBuilder(port);
+  }
+
+  /**
+   * Remove a client from the set of clients.
    *
    * @param client the client to remove from the set
    */
@@ -123,7 +145,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
   }
 
   /**
-   * Called when a client is already disconnected and {@link #remove(JsonClientThread)} was called
+   * Called when a client is already disconnected and {@link #remove(JsonClientThread)} was called.
    *
    * @param client the client that was removed
    */
@@ -132,22 +154,13 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
   }
 
   /**
-   * Disconnects a client from the server
+   * Disconnects a client from the server.
    *
    * @param client the client that disconnected
    */
   public void disconnect(@NonNull JsonClientThread client) {
     client.close();
     this.remove(client);
-  }
-
-  /**
-   * Called when a client gets connected to the server
-   *
-   * @param client the client connecting to the server
-   */
-  protected void onConnection(@NonNull JsonClientThread client) {
-    System.out.println(client + " got connected");
   }
 
   @Override
@@ -223,17 +236,15 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
   }
 
   /**
-   * Start a builder for a server
+   * Called when a client gets connected to the server.
    *
-   * @param port the port to which the server will listen to
-   * @return the builder instance
+   * @param client the client connecting to the server
    */
-  @NonNull
-  public static ServerBuilder listen(int port) {
-    return new ServerBuilder(port);
+  protected void onConnection(@NonNull JsonClientThread client) {
+    System.out.println(client + " got connected");
   }
 
-  /** This class is used to create instances of servers in a neat way */
+  /** This class is used to create instances of servers in a neat way. */
   public static class ServerBuilder {
 
     @NonNull private final Set<JsonReceptor> receptors;
@@ -244,7 +255,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
     private Authenticator<JsonClientThread> authenticator;
 
     /**
-     * Create the builder
+     * Create the builder.
      *
      * @param port the port to which the server will listen to
      */
@@ -257,7 +268,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
     }
 
     /**
-     * Set the exception handler that the client may use
+     * Set the exception handler that the client may use.
      *
      * @param handler the new exception handler
      * @return this same builder instance
@@ -269,7 +280,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
     }
 
     /**
-     * Set the maximum time that the server will tolerate
+     * Set the maximum time that the server will tolerate.
      *
      * @param timeout the new maximum time in millis
      * @return this same builder instance
@@ -281,7 +292,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
     }
 
     /**
-     * Sets the authentication method which clients may use
+     * Sets the authentication method which clients may use.
      *
      * @param authenticator the new authentication method
      * @return this same builder instance
@@ -308,7 +319,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
     }
 
     /**
-     * Adds all the given receptors
+     * Adds all the given receptors.
      *
      * @param receptors the receptors to add
      * @return this same builder instance
@@ -320,7 +331,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
     }
 
     /**
-     * Adds all the given receptors
+     * Adds all the given receptors.
      *
      * @param receptors the receptors to add
      * @return this same builder instance
@@ -332,7 +343,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
     }
 
     /**
-     * Starts the server
+     * Starts the server.
      *
      * @return the server instance
      * @throws IOException if the server could not be created
@@ -352,7 +363,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
     }
 
     /**
-     * Set the instance of {@link GsonBuilder}
+     * Set the instance of {@link GsonBuilder}.
      *
      * @see #getGsonBuilder()
      * @param gson the new builder
@@ -366,7 +377,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
 
     /**
      * Get the instance of {@link GsonBuilder} that will create the {@link Gson} of the server to
-     * read messages
+     * read messages.
      *
      * @return the builder
      */

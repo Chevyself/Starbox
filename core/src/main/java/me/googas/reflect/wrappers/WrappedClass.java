@@ -31,7 +31,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
 
   /**
    * Return the wrapper of the {@link Class} object if {@link Class#forName(String)} matches a class
-   * else it would be empty
+   * else it would be empty.
    *
    * @see Class#forName(String)
    * @param name the fully qualified name of the class
@@ -47,7 +47,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
   }
 
   /**
-   * Wrap a {@link Class} instance
+   * Wrap a {@link Class} instance.
    *
    * @param clazz the class to wrap
    * @return the wrapper of {@link Class}
@@ -58,7 +58,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
   }
 
   /**
-   * Get the constructor matching the given parameters
+   * Get the constructor matching the given parameters.
    *
    * @param params the parameters to match the constructor with
    * @return a {@link WrappedConstructor} instance containing the constructor or empty if not found
@@ -77,7 +77,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
   }
 
   /**
-   * Get the field matching the name
+   * Get the field matching the name.
    *
    * @param name the name to match the field with
    * @return a {@link WrappedField} instance containing the field or empty if not found
@@ -96,7 +96,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
   }
 
   /**
-   * Get a declared field matching the name
+   * Get a declared field matching the name.
    *
    * @param name the name to match the field with
    * @return a {@link WrappedField} instance containing the field or empty if not found
@@ -115,7 +115,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
   }
 
   /**
-   * Get a method matching the name and parameter types
+   * Get a method matching the name and parameter types.
    *
    * @param name the name to match the method with
    * @param params the parameters to match the method with
@@ -127,7 +127,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
   }
 
   /**
-   * Get a method matching the name, parameter types and return type
+   * Get a method matching the name, parameter types and return type.
    *
    * @param returnType the return type to match the method with
    * @param name the name to match the method with
@@ -150,8 +150,9 @@ public class WrappedClass extends LangWrapper<Class<?>> {
   }
 
   /**
-   * Checks if a method with the given name and parameter types exists in the class
+   * Checks if a method with the given name and parameter types exists in the class.
    *
+   * @param returnType the type that the method returns: null for void
    * @param name the name of the method to find
    * @param params the parameters of the method to find
    * @return true if the method is found false otherwise
@@ -172,7 +173,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
   }
 
   /**
-   * Checks if a field with the given name exists in the class
+   * Checks if a field with the given name exists in the class.
    *
    * @param name the name of the field to find
    * @return true if the field is found false otherwise
@@ -187,7 +188,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
   }
 
   /**
-   * Checks if a declared field with the given name exists in the class
+   * Checks if a declared field with the given name exists in the class.
    *
    * @param name the name of the field to find
    * @return true if the field is found false otherwise
@@ -202,7 +203,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
   }
 
   /**
-   * Checks if a constructor with the given parameter types exists in the class
+   * Checks if a constructor with the given parameter types exists in the class.
    *
    * @param params the parameters of the constructor to find
    * @return true if the constructor is found false otherwise
@@ -218,9 +219,8 @@ public class WrappedClass extends LangWrapper<Class<?>> {
   }
 
   /**
-   * Get a list of {@link Method} of the class
+   * Get a list of {@link Method} of the class.
    *
-   * @see {@link Class#getMethods()}
    * @return the list of methods
    */
   @NonNull
@@ -232,9 +232,8 @@ public class WrappedClass extends LangWrapper<Class<?>> {
   }
 
   /**
-   * Get a list of {@link Field} of the class
+   * Get a list of {@link Field} of the class.
    *
-   * @see {@link Class#getFields()}
    * @return the list of fields
    */
   @NonNull
@@ -246,9 +245,8 @@ public class WrappedClass extends LangWrapper<Class<?>> {
   }
 
   /**
-   * Get a list of {@link Field} that are declared in the class
+   * Get a list of {@link Field} that are declared in the class.
    *
-   * @see {@link Class#getDeclaredFields()}
    * @return the list of fields
    */
   @NonNull
@@ -260,7 +258,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
   }
 
   /**
-   * Get the wrapped class
+   * Get the wrapped class.
    *
    * @return the wrapped class
    */

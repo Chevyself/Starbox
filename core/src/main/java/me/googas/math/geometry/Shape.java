@@ -8,11 +8,11 @@ import java.util.Random;
 import java.util.Set;
 import lombok.NonNull;
 
-/** An object that represents a 3 dimensional shape */
+/** An object that represents a 3 dimensional shape. */
 public interface Shape {
 
   /**
-   * Check if this shape contains a point inside of it
+   * Check if this shape contains a point inside of it.
    *
    * @param point the point to check if it is inside this shape
    * @return true if it is inside
@@ -22,7 +22,7 @@ public interface Shape {
   }
 
   /**
-   * Check in another shape is inside this one
+   * Check in another shape is inside this one.
    *
    * @param another the other shape to check if it is inside this one
    * @return true if it is inside this shape
@@ -32,7 +32,7 @@ public interface Shape {
   }
 
   /**
-   * Check if another shape intersects with this one
+   * Check if another shape intersects with this one.
    *
    * @param another the other shape to check
    * @return true if part of it is inside this shape
@@ -42,7 +42,7 @@ public interface Shape {
   }
 
   /**
-   * Get where the shapes are intersecting
+   * Get where the shapes are intersecting.
    *
    * @param another the shape to check where it is intersecting
    * @return the points where this shapes are intersecting
@@ -59,8 +59,9 @@ public interface Shape {
   }
 
   /**
-   * Get a random point inside of the shape
+   * Get a random point inside of the shape.
    *
+   * @param random the random for randomization
    * @return the random point
    */
   @NonNull
@@ -70,14 +71,14 @@ public interface Shape {
   }
 
   /**
-   * The id to identify a shape in runtime
+   * The id to identify a shape in runtime.
    *
    * @return the id
    */
   Optional<String> getId();
 
   /**
-   * Get all the points inside the shape
+   * Get all the points inside the shape.
    *
    * @return the points inside
    */
@@ -85,7 +86,7 @@ public interface Shape {
   Points getPointsInside();
 
   /**
-   * Get the minimum point of the shape
+   * Get the minimum point of the shape.
    *
    * @return the minimum point of the shape
    */
@@ -93,7 +94,7 @@ public interface Shape {
   Point getMinimum();
 
   /**
-   * Get the maximum point of the shape
+   * Get the maximum point of the shape.
    *
    * @return the maximum point of the shape
    */
@@ -101,7 +102,7 @@ public interface Shape {
   Point getMaximum();
 
   /**
-   * Get the volume of the shape
+   * Get the volume of the shape.
    *
    * @return the volume of the shape
    */

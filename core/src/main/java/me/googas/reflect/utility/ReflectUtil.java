@@ -5,11 +5,11 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import lombok.NonNull;
 
-/** Static utilities for java reflection */
+/** Static utilities for java reflection. */
 public class ReflectUtil {
 
   /**
-   * Check whether an array of annotations has certain annotation
+   * Check whether an array of annotations has certain annotation.
    *
    * @param annotations the array of annotations to check if it has an annotation
    * @param clazz the class of annotation to match
@@ -26,7 +26,7 @@ public class ReflectUtil {
   }
 
   /**
-   * Get the annotation inside an array
+   * Get the annotation inside an array.
    *
    * @param annotations the array of annotations to get the annotation from
    * @param clazz the class of the annotation to get
@@ -48,7 +48,7 @@ public class ReflectUtil {
   }
 
   /**
-   * Check whether a method has certain annotation
+   * Check whether a method has certain annotation.
    *
    * @param method the method to check if it has an annotation
    * @param clazz the class of annotation to match
@@ -59,6 +59,14 @@ public class ReflectUtil {
     return ReflectUtil.hasAnnotation(method.getAnnotations(), clazz);
   }
 
+  /**
+   * Compare two arrays of {@link Class}. This will check that the classes are in the same indexes
+   * for both arrays
+   *
+   * @param paramTypes the first array
+   * @param params the second array
+   * @return true if both arrays have the same elements
+   */
   public static boolean compareParameters(Class<?>[] paramTypes, Class<?>[] params) {
     if (paramTypes == null || params == null) return false;
     if (paramTypes.length != params.length) return false;

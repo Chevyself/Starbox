@@ -21,7 +21,7 @@ public class Json implements FileContext<Object> {
   @NonNull @Getter @Setter private Gson gson;
 
   /**
-   * Create the context instance
+   * Create the context instance.
    *
    * @param gson the instance to deserialize or serialize objects
    */

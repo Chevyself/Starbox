@@ -3,11 +3,11 @@ package me.googas.net.api.messages;
 import java.util.UUID;
 import lombok.NonNull;
 
-/** A message send between two messengers */
+/** A message send between two messengers. */
 public interface Message {
 
   /**
-   * Get the unique id of the message
+   * Get the unique id of the message.
    *
    * @return the unique id of the message
    */

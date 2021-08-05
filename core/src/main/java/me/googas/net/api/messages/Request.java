@@ -11,24 +11,24 @@ import me.googas.net.sockets.json.JsonReceptor;
 
 /**
  * This object represents a request which is a message that makes the client which sent it wait for
- * a {@link Response}
+ * a {@link Response}.
  */
 public class Request<T> implements StarboxRequest {
 
-  /** The class that is being requested */
+  /** The class that is being requested . */
   @NonNull @Getter private final transient Class<T> clazz;
 
-  /** The id of the request */
+  /** The id of the request. */
   @NonNull @Getter private final UUID id;
 
-  /** The method which must match a {@link JsonReceptor} to give a response */
+  /** The method which must match a {@link JsonReceptor} to give a response. */
   @NonNull @Getter private final String method;
 
-  /** The parameters that the {@link JsonReceptor} requires to give a response */
+  /** The parameters that the {@link JsonReceptor} requires to give a response. */
   @NonNull @Getter private final Map<String, ?> parameters;
 
   /**
-   * Create the request
+   * Create the request.
    *
    * @param clazz the class that is being requested
    * @param id the id of the request
@@ -47,7 +47,7 @@ public class Request<T> implements StarboxRequest {
   }
 
   /**
-   * Create the request
+   * Create the request.
    *
    * @param clazz the class that is being requested
    * @param method the method of the request
@@ -59,7 +59,7 @@ public class Request<T> implements StarboxRequest {
   }
 
   /**
-   * Create the request
+   * Create the request.
    *
    * @param clazz the class that is being requested
    * @param method the id of the request
@@ -68,6 +68,14 @@ public class Request<T> implements StarboxRequest {
     this(clazz, UUID.randomUUID(), method, new HashMap<>());
   }
 
+  /**
+   * Create a builder for a request.
+   *
+   * @param clazz the class that is being requested
+   * @param method the method that must match a receptor
+   * @param <T> the type of the requested object
+   * @return the builder for the request
+   */
   @NonNull
   public static <T> RequestBuilder<T> builder(@NonNull Class<T> clazz, @NonNull String method) {
     return new RequestBuilder<>(clazz, method);
