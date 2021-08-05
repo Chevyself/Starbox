@@ -20,16 +20,16 @@ public class HandledExpression<O> {
   /** The expression to execute in the try block. */
   @NonNull private final Expression<O> expression;
   /** The expressions to execute in the finally block. */
-  @NonNull private final List<RunnableExpression> nexts;
+  @NonNull private final List<RunnableExpression> next;
   /** The consumer which will handle the thrown exceptions. */
   @NonNull private Consumer<Throwable> handle;
 
   private HandledExpression(
       @NonNull Expression<O> expression,
-      @NonNull List<RunnableExpression> nexts,
+      @NonNull List<RunnableExpression> next,
       @NonNull Consumer<Throwable> handle) {
     this.expression = expression;
-    this.nexts = nexts;
+    this.next = next;
     this.handle = handle;
   }
 
@@ -59,8 +59,8 @@ public class HandledExpression<O> {
     } catch (Throwable e) {
       handle.accept(e);
     } finally {
-      if (nexts != null) {
-        for (RunnableExpression next : this.nexts) {
+      if (next != null) {
+        for (RunnableExpression next : this.next) {
           try {
             next.run();
           } catch (Throwable e) {
@@ -97,7 +97,7 @@ public class HandledExpression<O> {
    */
   @NonNull
   public HandledExpression<O> next(@NonNull RunnableExpression next) {
-    this.nexts.add(next);
+    this.next.add(next);
     return this;
   }
 
