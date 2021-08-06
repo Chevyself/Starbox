@@ -3,7 +3,7 @@ package me.googas.starbox.utility;
 import lombok.NonNull;
 import org.bukkit.Material;
 
-/** Utility class for {@link Material} */
+/** Utility class for {@link Material}. */
 public class Materials {
 
   /**
@@ -64,13 +64,13 @@ public class Materials {
    */
   public static boolean isTool(@NonNull Material material) {
     String name = material.name();
-    // TODO add shears
     return name.endsWith("AXE")
         || name.endsWith("HOE")
         || name.endsWith("SWORD")
         || name.endsWith("PICKAXE")
         || name.endsWith("SHOVEL")
-        || name.endsWith("SPADE");
+        || name.endsWith("SPADE")
+        || material == Material.SHEARS;
   }
 
   /**
