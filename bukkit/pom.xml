@@ -36,7 +36,7 @@
                             <artifactSet>
                                 <includes>
                                     <include>me.googas.starbox:core</include>
-                                    <include>com.github.Chevyself.Starbox-Commands:bukkit</include>
+                                    <include>me.googas.starbox-commands:bukkit</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
@@ -69,12 +69,12 @@
         </dependency>
         <!-- Command Framework -->
         <dependency>
-            <groupId>com.github.Chevyself.Starbox-Commands</groupId>
+            <groupId>me.googas.starbox-commands</groupId>
             <artifactId>bukkit</artifactId>
-            <version>6b32e7f4e5</version>
+            <version>2f544a1814</version>
             <exclusions>
                 <exclusion>
-                    <groupId>com.github.Chevyself.Starbox</groupId>
+                    <groupId>me.googas.starbox</groupId>
                     <artifactId>core</artifactId>
                 </exclusion>
                 <exclusion>
