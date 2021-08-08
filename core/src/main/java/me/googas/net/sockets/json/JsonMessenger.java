@@ -114,8 +114,9 @@ public interface JsonMessenger extends Messenger, Runnable {
   /**
    * Send a request.
    *
-   * @see Messenger#sendRequest(Request, Consumer). This method will give you the option to change
-   *     what to do in case of an exception such as a timeout
+   * <p>This method will give you the option to change what to do in case of an exception such as a
+   * timeout
+   *
    * @param request the request to send
    * @param consumer the method to execute when the result is given
    * @param exception the method to execute in case an exception is thrown

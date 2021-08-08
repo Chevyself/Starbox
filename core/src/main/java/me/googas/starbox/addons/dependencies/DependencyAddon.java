@@ -90,7 +90,7 @@ public class DependencyAddon implements Addon {
     }
 
     /**
-     * Download the addon. Sets the downloaded bytes in {@link DependencyAddon#getFile()}
+     * Download the addon. Sets the downloaded bytes in {@link #file}
      *
      * @return a {@link HandledExpression} which returns whether the addon has been downloaded and
      *     handles {@link java.io.IOException} in case that streams cannot be closed and the file

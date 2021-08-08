@@ -209,6 +209,7 @@ public class StarboxFile {
    * Reads the file using the given {@link FileContext} providing its default type. If the object is
    * null the default parameter will be given
    *
+   * @param <O> the type of object that the context returns
    * @param context the context to read the file with
    * @param def the default object to provide if the read from the file is null
    * @return the object from the file or the default object if the object read from the file is null
@@ -247,6 +248,7 @@ public class StarboxFile {
    * Reads the file using the given {@link FileContext} providing its default type. If the object
    * will be returned using the {@link Supplier}
    *
+   * @param <O> the type of object that the context returns
    * @param context the context to read the file with
    * @param supplier the supplier to provide the object from
    * @return the object from the file or the default object from the supplier
