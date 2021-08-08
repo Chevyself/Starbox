@@ -22,12 +22,12 @@ public class HandledExpression<O> {
   /** The expressions to execute in the finally block. */
   @NonNull private final List<RunnableExpression> next;
   /** The consumer which will handle the thrown exceptions. */
-  @NonNull private Consumer<Throwable> handle;
+  @NonNull private Consumer<Exception> handle;
 
   private HandledExpression(
       @NonNull Expression<O> expression,
       @NonNull List<RunnableExpression> next,
-      @NonNull Consumer<Throwable> handle) {
+      @NonNull Consumer<Exception> handle) {
     this.expression = expression;
     this.next = next;
     this.handle = handle;
@@ -42,7 +42,7 @@ public class HandledExpression<O> {
    */
   @NonNull
   public static <O> HandledExpression<O> using(@NonNull Expression<O> expression) {
-    return new HandledExpression<>(expression, new ArrayList<>(), (throwable) -> {});
+    return new HandledExpression<>(expression, new ArrayList<>(), (e) -> {});
   }
 
   /**
@@ -56,14 +56,14 @@ public class HandledExpression<O> {
     O other = null;
     try {
       other = expression.run();
-    } catch (Throwable e) {
+    } catch (Exception e) {
       handle.accept(e);
     } finally {
       if (next != null) {
         for (RunnableExpression next : this.next) {
           try {
             next.run();
-          } catch (Throwable e) {
+          } catch (Exception e) {
             handle.accept(e);
           }
         }
@@ -84,7 +84,7 @@ public class HandledExpression<O> {
    * @return this same object
    */
   @NonNull
-  public HandledExpression<O> handle(@NonNull Consumer<Throwable> handle) {
+  public HandledExpression<O> handle(@NonNull Consumer<Exception> handle) {
     this.handle = handle;
     return this;
   }
@@ -111,10 +111,10 @@ public class HandledExpression<O> {
      * Run the expression.
      *
      * @return any object
-     * @throws Throwable any exception
+     * @throws Exception any exception
      */
     @NonNull
-    O run() throws Throwable;
+    O run() throws Exception;
   }
 
   /** This interface represents an expression that does not return an object when ran. */
@@ -122,8 +122,8 @@ public class HandledExpression<O> {
     /**
      * Run the expression.
      *
-     * @throws Throwable any exception
+     * @throws Exception any exception
      */
-    void run() throws Throwable;
+    void run() throws Exception;
   }
 }
