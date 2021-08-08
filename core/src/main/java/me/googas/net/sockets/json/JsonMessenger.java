@@ -30,7 +30,6 @@ import me.googas.net.api.messages.StarboxRequest;
 import me.googas.net.sockets.json.exception.JsonCommunicationException;
 import me.googas.net.sockets.json.exception.JsonExternalCommunicationException;
 import me.googas.net.sockets.json.exception.JsonInternalCommunicationException;
-import me.googas.net.sockets.json.reflect.JsonReceptorParameter;
 import me.googas.net.sockets.json.server.JsonClientThread;
 
 /** A {@link Messenger} that works with json messages. */
@@ -95,18 +94,14 @@ public interface JsonMessenger extends Messenger, Runnable {
           if (optional.isPresent()) {
             try {
               JsonReceptor receptor = optional.get();
-              response =
-                  new Response<>(
-                      request.getId(), receptor.invoke(this.getParameters(receptor, request)));
+              response = new Response<>(request.getId(), receptor.execute(request, this.getGson()));
               response.setError(false);
-            } catch (JsonCommunicationException e) {
-              if (e instanceof JsonExternalCommunicationException) {
-                response = new Response<>(request.getId(), new Error(e.getMessage()));
-              } else {
-                response =
-                    new Response<>(request.getId(), new Error("Internal Error: " + e.getMessage()));
-                this.getThrowableHandler().accept(e);
-              }
+            } catch (JsonExternalCommunicationException e) {
+              response = new Response<>(request.getId(), new Error(e.getMessage()));
+            } catch (JsonInternalCommunicationException e) {
+              response =
+                  new Response<>(request.getId(), new Error("Internal Error: " + e.getMessage()));
+              this.getThrowableHandler().accept(e);
             }
           } else {
             response = new Response<>(request.getId(), null);
@@ -114,45 +109,6 @@ public interface JsonMessenger extends Messenger, Runnable {
           }
           this.printLine(this.getGson().toJson(response));
         });
-  }
-
-  /**
-   * Get the parameters to prepare the receptor to get the response.
-   *
-   * @param receptor the receptor to prepare
-   * @param request the request that is using the receptor
-   * @return the parameters to execute
-   * @throws JsonCommunicationException in case something goes wrong while providing the objects
-   */
-  @NonNull
-  default Object[] getParameters(
-      @NonNull JsonReceptor receptor, @NonNull ReceivedJsonRequest request)
-      throws JsonCommunicationException {
-    if (receptor.getParameters().isEmpty()) {
-      return new Object[0];
-    } else {
-      Object[] objects = new Object[receptor.getParameters().size()];
-
-      for (int i = 0; i < receptor.getParameters().size(); i++) {
-        JsonReceptorParameter<?> parameter = receptor.getParameters().get(i);
-        if (JsonMessenger.class == parameter.getClazz()) {
-          objects[i] = this;
-        } else if (request.getParameters().containsKey(parameter.getName())) {
-          try {
-            objects[i] =
-                this.getGson()
-                    .fromJson(
-                        request.getParameters().get(parameter.getName()), parameter.getClazz());
-          } catch (RuntimeException e) {
-            throw new JsonExternalCommunicationException(e + " in request " + request);
-          }
-        } else {
-          throw new JsonExternalCommunicationException(
-              "Missing argument '" + parameter.getName() + "' in request " + request);
-        }
-      }
-      return objects;
-    }
   }
 
   /**

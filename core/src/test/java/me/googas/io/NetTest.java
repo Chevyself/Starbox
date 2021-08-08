@@ -52,7 +52,7 @@ public class NetTest {
         new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeAdapter(Message.class, new MessageDeserializer());
-    long timeout = 1000;
+    long timeout = 5000;
     NetTest.mocks =
         TestingFiles.Contexts.JSON
             .read(TestingFiles.Resources.MOCKS, TestingMocks.class)

@@ -1,5 +1,6 @@
 package me.googas.net.sockets.json.reflect;
 
+import com.google.gson.Gson;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -7,15 +8,20 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.NonNull;
+import me.googas.net.sockets.json.JsonMessenger;
 import me.googas.net.sockets.json.JsonReceptor;
 import me.googas.net.sockets.json.ParamName;
+import me.googas.net.sockets.json.ReceivedJsonRequest;
 import me.googas.net.sockets.json.Receptor;
 import me.googas.net.sockets.json.exception.JsonExternalCommunicationException;
 import me.googas.net.sockets.json.exception.JsonInternalCommunicationException;
 import me.googas.reflect.utility.ReflectUtil;
 
 /**
- * This object represents the {@link me.googas.net.sockets.json.JsonReceptor} registered inside a
+ * This object represents the {@link Receptor} registered inside a {@link JsonMessenger}. This means
+ * that this is the object after reflection was made
+ *
+ * <p>This object represents the {@link me.googas.net.sockets.json.JsonReceptor} registered inside a
  * {@link me.googas.net.sockets.json.JsonMessenger} this means that this is the object after
  * reflection was made
  */
@@ -80,18 +86,45 @@ public class ReflectJsonReceptor implements JsonReceptor {
     return receptors;
   }
 
-  /**
-   * Invokes the receptor.
-   *
-   * @param objects the parameters which the receptor needs
-   * @return the object can be either any object or nothing if it is void
-   * @throws JsonInternalCommunicationException if the method cannot be accessed
-   * @throws JsonExternalCommunicationException if the method was not executed correctly
-   */
-  public Object invoke(@NonNull Object... objects)
-      throws JsonInternalCommunicationException, JsonExternalCommunicationException {
+  @NonNull
+  private Object[] getParameters(@NonNull ReceivedJsonRequest request, @NonNull Gson gson)
+      throws JsonExternalCommunicationException {
+    if (this.getParameters().isEmpty()) {
+      return new Object[0];
+    } else {
+      Object[] objects = new Object[this.getParameters().size()];
+
+      for (int i = 0; i < this.getParameters().size(); i++) {
+        JsonReceptorParameter<?> parameter = this.getParameters().get(i);
+        if (JsonMessenger.class == parameter.getClazz()) {
+          objects[i] = this;
+        } else if (request.getParameters().containsKey(parameter.getName())) {
+          try {
+            objects[i] =
+                gson.fromJson(
+                    request.getParameters().get(parameter.getName()), parameter.getClazz());
+          } catch (RuntimeException e) {
+            throw new JsonExternalCommunicationException(e + " in request " + request);
+          }
+        } else {
+          throw new JsonExternalCommunicationException(
+              "Missing argument '" + parameter.getName() + "' in request " + request);
+        }
+      }
+      return objects;
+    }
+  }
+
+  @NonNull
+  private List<JsonReceptorParameter<?>> getParameters() {
+    return this.parameters;
+  }
+
+  @Override
+  public Object execute(@NonNull ReceivedJsonRequest request, @NonNull Gson gson)
+      throws JsonExternalCommunicationException, JsonInternalCommunicationException {
     try {
-      return this.method.invoke(this.object, objects);
+      return this.method.invoke(this.object, this.getParameters(request, gson));
     } catch (IllegalAccessException e) {
       throw new JsonInternalCommunicationException(e);
     } catch (InvocationTargetException e) {
@@ -99,23 +132,9 @@ public class ReflectJsonReceptor implements JsonReceptor {
     }
   }
 
-  /**
-   * Get the method which request must use to prepare this receptor.
-   *
-   * @return the method as a string
-   */
   @NonNull
+  @Override
   public String getRequestMethod() {
     return this.requestMethod;
-  }
-
-  /**
-   * Get the parameters that the receptor needs to be executed.
-   *
-   * @return the list of parameters that the receptor needs to be executed
-   */
-  @NonNull
-  public List<JsonReceptorParameter<?>> getParameters() {
-    return this.parameters;
   }
 }
