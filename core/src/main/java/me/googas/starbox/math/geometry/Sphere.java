@@ -1,4 +1,4 @@
-package me.googas.math.geometry;
+package me.googas.starbox.math.geometry;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -7,7 +7,7 @@ import java.util.StringJoiner;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import me.googas.math.MathUtils;
+import me.googas.starbox.math.MathUtils;
 
 /** A sphere. */
 public class Sphere implements Shape {

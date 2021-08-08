@@ -1,9 +1,9 @@
-package me.googas.math.geometry;
+package me.googas.starbox.math.geometry;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import me.googas.math.MathUtils;
+import me.googas.starbox.math.MathUtils;
 
 /**
  * An object that represents a point inside the cartesian coordinates system. This means this object

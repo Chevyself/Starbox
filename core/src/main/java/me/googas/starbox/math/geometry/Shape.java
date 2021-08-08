@@ -1,4 +1,4 @@
-package me.googas.math.geometry;
+package me.googas.starbox.math.geometry;
 
 import java.util.ArrayList;
 import java.util.HashSet;

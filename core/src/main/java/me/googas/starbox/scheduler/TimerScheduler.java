@@ -1,4 +1,4 @@
-package me.googas.scheduler;
+package me.googas.starbox.scheduler;
 
 import java.util.ArrayList;
 import java.util.Collection;

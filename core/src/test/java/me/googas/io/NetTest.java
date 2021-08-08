@@ -17,7 +17,7 @@ import me.googas.net.sockets.json.adapters.MessageDeserializer;
 import me.googas.net.sockets.json.client.JsonClient;
 import me.googas.net.sockets.json.server.JsonClientThread;
 import me.googas.net.sockets.json.server.JsonSocketServer;
-import me.googas.scheduler.TimerScheduler;
+import me.googas.starbox.scheduler.TimerScheduler;
 import me.googas.starbox.time.Time;
 import me.googas.starbox.time.unit.Unit;
 import org.junit.jupiter.api.AfterAll;

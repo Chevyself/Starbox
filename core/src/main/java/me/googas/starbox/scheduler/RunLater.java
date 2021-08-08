@@ -1,4 +1,4 @@
-package me.googas.scheduler;
+package me.googas.starbox.scheduler;
 
 /** This task is scheduled to run later. */
 public interface RunLater extends Task {

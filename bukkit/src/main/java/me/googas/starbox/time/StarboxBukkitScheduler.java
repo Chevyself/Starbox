@@ -4,11 +4,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.NonNull;
-import me.googas.scheduler.Countdown;
-import me.googas.scheduler.Repetitive;
-import me.googas.scheduler.RunLater;
-import me.googas.scheduler.Scheduler;
-import me.googas.scheduler.Task;
+import me.googas.starbox.scheduler.Countdown;
+import me.googas.starbox.scheduler.Repetitive;
+import me.googas.starbox.scheduler.RunLater;
+import me.googas.starbox.scheduler.Scheduler;
+import me.googas.starbox.scheduler.Task;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 

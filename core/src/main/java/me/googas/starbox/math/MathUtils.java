@@ -1,4 +1,4 @@
-package me.googas.math;
+package me.googas.starbox.math;
 
 /** Static utilities for math. */
 public class MathUtils {

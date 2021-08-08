@@ -1,4 +1,4 @@
-package me.googas.math.geometry;
+package me.googas.starbox.math.geometry;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.StringJoiner;
 import lombok.NonNull;
 import lombok.Setter;
-import me.googas.math.MathUtils;
+import me.googas.starbox.math.MathUtils;
 
 /** A box. */
 public class Box implements Shape {

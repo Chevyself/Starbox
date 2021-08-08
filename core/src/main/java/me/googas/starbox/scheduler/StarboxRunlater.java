@@ -1,4 +1,4 @@
-package me.googas.scheduler;
+package me.googas.starbox.scheduler;
 
 import lombok.Getter;
 import lombok.NonNull;

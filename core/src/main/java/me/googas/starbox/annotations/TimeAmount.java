@@ -1,4 +1,4 @@
-package me.googas.annotations;
+package me.googas.starbox.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
