@@ -209,6 +209,58 @@ public class Strings {
     return Strings.similarity(longer.toLowerCase(), shorter.toLowerCase());
   }
 
+  /**
+   * Make a pretty strings from a {@link Collection}. This will check if the collection is empty if
+   * it is the case, the parameter empty will be returned else this will simply {@link
+   * Object#toString()} the collection and replace the characters '[]' to nothing
+   *
+   * @param collection the collection to pretty
+   * @param empty the string in case the collection is empty
+   * @return the pretty collection string
+   */
+  @NonNull
+  public static String pretty(@NonNull Collection<?> collection, @NonNull String empty) {
+    return collection.isEmpty() ? empty : collection.toString().replace("[", "").replace("]", "");
+  }
+
+  /**
+   * Make a pretty string from a {@link Collection}. If the collection is empty this will use '[]'
+   *
+   * @see #pretty(Collection, String)
+   * @param collection the collection to pretty
+   * @return the pretty collection string
+   */
+  @NonNull
+  public static String pretty(@NonNull Collection<?> collection) {
+    return Strings.pretty(collection, "[]");
+  }
+
+  /**
+   * Make a pretty string from an array. This will check if the array is empty if it is the case,
+   * the parameter empty will be returned else this will simple {@link Arrays#toString(int[])} the
+   * array and replace the characters '[]' to nothing
+   *
+   * @param empty the string in case the array is empty
+   * @param objects the array of object to pretty
+   * @return the pretty array string
+   */
+  @NonNull
+  public static String pretty(@NonNull String empty, @NonNull Object... objects) {
+    return objects.length == 0 ? empty : Arrays.toString(objects);
+  }
+
+  /**
+   * Make a pretty string from an array. If the collection is empty this will use '[]'
+   *
+   * @see #pretty(String, Object...)
+   * @param objects the array of object to pretty
+   * @return the pretty array string
+   */
+  @NonNull
+  public static String pretty(@NonNull Object... objects) {
+    return Strings.pretty("[]", objects);
+  }
+
   private static int editDistance(String longer, String shorter) {
     longer = longer.toLowerCase();
     shorter = shorter.toLowerCase();
