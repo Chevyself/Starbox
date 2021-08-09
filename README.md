@@ -24,8 +24,8 @@ Getting Starbox
 ```xml
 <dependencies>
     <dependency>
-        <groupId>me.googas</groupId>
-        <artifactId>starbox</artifactId>
+        <groupId>me.googas.starbox</groupId>
+        <artifactId>module</artifactId>
         <version>Tag</version>
     </dependency>
 </dependencies>
@@ -38,7 +38,7 @@ repositories {
 ```
 ```gradle
 dependencies {
-    implementation 'me.googas.starbox:bukkit:Tag'
+    implementation 'me.googas.starbox:module:Tag'
 }
 ```
 Check [Jitpack](https://jitpack.io/#me.googas/starbox) to know more
