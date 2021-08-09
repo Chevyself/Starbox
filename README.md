@@ -38,7 +38,7 @@ repositories {
 ```
 ```gradle
 dependencies {
-    implementation 'com.github.Chevyself:Starbox:Tag'
+    implementation 'me.googas.starbox:bukkit:Tag'
 }
 ```
 Check [Jitpack](https://jitpack.io/#me.googas/starbox) to know more
