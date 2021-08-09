@@ -1,0 +1,61 @@
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" id="Layer_3" data-name="Layer 3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 368.14 377.61">
+  <defs>
+    <style>
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5 {
+        fill: none;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        stroke-linejoin: round;
+        stroke-width: 8px;
+      }
+
+      .cls-1 {
+        stroke: url(#linear-gradient);
+      }
+
+      .cls-2 {
+        stroke: url(#linear-gradient-2);
+      }
+
+      .cls-3 {
+        stroke: url(#linear-gradient-3);
+      }
+
+      .cls-4, .cls-5 {
+        stroke-miterlimit: 10;
+        stroke-width: 6px;
+      }
+
+      .cls-4 {
+        stroke: url(#linear-gradient-4);
+      }
+
+      .cls-5 {
+        stroke: url(#linear-gradient-5);
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="69.31" y1="20.17" x2="118.76" y2="300.61" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e19db6"/>
+      <stop offset="0.84" stop-color="#3f52b8"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="172.8" y1="252.86" x2="194.48" y2="375.83" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3f52b8"/>
+      <stop offset="1" stop-color="#342856"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-3" x1="321.81" y1="53.24" x2="222.45" y2="276.41" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e19db6"/>
+      <stop offset="0.74" stop-color="#3f52b8"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-4" x1="162.45" y1="145.09" x2="162.45" y2="294.14" xlink:href="#linear-gradient"/>
+    <linearGradient id="linear-gradient-5" x1="344" y1="142.44" x2="344" y2="302.65" xlink:href="#linear-gradient-3"/>
+  </defs>
+  <title>starbox</title>
+  <g>
+    <polygon class="cls-1" points="184.07 4 4 76.47 4 316.79 184.07 254.94 184.07 4"/>
+    <polygon class="cls-2" points="184.07 254.94 4 316.79 184.07 373.61 364.14 316.79 184.07 254.94"/>
+    <polygon class="cls-3" points="184.07 254.94 364.14 316.79 364.14 76.47 184.07 4 184.07 254.94"/>
+  </g>
+  <path class="cls-4" d="M162.7,150.92q17.22-6.72,28.48,2.53,7.6,6.63,9.72,19.33l-26.41,20.49q0-11.29-6.88-12.73a8.46,8.46,0,0,0-4.91.48,18.46,18.46,0,0,0-10.44,10,11.81,11.81,0,0,0-1.28,4.87q0,7,8.23,7.6a52.68,52.68,0,0,0,9.7-.32q15.72-1,22.41,2.18,12.19,6.09,12.34,27.73,0,17.77-13.65,34.6-12.42,15.08-28.34,20.76-18.42,6.57-30.13-2.69-7.75-6.63-10-19l25.87-19.82q0,10.71,7.71,12.1a12.07,12.07,0,0,0,6.58-.64q9.44-3.45,13.08-10.95a9.89,9.89,0,0,0,1.17-4.32q0-7.59-8.31-8.4-1.29-.06-14.71.52-16.41.84-22.76-6.93-6-7.35-6-22.52,0-17.61,12.6-34.36Q148,156.66,162.7,150.92Z" transform="translate(-65.93 -61.2)"/>
+  <path class="cls-5" d="M354.76,165q14.82,5.76,22.93,23.72A58,58,0,0,1,383,212.36q0,15.13-8.36,21.25a20,20,0,0,0-1.9,1,47.14,47.14,0,0,1,14.93,28.88,49.5,49.5,0,0,1,.51,7q0,16-8.85,24.12t-22,3.3L307.07,280V176.25l-6.69-2.55,6.69-27.23Zm-20.47,21.64V206l12.51,4.72q6.42,2.42,8-3.67a9.18,9.18,0,0,0,.38-2.65A13.76,13.76,0,0,0,350.78,194a12.32,12.32,0,0,0-4-2.57Zm0,73.45,15.21,5.53q7.56,2.76,10.12-3.84a13.31,13.31,0,0,0,.77-4.45,17.72,17.72,0,0,0-5.12-12.57,16.26,16.26,0,0,0-5.77-3.71l-15.21-5.62Z" transform="translate(-65.93 -61.2)"/>
+</svg>
