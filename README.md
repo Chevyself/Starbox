@@ -1,4 +1,4 @@
-Starbox [![Jitpack](https://jitpack.io/v/xChevy/Starbox.svg)](https://jitpack.io/#xChevy/Starbox)
+Starbox [![](https://jitpack.io/v/me.googas/starbox.svg)](https://jitpack.io/#me.googas/starbox)
 ===
 
 Utility library to speedup the creation of Java projects.
@@ -22,8 +22,8 @@ Getting Starbox
 ```xml
 <dependencies>
     <dependency>
-        <groupId>com.github.Chevyself</groupId>
-        <artifactId>Starbox</artifactId>
+        <groupId>me.googas</groupId>
+        <artifactId>starbox</artifactId>
         <version>Tag</version>
     </dependency>
 </dependencies>
@@ -39,4 +39,4 @@ dependencies {
     implementation 'com.github.Chevyself:Starbox:Tag'
 }
 ```
-Check [Jitpack](https://jitpack.io/#Chevyself/Starbox/) to know more
+Check [Jitpack](https://jitpack.io/#me.googas/starbox) to know more
