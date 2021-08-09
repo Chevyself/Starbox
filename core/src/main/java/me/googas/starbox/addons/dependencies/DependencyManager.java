@@ -6,21 +6,52 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
+import lombok.Getter;
 import lombok.NonNull;
 import me.googas.io.StarboxFile;
 import me.googas.starbox.addons.Addon;
 import me.googas.starbox.addons.AddonLoader;
 import me.googas.starbox.addons.exceptions.AddonCouldNotBeLoadedException;
+import me.googas.starbox.builders.Builder;
 
 /**
  * Manages {@link DependencyAddon}. This manages stuff as whether they are initialized and
  * downloaded
  */
-public interface DependencyManager extends AddonLoader {
+public class DependencyManager implements AddonLoader {
+
+  @NonNull @Getter private final List<DependencyAddon> dependencies;
+  @NonNull @Getter private final StarboxFile parent;
+  @NonNull @Getter private final Consumer<AddonCouldNotBeLoadedException> notLoadedHandler;
+
+  /**
+   * Create the manager.
+   *
+   * @param dependencies the list of dependencies to handle
+   * @param parent the file where the dependencies will be listed
+   * @param notLoadedHandler the handler for dependencies which could not be loaded
+   */
+  protected DependencyManager(
+      @NonNull List<DependencyAddon> dependencies,
+      @NonNull StarboxFile parent,
+      @NonNull Consumer<AddonCouldNotBeLoadedException> notLoadedHandler) {
+    this.dependencies = dependencies;
+    this.parent = parent;
+    this.notLoadedHandler = notLoadedHandler;
+  }
+
+  /**
+   * Create a builder instance.
+   *
+   * @param parent the directory where all the dependencies will be listed
+   * @return the new builder instance
+   */
+  @NonNull
+  public static DependencyManagerBuilder using(@NonNull StarboxFile parent) {
+    return new DependencyManagerBuilder(parent);
+  }
 
   /**
    * Initialize the dependency. This adds all its classes to the current class path
@@ -30,7 +61,7 @@ public interface DependencyManager extends AddonLoader {
    * @throws AddonCouldNotBeLoadedException if the dependency cannot be initialized
    */
   @NonNull
-  default DependencyAddon initialize(@NonNull DependencyAddon dependency)
+  private DependencyAddon initialize(@NonNull DependencyAddon dependency)
       throws AddonCouldNotBeLoadedException {
     StarboxFile file = dependency.getFile();
     try {
@@ -49,54 +80,22 @@ public interface DependencyManager extends AddonLoader {
 
   /**
    * Get a file to use for a {@link DependencyAddon}. This will create the jar file of the
-   * dependency using the parent as {@link #getParent()} and the name of the file will be: {@link
-   * DependencyInformation#getName()} + "-" + {@link DependencyInformation#getVersion()} + ".jar"
+   * dependency using the parent as {@link DependencyManager#parent} and the name of the file will
+   * be: {@link DependencyInformation#getName()} + "-" + {@link DependencyInformation#getVersion()}
+   * + ".jar"
    *
    * @param information the information of the dependency
    * @return the file for the dependency
    */
   @NonNull
-  default StarboxFile getDependencyFile(@NonNull DependencyInformation information) {
+  public StarboxFile getDependencyFile(@NonNull DependencyInformation information) {
     return new StarboxFile(
         this.getParent(), information.getName() + "-" + information.getVersion() + ".jar");
   }
 
-  /**
-   * Get the dependencies which this manager is handling.
-   *
-   * @return the collection of dependencies
-   */
-  @NonNull
-  Collection<DependencyAddon> getDependencies();
-
-  /**
-   * Get a logger to use in messages. If no logger is found this will use the System.out or
-   * printStackTrace for exceptions
-   *
-   * @return the logger
-   */
-  Logger getLogger();
-
-  /**
-   * Get the parent to which files may be created.
-   *
-   * @return the file to where the parent must be created
-   */
-  @NonNull
-  StarboxFile getParent();
-
-  /**
-   * This is a handler to use in {@link #load()}. This will handle exceptions thrown in {@link
-   * #initialize(DependencyAddon)} and {@link DependencyAddon.DownloadTask#download()}
-   *
-   * @return the consumer for exceptions
-   */
-  @NonNull
-  Consumer<AddonCouldNotBeLoadedException> getNotLoadedHandler();
-
   @Override
   @NonNull
-  default Collection<Addon> load() {
+  public List<Addon> load() {
     List<Addon> loaded = new ArrayList<>();
     for (DependencyAddon dependency : this.getDependencies()) {
       boolean downloaded = dependency.download().provide().orElse(false);
@@ -117,7 +116,66 @@ public interface DependencyManager extends AddonLoader {
 
   @Override
   @NonNull
-  default Collection<Addon> unload() {
+  public List<Addon> unload() {
     return new ArrayList<>();
+  }
+
+  @Override
+  public @NonNull List<Addon> getLoaded() {
+    return new ArrayList<>(this.dependencies);
+  }
+
+  /** Helps to build the manager in a neat way. */
+  public static class DependencyManagerBuilder implements Builder<DependencyManager> {
+
+    @NonNull @Getter private final StarboxFile parent;
+
+    @NonNull @Getter
+    private final List<DependencyAddon.DependencyAddonBuilder> dependencies = new ArrayList<>();
+
+    @NonNull @Getter
+    private Consumer<AddonCouldNotBeLoadedException> handler = Throwable::printStackTrace;
+
+    /**
+     * Create the builder.
+     *
+     * @param parent The directory where all the dependencies will be listed
+     */
+    private DependencyManagerBuilder(@NonNull StarboxFile parent) {
+      this.parent = parent;
+    }
+
+    /**
+     * Handles the exception when addons cannot be loaded.
+     *
+     * @param handler the handler for the exceptions
+     * @return this same instance
+     */
+    @NonNull
+    public DependencyManagerBuilder handle(
+        @NonNull Consumer<AddonCouldNotBeLoadedException> handler) {
+      this.handler = handler;
+      return this;
+    }
+
+    /**
+     * Add a dependency to the builder.
+     *
+     * @param addonBuilder the dependency builder to add.
+     * @return this same instance
+     */
+    @NonNull
+    public DependencyManagerBuilder add(
+        @NonNull DependencyAddon.DependencyAddonBuilder addonBuilder) {
+      this.dependencies.add(addonBuilder);
+      return this;
+    }
+
+    @Override
+    public @NonNull DependencyManager build() {
+      DependencyManager manager = new DependencyManager(new ArrayList<>(), parent, handler);
+      this.dependencies.forEach(builder -> manager.getDependencies().add(builder.build(manager)));
+      return manager;
+    }
   }
 }
