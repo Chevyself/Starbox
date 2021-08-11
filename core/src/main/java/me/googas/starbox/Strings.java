@@ -1,15 +1,30 @@
 package me.googas.starbox;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.NonNull;
 
 /** Static utilities for {@link String}. */
 public class Strings {
+
+  /** A string only containing uppercase letters. */
+  @NonNull public static final String UPPERCASE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  /** A string only containing lowercase letters. */
+  @NonNull public static final String LOWERCASE_LETTERS = "abcdefghijklmnopqrstuvwxyz";
+  /** A char array containing both uppercase and lowercase letters. */
+  @NonNull
+  public static final char[] LETTERS =
+      (Strings.UPPERCASE_LETTERS + Strings.LOWERCASE_LETTERS).toCharArray();
+  /** A char array containing uppercase letters. */
+  @NonNull public static final char[] UPPERCASE = Strings.UPPERCASE_LETTERS.toCharArray();
+  /** A char array containing lowercase letters. */
+  @NonNull public static final char[] LOWERCASE = Strings.LOWERCASE_LETTERS.toCharArray();
 
   /**
    * This method is made to save resources from {@link #format(String, Map)}, {@link #format(String,
@@ -259,6 +274,50 @@ public class Strings {
   @NonNull
   public static String pretty(@NonNull Object... objects) {
     return Strings.pretty("[]", objects);
+  }
+
+  /**
+   * Generate a random strings with certain characters.
+   *
+   * @param random to create randomness
+   * @param length the length that the string must be
+   * @param chars the characters that may be used in the string
+   * @return the random string
+   */
+  @NonNull
+  public static String nextString(@NonNull Random random, int length, char... chars) {
+    StringBuilder builder = new StringBuilder();
+    while (builder.length() < length) {
+      builder.append(chars[random.nextInt(chars.length)]);
+    }
+    return builder.toString();
+  }
+
+  /**
+   * Generate a random string only using {@link #UPPERCASE} and {@link #LOWERCASE}.
+   *
+   * @param random to create randomness
+   * @param length the length that the string must be
+   * @return the random string
+   */
+  @NonNull
+  public static String nextString(@NonNull Random random, int length) {
+    return Strings.nextString(random, length, Strings.LETTERS);
+  }
+
+  /**
+   * Generate a random string using a {@link Charset}.
+   *
+   * @param random to create randomness
+   * @param length the length that the string must be
+   * @param charset the charset of the characters that the string may contain
+   * @return the random string
+   */
+  @NonNull
+  public static String nextString(@NonNull Random random, int length, @NonNull Charset charset) {
+    byte[] bytes = new byte[length];
+    random.nextBytes(bytes);
+    return new String(bytes, charset);
   }
 
   private static int editDistance(String longer, String shorter) {
