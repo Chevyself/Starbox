@@ -36,10 +36,6 @@ public class Players {
   public static final WrappedMethod<ItemStack> GET_ITEM_IN_HAND =
       Players.PLAYER.getMethod(ItemStack.class, "getItemInHand");
 
-  @APIVersion(since = 9)
-  public static final WrappedMethod<ItemStack> GET_ITEM_IN_MAIN_HAND =
-      Players.PLAYER_INVENTORY.getMethod(ItemStack.class, "getItemInMainHand");
-
   @APIVersion(since = 9, max = 11)
   public static final WrappedMethod<String> SPIGOT_GET_LOCALE =
       Players.SPIGOT_PLAYER.getMethod(String.class, "getLocale");
@@ -116,7 +112,7 @@ public class Players {
     if (Versions.BUKKIT < 9) {
       return Players.GET_ITEM_IN_HAND.prepare(player).provide();
     } else {
-      return Players.GET_ITEM_IN_MAIN_HAND.prepare(player.getInventory()).provide();
+      return Optional.of(player.getInventory().getItemInMainHand());
     }
   }
 
