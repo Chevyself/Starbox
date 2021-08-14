@@ -24,9 +24,9 @@ import me.googas.net.api.Messenger;
 import me.googas.net.api.exception.MessengerListenFailException;
 import me.googas.net.api.messages.AwaitingRequest;
 import me.googas.net.api.messages.Message;
-import me.googas.net.api.messages.Request;
-import me.googas.net.api.messages.Response;
 import me.googas.net.api.messages.StarboxRequest;
+import me.googas.net.api.messages.Response;
+import me.googas.net.api.messages.Request;
 import me.googas.net.sockets.json.exception.JsonCommunicationException;
 import me.googas.net.sockets.json.exception.JsonExternalCommunicationException;
 import me.googas.net.sockets.json.exception.JsonInternalCommunicationException;
@@ -64,7 +64,7 @@ public interface JsonMessenger extends Messenger, Runnable {
    * @return the receptor if found else null
    */
   @NonNull
-  default Optional<JsonReceptor> getReceptor(@NonNull StarboxRequest request) {
+  default Optional<JsonReceptor> getReceptor(@NonNull Request request) {
     return this.getReceptor(request.getMethod());
   }
 
@@ -123,7 +123,7 @@ public interface JsonMessenger extends Messenger, Runnable {
    * @param <T> the type of object requested
    */
   default <T> void sendRequest(
-      @NonNull Request<T> request,
+      @NonNull StarboxRequest<T> request,
       @NonNull Consumer<Optional<T>> consumer,
       @NonNull Consumer<Throwable> exception) {
     this.getRequests()
@@ -268,7 +268,7 @@ public interface JsonMessenger extends Messenger, Runnable {
 
   @Override
   default <T> void sendRequest(
-      @NonNull Request<T> request, @NonNull Consumer<Optional<T>> consumer) {
+          @NonNull StarboxRequest<T> request, @NonNull Consumer<Optional<T>> consumer) {
     this.getRequests()
         .put(
             new AwaitingRequest<>(request, request.getClazz(), consumer),
@@ -364,7 +364,7 @@ public interface JsonMessenger extends Messenger, Runnable {
   }
 
   @Override
-  default <T> Optional<T> sendRequest(@NonNull Request<T> request)
+  default <T> Optional<T> sendRequest(@NonNull StarboxRequest<T> request)
       throws MessengerListenFailException {
     long start = System.currentTimeMillis();
     AtomicReference<T> reference = new AtomicReference<>();

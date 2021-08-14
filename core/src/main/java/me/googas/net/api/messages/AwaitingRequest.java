@@ -15,7 +15,7 @@ import me.googas.net.api.Messenger;
 public class AwaitingRequest<T> {
 
   /** The request waiting for the response. */
-  @NonNull @Getter private final Request<T> request;
+  @NonNull @Getter private final StarboxRequest<T> request;
 
   /** The class of the object requested. */
   @NonNull @Getter private final Class<T> clazz;
@@ -35,7 +35,7 @@ public class AwaitingRequest<T> {
    * @param exception the consumer in case of an exception
    */
   public AwaitingRequest(
-      @NonNull Request<T> request,
+      @NonNull StarboxRequest<T> request,
       @NonNull Class<T> clazz,
       @NonNull Consumer<Optional<T>> consumer,
       @NonNull Consumer<Throwable> exception) {
@@ -53,7 +53,7 @@ public class AwaitingRequest<T> {
    * @param consumer the consumer to execute when the response is received
    */
   public AwaitingRequest(
-      @NonNull Request<T> request,
+      @NonNull StarboxRequest<T> request,
       @NonNull Class<T> clazz,
       @NonNull Consumer<Optional<T>> consumer) {
     this(request, clazz, consumer, Throwable::printStackTrace);

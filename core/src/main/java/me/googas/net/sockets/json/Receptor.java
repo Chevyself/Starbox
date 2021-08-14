@@ -5,9 +5,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import lombok.NonNull;
-import me.googas.net.api.messages.Request;
+import me.googas.net.api.messages.StarboxRequest;
 
-/** This annotation is used in methods which are capable of receiving {@link Request}. */
+/** This annotation is used in methods which are capable of receiving {@link StarboxRequest}. */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Receptor {

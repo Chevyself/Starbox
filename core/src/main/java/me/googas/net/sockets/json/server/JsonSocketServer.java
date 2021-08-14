@@ -22,7 +22,7 @@ import me.googas.net.api.Server;
 import me.googas.net.api.auth.Authenticator;
 import me.googas.net.api.exception.MessengerListenFailException;
 import me.googas.net.api.messages.Message;
-import me.googas.net.api.messages.Request;
+import me.googas.net.api.messages.StarboxRequest;
 import me.googas.net.sockets.json.JsonReceptor;
 import me.googas.net.sockets.json.adapters.MessageDeserializer;
 import me.googas.net.sockets.json.reflect.ReflectJsonReceptor;
@@ -209,7 +209,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
 
   @Override
   public <T> void sendRequest(
-      @NonNull Request<T> request, BiConsumer<JsonClientThread, Optional<T>> consumer) {
+          @NonNull StarboxRequest<T> request, BiConsumer<JsonClientThread, Optional<T>> consumer) {
     this.clients.forEach(
         client -> {
           try {
@@ -222,7 +222,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
 
   @Override
   @NonNull
-  public <T> Map<JsonClientThread, Optional<T>> sendRequest(@NonNull Request<T> request) {
+  public <T> Map<JsonClientThread, Optional<T>> sendRequest(@NonNull StarboxRequest<T> request) {
     Map<JsonClientThread, Optional<T>> responses = new HashMap<>();
     this.clients.forEach(
         client -> {

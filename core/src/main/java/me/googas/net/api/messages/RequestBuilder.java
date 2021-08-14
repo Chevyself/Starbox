@@ -85,8 +85,8 @@ public class RequestBuilder<T> {
    * @return the built request
    */
   @NonNull
-  public Request<T> build() {
-    return new Request<>(this.clazz, this.method, this.parameters);
+  public StarboxRequest<T> build() {
+    return new StarboxRequest<>(this.clazz, this.method, this.parameters);
   }
 
   /**

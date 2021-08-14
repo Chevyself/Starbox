@@ -8,10 +8,10 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.net.api.Messenger;
-import me.googas.net.api.messages.StarboxRequest;
+import me.googas.net.api.messages.Request;
 
 /** This object represents a request that is being read by a {@link Messenger}. */
-public class ReceivedJsonRequest implements StarboxRequest {
+public class ReceivedJsonRequest implements Request {
 
   /** The id of the request/response. */
   @NonNull @Getter private final UUID id;

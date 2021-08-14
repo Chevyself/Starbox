@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import lombok.NonNull;
 import me.googas.net.api.auth.Authenticator;
-import me.googas.net.api.messages.Request;
+import me.googas.net.api.messages.StarboxRequest;
 
 /** This object represents the server {@link Messenger} connects to. */
 public interface Server<M extends Messenger> {
@@ -34,7 +34,7 @@ public interface Server<M extends Messenger> {
    * @param consumer the consumer to accept
    * @param <T> the type of object requested
    */
-  <T> void sendRequest(@NonNull Request<T> request, BiConsumer<M, Optional<T>> consumer);
+  <T> void sendRequest(@NonNull StarboxRequest<T> request, BiConsumer<M, Optional<T>> consumer);
 
   /**
    * Send a request and get the response for each client.
@@ -44,7 +44,7 @@ public interface Server<M extends Messenger> {
    * @return the map of clients and its response
    */
   @NonNull
-  <T> Map<M, Optional<T>> sendRequest(@NonNull Request<T> request);
+  <T> Map<M, Optional<T>> sendRequest(@NonNull StarboxRequest<T> request);
 
   /** Makes the server start listening. */
   void start();
