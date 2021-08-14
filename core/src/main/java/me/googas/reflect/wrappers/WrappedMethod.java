@@ -61,7 +61,7 @@ public class WrappedMethod<T> extends LangWrapper<Method> {
   }
 
   /**
-   * Invoke the method.
+   * Invoke the method and cast the object with the return type of the method.
    *
    * @param object the instance of the object to prepare the method if the method is static it may
    *     be null
@@ -85,6 +85,15 @@ public class WrappedMethod<T> extends LangWrapper<Method> {
         });
   }
 
+  /**
+   * Invoke the method.
+   *
+   * @param object the instance of the object to prepare the method if the method is static it may
+   *     be null
+   * @param params the parameters to prepare the method
+   * @return a {@link HandledExpression} returning the object which the method returns and handles
+   *     {@link IllegalAccessException} and {@link InvocationTargetException}
+   */
   @NonNull
   public HandledExpression<?> invoke(Object object, Object... params) {
     return HandledExpression.using(

@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import me.googas.io.mocks.Person;
 
-/** Class that contains mocks for testing */
+/** Class that contains mocks for testing. */
 public class TestingMocks {
 
   @NonNull @Getter private final List<Person> persons;

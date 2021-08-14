@@ -90,9 +90,18 @@ public class ReflectUtil {
     return true;
   }
 
+  /**
+   * Get the class that boxes a primitive class.
+   *
+   * <p>EJ: For the primitive class 'long' its box will be {@link Long}
+   *
+   * @param primitive the primitive class to box
+   * @param <T> the type of the primitive
+   * @return the boxing class
+   */
   @NonNull
   @SuppressWarnings("unchecked")
-  public static <T> Class<T> getBoxing(Class<T> primitive) {
+  public static <T> Class<T> getBoxing(@NonNull Class<T> primitive) {
     return (Class<T>) ReflectUtil.boxing.get(primitive);
   }
 }

@@ -14,9 +14,9 @@ import lombok.experimental.Delegate;
  */
 public class Pagination<O> {
 
-  /** The list of objects to paginate, */
+  /** The list of objects to paginate. */
   @NonNull @Delegate @Getter private final List<O> list;
-  /** The limit of objects per page, */
+  /** The limit of objects per page. */
   @Getter private int limit = 10;
 
   /**
@@ -29,7 +29,7 @@ public class Pagination<O> {
   }
 
   /**
-   * Create a new pagination object,
+   * Create a new pagination object.
    *
    * @param list the list of objects to paginate
    * @param limit the limit of objects per page
@@ -39,7 +39,7 @@ public class Pagination<O> {
     this.limit = limit;
   }
 
-  /** Create a new pagination object with an empty list and 10 objects limit */
+  /** Create a new pagination object with an empty list and 10 objects limit. */
   public Pagination() {
     this(new ArrayList<>());
   }
@@ -85,7 +85,7 @@ public class Pagination<O> {
   }
 
   /**
-   * Set the limit of elements by page,
+   * Set the limit of elements by page.
    *
    * @param limit the new value of limit
    */

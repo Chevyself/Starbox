@@ -116,7 +116,7 @@ public class RequestBuilder<T> {
   }
 
   /**
-   * Send the request async
+   * Send the request async.
    *
    * @param messenger the messenger to send the request
    */

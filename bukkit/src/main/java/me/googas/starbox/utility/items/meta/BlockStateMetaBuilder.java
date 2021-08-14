@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-/** Builds {@link BlockStateMeta} */
+/** Builds {@link BlockStateMeta}. */
 public class BlockStateMetaBuilder extends ItemMetaBuilder {
 
   @Getter private BlockState state;
@@ -22,6 +22,11 @@ public class BlockStateMetaBuilder extends ItemMetaBuilder {
     super(itemBuilder);
   }
 
+  /**
+   * Create the builder.
+   *
+   * @param other another meta builder to copy its values
+   */
   public BlockStateMetaBuilder(@NonNull ItemMetaBuilder other) {
     super(other);
   }
@@ -39,7 +44,6 @@ public class BlockStateMetaBuilder extends ItemMetaBuilder {
   }
 
   @Override
-  @NonNull
   public BlockStateMeta build(@NonNull ItemStack stack) {
     ItemMeta itemMeta = super.build(stack);
     if (itemMeta instanceof BlockStateMeta) {

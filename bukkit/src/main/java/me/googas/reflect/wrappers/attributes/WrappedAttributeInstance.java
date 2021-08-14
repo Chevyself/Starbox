@@ -6,6 +6,7 @@ import me.googas.reflect.APIVersion;
 import me.googas.reflect.StarboxWrapper;
 import org.bukkit.attribute.AttributeInstance;
 
+/** Class to wrap {@link AttributeInstance} to not crash when older versions cannot use it. */
 @APIVersion(since = 9)
 public class WrappedAttributeInstance extends StarboxWrapper<AttributeInstance> {
 
@@ -18,6 +19,12 @@ public class WrappedAttributeInstance extends StarboxWrapper<AttributeInstance> 
     super(reference);
   }
 
+  /**
+   * Get the actual attribute instance checking that is not null.
+   *
+   * @return the attribute instance
+   * @throws NullPointerException if there's no wrapped attribute instance
+   */
   @NonNull
   @Delegate
   public AttributeInstance getAttributeInstance() {

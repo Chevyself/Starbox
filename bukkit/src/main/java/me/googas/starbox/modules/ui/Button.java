@@ -4,7 +4,7 @@ import lombok.NonNull;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * This interface must be implemented to an object that represents a button inside the {@link UI}
+ * This interface must be implemented to an object that represents a button inside the {@link UI}.
  *
  * <p>The button has two basic elements:
  *

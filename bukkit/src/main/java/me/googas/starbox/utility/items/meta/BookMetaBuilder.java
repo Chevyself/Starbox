@@ -28,10 +28,16 @@ public class BookMetaBuilder extends ItemMetaBuilder {
     super(itemBuilder);
   }
 
+  /** Create the builder. */
   public BookMetaBuilder() {
     super();
   }
 
+  /**
+   * Create the builder.
+   *
+   * @param other another meta builder to copy its values
+   */
   public BookMetaBuilder(@NonNull ItemMetaBuilder other) {
     super(other);
   }

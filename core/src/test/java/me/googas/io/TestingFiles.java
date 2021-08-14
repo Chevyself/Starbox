@@ -29,7 +29,7 @@ public class TestingFiles {
     @NonNull public static final URL MOCKS = Resources.getResource("mocks.json");
 
     /**
-     * Get a resource by its name
+     * Get a resource by its name.
      *
      * @param name the name of the resource to match
      * @return the matched url

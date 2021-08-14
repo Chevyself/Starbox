@@ -20,6 +20,11 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+/**
+ * Commands to create items using {@link ItemBuilder}. Javadoc warnings are suppressed as commands
+ * already have a description and usage.
+ */
+@SuppressWarnings("JavaDoc")
 public class ItemBuilderCommands {
 
   @NonNull private final Map<UUID, ItemBuilder> builders = new HashMap<>();
@@ -176,7 +181,7 @@ public class ItemBuilderCommands {
     AtomicBoolean successful = new AtomicBoolean(true);
     ItemBuilder builder =
         file.read(StarboxBukkitFiles.Contexts.JSON, ItemBuilder.class)
-            .handle(Starbox::handle)
+            .handle(Starbox::severe)
             .provide()
             .orElseGet(
                 () -> {

@@ -11,7 +11,12 @@ public class Starbox {
 
   @Getter private static StarboxPlugin instance;
 
-  public static void handle(@NonNull Exception e) {
+  /**
+   * Handle an exception using the plugin as a severe exception.
+   *
+   * @param e the exception to handle
+   */
+  public static void severe(@NonNull Exception e) {
     Starbox.getLogger().log(Level.SEVERE, e, () -> "");
   }
 

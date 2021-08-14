@@ -6,6 +6,7 @@ import me.googas.reflect.APIVersion;
 import me.googas.reflect.StarboxWrapper;
 import org.bukkit.attribute.AttributeModifier;
 
+/** Class to wrap {@link AttributeModifier} to not crash when older versions cannot use it. */
 @APIVersion(since = 9)
 public class WrappedAttributeModifier extends StarboxWrapper<AttributeModifier> {
 
@@ -18,6 +19,12 @@ public class WrappedAttributeModifier extends StarboxWrapper<AttributeModifier> 
     super(reference);
   }
 
+  /**
+   * Get the actual attribute modifier checking that is not null.
+   *
+   * @return the attribute instance
+   * @throws NullPointerException if there's no wrapped attribute modifier
+   */
   @NonNull
   @Delegate
   public AttributeModifier getAttributeModifier() {

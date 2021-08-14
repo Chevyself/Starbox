@@ -34,6 +34,11 @@ public class StarboxWrapper<T> implements Wrapper<T> {
     return this;
   }
 
+  /**
+   * Get whether the reference is not null.
+   *
+   * @return true if the reference is not null
+   */
   public boolean isPresent() {
     return this.reference != null;
   }

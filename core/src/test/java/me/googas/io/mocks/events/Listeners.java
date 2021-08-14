@@ -4,7 +4,7 @@ import lombok.NonNull;
 import me.googas.starbox.events.ListenPriority;
 import me.googas.starbox.events.Listener;
 
-/** Mock listeners for testing */
+/** Mock listeners for testing. */
 public class Listeners {
 
   /**

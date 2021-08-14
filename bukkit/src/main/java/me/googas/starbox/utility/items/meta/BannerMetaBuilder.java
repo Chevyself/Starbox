@@ -24,10 +24,16 @@ public class BannerMetaBuilder extends ItemMetaBuilder {
     super(itemBuilder);
   }
 
+  /** Create the builder. */
   public BannerMetaBuilder() {
     super();
   }
 
+  /**
+   * Create the builder.
+   *
+   * @param other another meta builder to copy its values
+   */
   public BannerMetaBuilder(@NonNull ItemMetaBuilder other) {
     super(other);
   }

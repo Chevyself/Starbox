@@ -12,6 +12,10 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+/**
+ * Adapts {@link OfflinePlayer} to Json. This makes that {@link OfflinePlayer} is adapted using its
+ * {@link UUID}
+ */
 public class OfflinePlayerAdapter
     implements JsonSerializer<OfflinePlayer>, JsonDeserializer<OfflinePlayer> {
   @Override

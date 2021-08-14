@@ -35,7 +35,7 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
 
   @NonNull
   public static final WrappedMethod<?> SET_DURABILITY =
-          ItemBuilder.ITEM_STACK.getMethod("setDurability", short.class);
+      ItemBuilder.ITEM_STACK.getMethod("setDurability", short.class);
 
   @Delegate(excludes = IgnoredMethods.class)
   @NonNull
@@ -46,6 +46,13 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
   @NonNull @Getter private Material material;
   @Getter private int amount;
 
+  /**
+   * Create the item builder.
+   *
+   * @param metaBuilder the meta builder for the item {@link ItemMeta}
+   * @param material the material of the item
+   * @param amount the amount of items in the stack
+   */
   protected ItemBuilder(
       @NonNull ItemMetaBuilder metaBuilder, @NonNull Material material, int amount) {
     this.metaBuilder = metaBuilder;
@@ -148,6 +155,10 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
     <T extends ItemMeta> T build(@NonNull ItemStack stack);
   }
 
+  /**
+   * {@link com.google.gson.Gson} deserializer for {@link ItemBuilder}. This takes into
+   * consideration the 'material' of the object to get a valid {@link ItemMetaBuilder}
+   */
   public static class Deserializer implements JsonDeserializer<ItemBuilder> {
     @Override
     public ItemBuilder deserialize(

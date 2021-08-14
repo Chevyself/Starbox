@@ -9,12 +9,14 @@ import me.googas.io.context.Txt;
 import me.googas.starbox.utility.items.ItemBuilder;
 import org.bukkit.OfflinePlayer;
 
+/** Static access for files used by the plugin. */
 public class StarboxBukkitFiles {
 
   public static final StarboxFile DIR = StarboxFile.of(Starbox.getPlugin().getDataFolder());
 
   public static final StarboxFile EXPORTS = new StarboxFile(StarboxBukkitFiles.DIR, "exports");
 
+  /** Static access for file contexts. */
   public static class Contexts {
 
     @NonNull public static final Txt TXT = new Txt();

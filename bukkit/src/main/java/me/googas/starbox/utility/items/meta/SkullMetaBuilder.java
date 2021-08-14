@@ -37,10 +37,16 @@ public class SkullMetaBuilder extends ItemMetaBuilder {
     super(itemBuilder);
   }
 
+  /** Create the builder. */
   public SkullMetaBuilder() {
     super();
   }
 
+  /**
+   * Create the builder.
+   *
+   * @param other another meta builder to copy its values
+   */
   public SkullMetaBuilder(@NonNull ItemMetaBuilder other) {
     super(other);
   }
@@ -51,15 +57,11 @@ public class SkullMetaBuilder extends ItemMetaBuilder {
         ItemBuilder.SET_DURABILITY.invoke(stack, (short) 3).run();
       }
       WrappedGameProfile gameProfile = WrappedGameProfile.construct(UUID.randomUUID(), null);
-      boolean put =
-          gameProfile
-              .getProperties()
-              .put("textures", WrappedProperty.construct("textures", this.skin));
-      System.out.println("put = " + put);
+      gameProfile.getProperties().put("textures", WrappedProperty.construct("textures", this.skin));
       WrappedClass.of(meta.getClass())
           .getDeclaredField("profile")
           .set(meta, gameProfile.get().orElseThrow(NullPointerException::new))
-          .handle(Starbox::handle)
+          .handle(Starbox::severe)
           .run();
     }
   }

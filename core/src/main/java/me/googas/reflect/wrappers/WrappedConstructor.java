@@ -4,7 +4,7 @@ import java.lang.reflect.Constructor;
 import lombok.NonNull;
 import me.googas.starbox.expressions.HandledExpression;
 
-/** This class wraps a {@link Constructor} to prepare it and create instances of a class */
+/** This class wraps a {@link Constructor} to prepare it and create instances of a class. */
 public class WrappedConstructor<T> extends LangWrapper<Constructor<T>> {
 
   private WrappedConstructor(Constructor<T> reference) {

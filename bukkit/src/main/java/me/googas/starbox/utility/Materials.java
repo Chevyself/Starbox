@@ -1,5 +1,6 @@
 package me.googas.starbox.utility;
 
+import java.util.Objects;
 import lombok.NonNull;
 import org.bukkit.Material;
 
@@ -91,9 +92,9 @@ public class Materials {
   @NonNull
   public static Material getSkull() {
     if (Versions.BUKKIT > 12) {
-      return Material.getMaterial("PLAYER_HEAD");
+      return Objects.requireNonNull(Material.getMaterial("PLAYER_HEAD"));
     } else {
-      return Material.getMaterial("SKULL_ITEM");
+      return Objects.requireNonNull(Material.getMaterial("SKULL_ITEM"));
     }
   }
 }

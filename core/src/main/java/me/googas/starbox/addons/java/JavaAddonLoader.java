@@ -130,10 +130,8 @@ public class JavaAddonLoader implements AddonLoader {
     for (StarboxFile file : this.getJars()) {
       try {
         JavaAddon addon = this.initializeAddon(file);
-        if (addon != null) {
-          addon.onEnable();
-          loaded.add(addon);
-        }
+        addon.onEnable();
+        loaded.add(addon);
       } catch (AddonCouldNotBeLoadedException e) {
         notLoadedConsumer.accept(e);
       } catch (Throwable e) {

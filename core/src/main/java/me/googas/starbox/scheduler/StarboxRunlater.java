@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
-/** An implementation for {@link RunLater} */
+/** An implementation for {@link RunLater}. */
 public class StarboxRunlater implements RunLater {
 
   @Setter private long start = System.currentTimeMillis();

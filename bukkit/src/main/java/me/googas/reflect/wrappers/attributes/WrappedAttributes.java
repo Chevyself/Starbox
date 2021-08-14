@@ -11,6 +11,10 @@ import me.googas.starbox.builders.Builder;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 
+/**
+ * Class to wrap {@link Multimap} having {@link Attribute} and {@link AttributeModifier} to not
+ * crash when older versions cannot use it.
+ */
 @APIVersion(since = 9)
 public class WrappedAttributes implements Builder<Multimap<Attribute, AttributeModifier>> {
 

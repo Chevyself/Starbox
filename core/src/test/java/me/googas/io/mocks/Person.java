@@ -18,7 +18,7 @@ public class Person implements Catchable {
   @Getter private final int age;
 
   /**
-   * Create a person
+   * Create a person.
    *
    * @param id the id of the person
    * @param username the username of the person

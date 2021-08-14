@@ -57,7 +57,7 @@ public class WrappedGameProfile extends StarboxWrapper<Object> {
     Object object =
         WrappedGameProfile.CONSTRUCTOR
             .invoke(uuid, name)
-            .handle(Starbox::handle)
+            .handle(Starbox::severe)
             .provide()
             .orElseThrow(() -> new IllegalStateException("GameProfile could not be created"));
     return new WrappedGameProfile(object);

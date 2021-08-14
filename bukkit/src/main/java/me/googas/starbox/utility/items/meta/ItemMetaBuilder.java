@@ -45,6 +45,15 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
   @Getter private WrappedAttributes attributes;
   @Getter private boolean unbreakable;
 
+  /**
+   * Create the builder.
+   *
+   * @param enchantments the enchantments to add in the item
+   * @param name the initial name of the item
+   * @param lore the lore of the item
+   * @param attributes attributes of the item
+   * @param unbreakable whether the item must be unbreakable
+   */
   protected ItemMetaBuilder(
       @NonNull EnchantmentsBuilder enchantments,
       String name,
@@ -58,6 +67,11 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
     this.unbreakable = unbreakable;
   }
 
+  /**
+   * Create the builder.
+   *
+   * @param other other builder instance to copy its values
+   */
   public ItemMetaBuilder(@NonNull ItemMetaBuilder other) {
     this(
         other.getEnchantments(),
@@ -105,6 +119,12 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
     return this;
   }
 
+  /**
+   * Get an instance given a material.
+   *
+   * @param material the material to get the meta builder from
+   * @return the meta builder
+   */
   @NonNull
   public static ItemMetaBuilder getMeta(@NonNull Material material) {
     return ItemMetaBuilder.getMeta(material, null);
@@ -122,6 +142,13 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
     return this;
   }
 
+  /**
+   * Get an instance given a material and copy the values of another builder.
+   *
+   * @param material the material to get the meta builder from
+   * @param other another builder to copy its values
+   * @return the meta builder
+   */
   @NonNull
   public static ItemMetaBuilder getMeta(@NonNull Material material, ItemMetaBuilder other) {
     if (material == Material.BOOK) {
@@ -172,8 +199,13 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
     return meta;
   }
 
+  /**
+   * Builds a {@link java.util.Map} containing {@link Enchantment} and its level to then save it
+   * into the {@link ItemMeta}.
+   */
   public static class EnchantmentsBuilder extends MapBuilder<Enchantment, Integer> {
 
+    /** Start the builder. */
     public EnchantmentsBuilder() {
       super(new HashMap<>());
     }

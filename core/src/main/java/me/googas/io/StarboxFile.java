@@ -92,6 +92,12 @@ public class StarboxFile {
     this(new File(parent.getFile(), child));
   }
 
+  /**
+   * Start this wrapper for an actual {@link File}.
+   *
+   * @param file the file to be wrapped
+   * @return a new instance of this class
+   */
   @NonNull
   public static StarboxFile of(@NonNull File file) {
     return new StarboxFile(file);
