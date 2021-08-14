@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
@@ -35,13 +36,10 @@ public class ModuleRegistry {
    *
    * @param clazz the class of the module to get
    * @param <T> the type of the module
-   * @return the module if engaged, else null
+   * @return a {@link Optional} holding the nullable module
    */
-  public <T extends Module> T get(@NonNull Class<T> clazz) {
-    for (Module module : this.engaged) {
-      if (clazz.isAssignableFrom(module.getClass())) return clazz.cast(module);
-    }
-    return null;
+  public <T extends Module> Optional<T> get(@NonNull Class<T> clazz) {
+    return this.engaged.stream().filter(module -> clazz.isAssignableFrom(module.getClass())).map(clazz::cast).findFirst();
   }
 
   /**
@@ -131,6 +129,13 @@ public class ModuleRegistry {
    */
   @NonNull
   public <T extends Module> T require(@NonNull Class<T> typeOfT) {
-    return Objects.requireNonNull(this.get(typeOfT), typeOfT + " module has not been engaged");
+    return this.get(typeOfT).orElseThrow(() -> new NullPointerException(typeOfT + " module has not been engaged"));
+  }
+
+  /**
+   * Disengage all engaged modules.
+   */
+  public void disengageAll() {
+    new ArrayList<>(this.engaged).forEach(this::disengage);
   }
 }
