@@ -151,7 +151,7 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
    */
   @NonNull
   public static ItemMetaBuilder getMeta(@NonNull Material material, ItemMetaBuilder other) {
-    if (material == Material.BOOK) {
+    if (material == Materials.getWritableBook() || material == Material.WRITTEN_BOOK) {
       return other == null ? new BookMetaBuilder() : new BookMetaBuilder(other);
     } else if (Materials.isBanner(material)) {
       return other == null ? new BannerMetaBuilder() : new BannerMetaBuilder(other);

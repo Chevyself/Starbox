@@ -92,9 +92,23 @@ public class Materials {
   @NonNull
   public static Material getSkull() {
     if (Versions.BUKKIT > 12) {
-      return Objects.requireNonNull(Material.getMaterial("PLAYER_HEAD"));
+      return Material.PLAYER_HEAD;
     } else {
       return Objects.requireNonNull(Material.getMaterial("SKULL_ITEM"));
+    }
+  }
+
+  /**
+   * Get the material that represents a book that can be written on.
+   *
+   * @return the material
+   */
+  @NonNull
+  public static Material getWritableBook() {
+    if (Versions.BUKKIT > 12) {
+      return Material.WRITABLE_BOOK;
+    } else {
+      return Objects.requireNonNull(Material.getMaterial("BOOK_AND_QUILL"));
     }
   }
 }
