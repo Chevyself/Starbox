@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
 import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
@@ -39,7 +38,10 @@ public class ModuleRegistry {
    * @return a {@link Optional} holding the nullable module
    */
   public <T extends Module> Optional<T> get(@NonNull Class<T> clazz) {
-    return this.engaged.stream().filter(module -> clazz.isAssignableFrom(module.getClass())).map(clazz::cast).findFirst();
+    return this.engaged.stream()
+        .filter(module -> clazz.isAssignableFrom(module.getClass()))
+        .map(clazz::cast)
+        .findFirst();
   }
 
   /**
@@ -129,12 +131,11 @@ public class ModuleRegistry {
    */
   @NonNull
   public <T extends Module> T require(@NonNull Class<T> typeOfT) {
-    return this.get(typeOfT).orElseThrow(() -> new NullPointerException(typeOfT + " module has not been engaged"));
+    return this.get(typeOfT)
+        .orElseThrow(() -> new NullPointerException(typeOfT + " module has not been engaged"));
   }
 
-  /**
-   * Disengage all engaged modules.
-   */
+  /** Disengage all engaged modules. */
   public void disengageAll() {
     new ArrayList<>(this.engaged).forEach(this::disengage);
   }

@@ -12,8 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 /** Main class of the Starbox Bukkit plugin. */
 public class StarboxPlugin extends JavaPlugin {
 
-  @NonNull
-  private final ModuleRegistry modules = new ModuleRegistry(this);
+  @NonNull private final ModuleRegistry modules = new ModuleRegistry(this);
 
   @Override
   public void onEnable() {
