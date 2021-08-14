@@ -1,8 +1,9 @@
 package me.googas.starbox.utility;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.NonNull;
 import me.googas.reflect.APIVersion;
 import me.googas.reflect.wrappers.WrappedClass;
@@ -11,6 +12,7 @@ import me.googas.reflect.wrappers.attributes.WrappedAttribute;
 import me.googas.reflect.wrappers.attributes.WrappedAttributeInstance;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -141,10 +143,6 @@ public class Players {
    */
   @NonNull
   public static List<String> getOnlinePlayersNames() {
-    List<String> names = new ArrayList<>();
-    for (Player player : Bukkit.getOnlinePlayers()) {
-      names.add(player.getName());
-    }
-    return names;
+    return Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList());
   }
 }
