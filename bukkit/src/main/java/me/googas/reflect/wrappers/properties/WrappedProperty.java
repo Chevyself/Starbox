@@ -42,7 +42,8 @@ public class WrappedProperty extends StarboxWrapper<Object> {
    */
   @NonNull
   public static WrappedProperty construct(@NonNull String key, @NonNull String value) {
-    return new WrappedProperty(WrappedProperty.PROPERTY_KEY_VAL_CONSTRUCTOR
+    return new WrappedProperty(
+        WrappedProperty.PROPERTY_KEY_VAL_CONSTRUCTOR
             .invoke(key, value)
             .handle(Starbox::severe)
             .provide()
@@ -60,7 +61,8 @@ public class WrappedProperty extends StarboxWrapper<Object> {
   @NonNull
   public static WrappedProperty construct(
       @NonNull String key, @NonNull String value, String signature) {
-    return new WrappedProperty(WrappedProperty.PROPERTY_CONSTRUCTOR
+    return new WrappedProperty(
+        WrappedProperty.PROPERTY_CONSTRUCTOR
             .invoke(key, value, signature)
             .handle(Starbox::severe)
             .provide()

@@ -209,7 +209,7 @@ public class JsonSocketServer extends Thread implements Server<JsonClientThread>
 
   @Override
   public <T> void sendRequest(
-          @NonNull StarboxRequest<T> request, BiConsumer<JsonClientThread, Optional<T>> consumer) {
+      @NonNull StarboxRequest<T> request, BiConsumer<JsonClientThread, Optional<T>> consumer) {
     this.clients.forEach(
         client -> {
           try {

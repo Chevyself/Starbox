@@ -54,7 +54,8 @@ public class WrappedGameProfile extends StarboxWrapper<Object> {
    */
   @NonNull
   public static WrappedGameProfile construct(@NonNull UUID uuid, String name) {
-    return new WrappedGameProfile(WrappedGameProfile.CONSTRUCTOR
+    return new WrappedGameProfile(
+        WrappedGameProfile.CONSTRUCTOR
             .invoke(uuid, name)
             .handle(Starbox::severe)
             .provide()
@@ -92,7 +93,8 @@ public class WrappedGameProfile extends StarboxWrapper<Object> {
    */
   @NonNull
   public WrappedPropertyMap getProperties() {
-    return new WrappedPropertyMap(WrappedGameProfile.GET_PROPERTIES
+    return new WrappedPropertyMap(
+        WrappedGameProfile.GET_PROPERTIES
             .invoke(this.get().orElseThrow(IllegalStateException::new))
             .handle(Throwable::printStackTrace)
             .provide()

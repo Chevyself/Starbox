@@ -9,7 +9,6 @@ import me.googas.io.mocks.Person;
 import me.googas.net.api.exception.MessengerListenFailException;
 import me.googas.net.api.messages.Message;
 import me.googas.net.api.messages.Request;
-import me.googas.net.api.messages.StarboxRequest;
 import me.googas.net.api.messages.RequestBuilder;
 import me.googas.net.cache.MemoryCache;
 import me.googas.net.sockets.json.ParamName;
@@ -132,7 +131,7 @@ public class NetTest {
     // Sync request
     Map<JsonClientThread, Optional<Integer>> pings =
         NetTest.server.sendRequest(
-                Request.builder(int.class, "ping").put("init", System.currentTimeMillis()).build());
+            Request.builder(int.class, "ping").put("init", System.currentTimeMillis()).build());
     Assertions.assertEquals(1, pings.size());
     pings.forEach(
         (client, optionalPing) ->

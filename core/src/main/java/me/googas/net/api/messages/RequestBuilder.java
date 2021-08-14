@@ -145,7 +145,9 @@ public class RequestBuilder<T> {
    */
   public <M extends Messenger> void send(
       Server<M> server, @NonNull BiConsumer<M, Optional<T>> consumer) {
-    server.sendRequest(this.build(), consumer);
+    if (server != null) {
+      server.sendRequest(this.build(), consumer);
+    }
   }
 
   /**

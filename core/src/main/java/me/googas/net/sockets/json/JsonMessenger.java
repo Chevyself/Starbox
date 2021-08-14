@@ -24,9 +24,9 @@ import me.googas.net.api.Messenger;
 import me.googas.net.api.exception.MessengerListenFailException;
 import me.googas.net.api.messages.AwaitingRequest;
 import me.googas.net.api.messages.Message;
-import me.googas.net.api.messages.StarboxRequest;
-import me.googas.net.api.messages.Response;
 import me.googas.net.api.messages.Request;
+import me.googas.net.api.messages.Response;
+import me.googas.net.api.messages.StarboxRequest;
 import me.googas.net.sockets.json.exception.JsonCommunicationException;
 import me.googas.net.sockets.json.exception.JsonExternalCommunicationException;
 import me.googas.net.sockets.json.exception.JsonInternalCommunicationException;
@@ -268,7 +268,7 @@ public interface JsonMessenger extends Messenger, Runnable {
 
   @Override
   default <T> void sendRequest(
-          @NonNull StarboxRequest<T> request, @NonNull Consumer<Optional<T>> consumer) {
+      @NonNull StarboxRequest<T> request, @NonNull Consumer<Optional<T>> consumer) {
     this.getRequests()
         .put(
             new AwaitingRequest<>(request, request.getClazz(), consumer),

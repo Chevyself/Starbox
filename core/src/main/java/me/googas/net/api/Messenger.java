@@ -37,5 +37,6 @@ public interface Messenger {
    * @throws MessengerListenFailException if the request times out
    */
   @NonNull
-  <T> Optional<T> sendRequest(@NonNull StarboxRequest<T> request) throws MessengerListenFailException;
+  <T> Optional<T> sendRequest(@NonNull StarboxRequest<T> request)
+      throws MessengerListenFailException;
 }
