@@ -54,13 +54,11 @@ public class WrappedGameProfile extends StarboxWrapper<Object> {
    */
   @NonNull
   public static WrappedGameProfile construct(@NonNull UUID uuid, String name) {
-    Object object =
-        WrappedGameProfile.CONSTRUCTOR
+    return new WrappedGameProfile(WrappedGameProfile.CONSTRUCTOR
             .invoke(uuid, name)
             .handle(Starbox::severe)
             .provide()
-            .orElseThrow(() -> new IllegalStateException("GameProfile could not be created"));
-    return new WrappedGameProfile(object);
+            .orElseThrow(() -> new IllegalStateException("GameProfile could not be created")));
   }
 
   /**
@@ -72,6 +70,7 @@ public class WrappedGameProfile extends StarboxWrapper<Object> {
   public UUID getId() {
     return WrappedGameProfile.GET_ID
         .prepare(this.get())
+        .handle(Starbox::severe)
         .provide()
         .orElseThrow(() -> new IllegalStateException("Could not prepare #getId"));
   }
@@ -93,12 +92,10 @@ public class WrappedGameProfile extends StarboxWrapper<Object> {
    */
   @NonNull
   public WrappedPropertyMap getProperties() {
-    Object object =
-        WrappedGameProfile.GET_PROPERTIES
+    return new WrappedPropertyMap(WrappedGameProfile.GET_PROPERTIES
             .invoke(this.get().orElseThrow(IllegalStateException::new))
             .handle(Throwable::printStackTrace)
             .provide()
-            .orElseThrow(() -> new IllegalStateException("Could not prepare #getProperties"));
-    return new WrappedPropertyMap(object);
+            .orElseThrow(() -> new IllegalStateException("Could not prepare #getProperties")));
   }
 }

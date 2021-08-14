@@ -5,6 +5,7 @@ import me.googas.reflect.StarboxWrapper;
 import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedConstructor;
 import me.googas.reflect.wrappers.WrappedMethod;
+import me.googas.starbox.Starbox;
 
 /** Wrapper for the inaccessible class 'com.mojang.authlib.properties.PropertyMap'. */
 public class WrappedPropertyMap extends StarboxWrapper<Object> {
@@ -46,7 +47,7 @@ public class WrappedPropertyMap extends StarboxWrapper<Object> {
             this.get().orElseThrow(NullPointerException::new),
             key,
             value.get().orElseThrow(IllegalArgumentException::new))
-        .handle(Throwable::printStackTrace)
+        .handle(Starbox::severe)
         .provide()
         .orElse(false);
   }

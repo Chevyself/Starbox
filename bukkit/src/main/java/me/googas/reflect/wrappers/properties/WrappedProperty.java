@@ -4,6 +4,7 @@ import lombok.NonNull;
 import me.googas.reflect.StarboxWrapper;
 import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedConstructor;
+import me.googas.starbox.Starbox;
 
 /** Wraps the class 'com.mojang.authlib,properties.Property'. */
 public class WrappedProperty extends StarboxWrapper<Object> {
@@ -41,12 +42,11 @@ public class WrappedProperty extends StarboxWrapper<Object> {
    */
   @NonNull
   public static WrappedProperty construct(@NonNull String key, @NonNull String value) {
-    Object invoke =
-        WrappedProperty.PROPERTY_KEY_VAL_CONSTRUCTOR
+    return new WrappedProperty(WrappedProperty.PROPERTY_KEY_VAL_CONSTRUCTOR
             .invoke(key, value)
+            .handle(Starbox::severe)
             .provide()
-            .orElseThrow(() -> new IllegalArgumentException("Property could not be created"));
-    return new WrappedProperty(invoke);
+            .orElseThrow(() -> new IllegalArgumentException("Property could not be created")));
   }
 
   /**
@@ -60,11 +60,10 @@ public class WrappedProperty extends StarboxWrapper<Object> {
   @NonNull
   public static WrappedProperty construct(
       @NonNull String key, @NonNull String value, String signature) {
-    Object object =
-        WrappedProperty.PROPERTY_CONSTRUCTOR
+    return new WrappedProperty(WrappedProperty.PROPERTY_CONSTRUCTOR
             .invoke(key, value, signature)
+            .handle(Starbox::severe)
             .provide()
-            .orElseThrow(() -> new IllegalArgumentException("Property could not be created"));
-    return new WrappedProperty(object);
+            .orElseThrow(() -> new IllegalArgumentException("Property could not be created")));
   }
 }

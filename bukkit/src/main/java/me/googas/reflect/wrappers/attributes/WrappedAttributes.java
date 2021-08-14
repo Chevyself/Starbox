@@ -23,7 +23,7 @@ public class WrappedAttributes implements Builder<Multimap<Attribute, AttributeM
 
   @Override
   public @NonNull Multimap<Attribute, AttributeModifier> build() {
-    ArrayListMultimap<Attribute, AttributeModifier> multimap = ArrayListMultimap.create();
+    Multimap<Attribute, AttributeModifier> multimap = ArrayListMultimap.create();
     this.map.forEach(
         (key, value) -> multimap.put(key.getAttribute(), value.getAttributeModifier()));
     return multimap;
