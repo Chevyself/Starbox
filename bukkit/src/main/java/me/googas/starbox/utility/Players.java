@@ -44,10 +44,6 @@ public class Players {
   public static final WrappedMethod<String> SPIGOT_GET_LOCALE =
       Players.SPIGOT_PLAYER.getMethod(String.class, "getLocale");
 
-  @APIVersion(since = 12)
-  public static final WrappedMethod<String> GET_LOCALE =
-      Players.PLAYER.getMethod(String.class, "getLocale");
-
   /**
    * Get the locale language of a players game.
    *
@@ -64,7 +60,7 @@ public class Players {
       case 11:
         return Players.SPIGOT_GET_LOCALE.prepare(player.spigot()).provide().orElse("en");
       default:
-        return Players.GET_LOCALE.prepare(player).provide().orElse("en");
+        return player.getLocale();
     }
   }
 
