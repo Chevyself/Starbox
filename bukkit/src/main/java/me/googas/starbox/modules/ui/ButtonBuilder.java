@@ -7,15 +7,11 @@ import me.googas.starbox.modules.ui.buttons.StarboxButton;
 import me.googas.starbox.utility.items.ItemBuilder;
 import org.bukkit.Material;
 
-/**
- * Builder for {@link Button}. Creates {@link StarboxButton}.
- */
+/** Builder for {@link Button}. Creates {@link StarboxButton}. */
 public class ButtonBuilder implements Builder<Button> {
 
-  @NonNull
-  private ItemBuilder item;
-  @NonNull
-  private transient ButtonListener listener;
+  @NonNull private ItemBuilder item;
+  @NonNull private transient ButtonListener listener;
 
   ButtonBuilder(@NonNull ItemBuilder item) {
     this.item = item;
@@ -120,6 +116,6 @@ public class ButtonBuilder implements Builder<Button> {
 
   @Override
   public @NonNull Button build() {
-    return new StarboxButton(listener, item.build());
+    return new StarboxButton(item.build(), listener);
   }
 }

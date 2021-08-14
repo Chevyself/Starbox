@@ -99,6 +99,7 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
    * @param listener the listener that handles actions of the button
    * @return the created button
    */
+  @Deprecated
   public @NonNull ItemButton buildAsButton(@NonNull ItemButtonListener listener) {
     return new StarboxItemButton(listener, this.build());
   }
@@ -109,8 +110,9 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
    * @param listener the listener that handles actions of the button
    * @return the created button
    */
+  @Deprecated
   public @NonNull StarboxButton buildForUI(@NonNull ButtonListener listener) {
-    return new StarboxButton(listener, this.build());
+    return new StarboxButton(this.build(), listener);
   }
 
   /**
@@ -148,7 +150,7 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
   @Override
   @NonNull
   public Button build(@NonNull ButtonListener listener) {
-    return new StarboxButton(listener, this.build());
+    return new StarboxButton(this.build(), listener);
   }
 
   private interface IgnoredMethods {

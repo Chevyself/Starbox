@@ -26,7 +26,7 @@ public interface Displayable {
    */
   @NonNull
   default Button toButton(@NonNull ButtonListener listener) {
-    return new StarboxButton(listener, this.toItem());
+    return new StarboxButton(this.toItem(), listener);
   }
 
   /**

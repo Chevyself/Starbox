@@ -7,7 +7,6 @@ import lombok.NonNull;
 import me.googas.starbox.modules.ui.Button;
 import me.googas.starbox.modules.ui.ButtonListener;
 import me.googas.starbox.modules.ui.types.PaginatedInventory;
-import me.googas.starbox.utility.items.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -15,8 +14,8 @@ import org.bukkit.inventory.ItemStack;
 /** Implementation for {@link Button}. */
 public class StarboxButton implements Button {
 
-  @Getter @NonNull private final ButtonListener listener;
   @Getter @NonNull private final ItemStack item;
+  @Getter @NonNull private final ButtonListener listener;
 
   /**
    * Create the button.
@@ -24,9 +23,9 @@ public class StarboxButton implements Button {
    * @param listener the listener of the button
    * @param item the item that represents the button.
    */
-  public StarboxButton(@NonNull ButtonListener listener, @NonNull ItemStack item) {
-    this.listener = listener;
+  public StarboxButton(@NonNull ItemStack item, @NonNull ButtonListener listener) {
     this.item = item;
+    this.listener = listener;
   }
 
   /**
@@ -36,14 +35,16 @@ public class StarboxButton implements Button {
    */
   @NonNull
   public static Button back() {
-    ItemBuilder builder = new ItemBuilder(Material.ARROW, 1);
-    builder.setName("Back");
-    return builder.buildForUI(
-        event -> {
-          InventoryHolder holder = event.getInventory().getHolder();
-          if (!(holder instanceof PaginatedInventory)) return;
-          ((PaginatedInventory) holder).previous();
-        });
+    return Button.builder()
+        .setMaterial(Material.ARROW)
+        .setName("Back")
+        .listen(
+            event -> {
+              InventoryHolder holder = event.getInventory().getHolder();
+              if (!(holder instanceof PaginatedInventory)) return;
+              ((PaginatedInventory) holder).previous();
+            })
+        .build();
   }
 
   /**
@@ -53,14 +54,16 @@ public class StarboxButton implements Button {
    */
   @NonNull
   public static Button next() {
-    ItemBuilder builder = new ItemBuilder(Material.ARROW, 1);
-    builder.setName("Next");
-    return builder.buildForUI(
-        event -> {
-          InventoryHolder holder = event.getInventory().getHolder();
-          if (!(holder instanceof PaginatedInventory)) return;
-          ((PaginatedInventory) holder).next();
-        });
+    return Button.builder()
+        .setMaterial(Material.ARROW)
+        .setName("Next")
+        .listen(
+            event -> {
+              InventoryHolder holder = event.getInventory().getHolder();
+              if (!(holder instanceof PaginatedInventory)) return;
+              ((PaginatedInventory) holder).next();
+            })
+        .build();
   }
 
   /**
@@ -70,7 +73,7 @@ public class StarboxButton implements Button {
    */
   @NonNull
   public static Button empty() {
-    return new ItemBuilder(Material.AIR).build((event) -> event.setCancelled(true));
+    return Button.builder().setMaterial(Material.AIR).build();
   }
 
   /**
@@ -81,7 +84,7 @@ public class StarboxButton implements Button {
    */
   @NonNull
   public static Button empty(@NonNull ItemStack item) {
-    return new StarboxButton(event -> event.setCancelled(true), item);
+    return new StarboxButton(item, event -> event.setCancelled(true));
   }
 
   @Override
