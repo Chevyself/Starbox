@@ -29,7 +29,8 @@ public class Players {
   @NonNull
   public static final WrappedClass PLAYER_INVENTORY = WrappedClass.of(PlayerInventory.class);
 
-  @NonNull public static final WrappedMethod<?> GET_PROFILE = Players.CRAFT_PLAYER.getMethod("getProfile");
+  @NonNull
+  public static final WrappedMethod<?> GET_PROFILE = Players.CRAFT_PLAYER.getMethod("getProfile");
 
   @APIVersion(since = 8)
   public static final WrappedMethod<String> SPIGOT_GET_LANG =
