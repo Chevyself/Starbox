@@ -3,7 +3,6 @@ package me.googas.starbox.utility;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import lombok.NonNull;
 import me.googas.reflect.APIVersion;
 import me.googas.reflect.wrappers.WrappedClass;
@@ -20,11 +19,17 @@ import org.bukkit.inventory.PlayerInventory;
 /** Utility for {@link Player}. */
 public class Players {
 
+  @NonNull
+  public static final WrappedClass CRAFT_PLAYER =
+      WrappedClass.forName("org.bukkit.craftbukkit.entity.CraftPlayer");
+
   @NonNull public static final WrappedClass PLAYER = WrappedClass.of(Player.class);
   @NonNull public static final WrappedClass SPIGOT_PLAYER = WrappedClass.of(Player.Spigot.class);
 
   @NonNull
   public static final WrappedClass PLAYER_INVENTORY = WrappedClass.of(PlayerInventory.class);
+
+  @NonNull public static final WrappedMethod<?> GET_PROFILE = Players.CRAFT_PLAYER.getMethod("getProfile");
 
   @APIVersion(since = 8)
   public static final WrappedMethod<String> SPIGOT_GET_LANG =
@@ -143,6 +148,8 @@ public class Players {
    */
   @NonNull
   public static List<String> getOnlinePlayersNames() {
-    return Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList());
+    return Bukkit.getOnlinePlayers().stream()
+        .map(HumanEntity::getName)
+        .collect(Collectors.toList());
   }
 }
