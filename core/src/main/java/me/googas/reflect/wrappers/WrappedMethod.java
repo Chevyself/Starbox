@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
 import lombok.NonNull;
+import me.googas.reflect.utility.ReflectUtil;
 import me.googas.starbox.expressions.HandledExpression;
 
 /** This class wraps a {@link Method} to prepare. */
@@ -50,9 +51,13 @@ public class WrappedMethod<T> extends LangWrapper<Method> {
    * @return the wrap of the method
    */
   @NonNull
-  public static <T> WrappedMethod<T> of(Method method, @NonNull Class<T> returnType) {
+  public static <T> WrappedMethod<T> of(Method method, Class<T> returnType) {
     if (method != null) method.setAccessible(true);
-    return new WrappedMethod<>(method, returnType);
+    return new WrappedMethod<>(
+        method,
+        returnType == null
+            ? null
+            : returnType.isPrimitive() ? ReflectUtil.getBoxing(returnType) : returnType);
   }
 
   /**
@@ -72,9 +77,22 @@ public class WrappedMethod<T> extends LangWrapper<Method> {
           T obj = null;
           if (this.reference != null) {
             Object invoke = this.reference.invoke(object, params);
-            if (invoke != null) obj = returnType.cast(invoke);
+            if (invoke != null && returnType != null) {
+              obj = returnType.cast(invoke);
+            }
           }
           return obj;
+        });
+  }
+
+  @NonNull
+  public HandledExpression<?> invoke(Object object, Object... params) {
+    return HandledExpression.using(
+        () -> {
+          if (this.reference != null) {
+            return this.reference.invoke(object, params);
+          }
+          return null;
         });
   }
 
@@ -100,7 +118,8 @@ public class WrappedMethod<T> extends LangWrapper<Method> {
   @Override
   public String toString() {
     return new StringJoiner(", ", WrappedMethod.class.getSimpleName() + "[", "]")
-        .add("method=" + reference)
+        .add("reference=" + reference)
+        .add("returnType=" + returnType)
         .toString();
   }
 

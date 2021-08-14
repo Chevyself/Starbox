@@ -34,6 +34,10 @@ public class StarboxWrapper<T> implements Wrapper<T> {
     return this;
   }
 
+  public boolean isPresent() {
+    return this.reference != null;
+  }
+
   @Override
   public String toString() {
     return new StringJoiner(", ", StarboxWrapper.class.getSimpleName() + "[", "]")

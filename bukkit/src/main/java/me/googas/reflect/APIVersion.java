@@ -11,7 +11,7 @@ public @interface APIVersion {
    *
    * @return latest version that at the moment is 1.17 or 17
    */
-  int value() default 17;
+  int since() default 17;
 
   /**
    * Get the maximum api version in which it might be used.

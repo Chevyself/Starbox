@@ -24,31 +24,27 @@ public class Players {
   @NonNull
   public static final WrappedClass PLAYER_INVENTORY = WrappedClass.of(PlayerInventory.class);
 
-  @APIVersion(value = 8)
+  @APIVersion(since = 8)
   public static final WrappedMethod<String> SPIGOT_GET_LANG =
       Players.SPIGOT_PLAYER.getMethod(String.class, "getLang");
 
-  @APIVersion(value = 9)
-  public static final WrappedMethod<?> GET_ATTRIBUTE =
-      Players.PLAYER.getMethod("getAttribute", WrappedAttribute.ATTRIBUTE.getClazz());
-
-  @APIVersion(value = 8)
+  @APIVersion(since = 8)
   public static final WrappedMethod<Double> GET_MAX_HEALTH =
       Players.PLAYER.getMethod(Double.class, "getMaxHealth");
 
-  @APIVersion(value = 8)
+  @APIVersion(since = 8)
   public static final WrappedMethod<ItemStack> GET_ITEM_IN_HAND =
       Players.PLAYER.getMethod(ItemStack.class, "getItemInHand");
 
-  @APIVersion(value = 9)
+  @APIVersion(since = 9)
   public static final WrappedMethod<ItemStack> GET_ITEM_IN_MAIN_HAND =
       Players.PLAYER_INVENTORY.getMethod(ItemStack.class, "getItemInMainHand");
 
-  @APIVersion(value = 9, max = 11)
+  @APIVersion(since = 9, max = 11)
   public static final WrappedMethod<String> SPIGOT_GET_LOCALE =
       Players.SPIGOT_PLAYER.getMethod(String.class, "getLocale");
 
-  @APIVersion(12)
+  @APIVersion(since = 12)
   public static final WrappedMethod<String> GET_LOCALE =
       Players.PLAYER.getMethod(String.class, "getLocale");
 
@@ -106,15 +102,11 @@ public class Players {
    * @param attribute the attribute to get it instance
    * @return the attribute instance if bukkit version is above 8 else null
    */
+  @NonNull
   public static WrappedAttributeInstance getAttribute(
       @NonNull Player player, @NonNull WrappedAttribute attribute) {
-    if (Versions.BUKKIT == 8) return null;
-    Object invoke =
-        Players.GET_ATTRIBUTE.prepare(player, attribute.toAttribute()).provide().orElse(null);
-    if (invoke != null) {
-      return new WrappedAttributeInstance(invoke);
-    }
-    return null;
+    return new WrappedAttributeInstance(
+        Versions.BUKKIT == 8 ? null : player.getAttribute(attribute.getAttribute()));
   }
 
   /**
@@ -138,15 +130,14 @@ public class Players {
    * @param player the player to set the health to maximum
    */
   public static void setHealthToMax(@NonNull Player player) {
-    double maxHealth = 20;
+    double maxHealth;
     if (Versions.BUKKIT < 9) {
-      maxHealth = Players.GET_MAX_HEALTH.prepare(player).provide().orElse(0.0);
+      maxHealth = Players.GET_MAX_HEALTH.prepare(player).provide().orElse(20D);
     } else {
-      WrappedAttributeInstance attribute =
-          Players.getAttribute(player, WrappedAttribute.GENERIC_MAX_HEALTH);
-      if (attribute != null) {
-        maxHealth = attribute.getBaseValue();
-      }
+      WrappedAttribute genericMaxHealth = WrappedAttribute.valueOf("GENERIC_MAX_HEALTH");
+      WrappedAttributeInstance attribute = Players.getAttribute(player, genericMaxHealth);
+      // Using 20 because that's default?
+      maxHealth = attribute.isPresent() ? attribute.getBaseValue() : 20;
     }
     player.setHealth(maxHealth);
   }

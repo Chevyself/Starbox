@@ -9,7 +9,7 @@ import me.googas.reflect.wrappers.WrappedMethod;
 public class WrappedPropertyMap extends StarboxWrapper<Object> {
 
   @NonNull
-  private static final WrappedClass PROPERTY_MAP =
+  public static final WrappedClass PROPERTY_MAP =
       WrappedClass.forName("com.mojang.authlib.properties.PropertyMap");
 
   @NonNull
@@ -18,7 +18,7 @@ public class WrappedPropertyMap extends StarboxWrapper<Object> {
 
   @NonNull
   private static final WrappedMethod<Boolean> PUT =
-      WrappedPropertyMap.PROPERTY_MAP.getMethod(Boolean.class, "put", Object.class, Object.class);
+      WrappedPropertyMap.PROPERTY_MAP.getMethod(boolean.class, "put", Object.class, Object.class);
 
   public WrappedPropertyMap(@NonNull Object object) {
     super(object);
@@ -27,12 +27,14 @@ public class WrappedPropertyMap extends StarboxWrapper<Object> {
     }
   }
 
-  @NonNull
-  public static WrappedPropertyMap construct() {
-    return new WrappedPropertyMap(WrappedPropertyMap.CONSTRUCTOR.invoke().provide().orElse(null));
-  }
-
   public boolean put(@NonNull String key, @NonNull WrappedProperty value) {
-    return WrappedPropertyMap.PUT.prepare(this.get(), key, value.get()).provide().orElse(false);
+    return WrappedPropertyMap.PUT
+        .prepare(
+            this.get().orElseThrow(NullPointerException::new),
+            key,
+            value.get().orElseThrow(IllegalArgumentException::new))
+        .handle(Throwable::printStackTrace)
+        .provide()
+        .orElse(false);
   }
 }

@@ -1,88 +1,31 @@
 package me.googas.reflect.wrappers.attributes;
 
-import java.util.UUID;
-import lombok.Getter;
 import lombok.NonNull;
-import me.googas.reflect.wrappers.WrappedClass;
-import me.googas.reflect.wrappers.WrappedConstructor;
-import me.googas.reflect.wrappers.WrappedMethod;
-import me.googas.starbox.utility.Versions;
+import lombok.experimental.Delegate;
+import me.googas.reflect.APIVersion;
+import me.googas.reflect.StarboxWrapper;
+import org.bukkit.attribute.AttributeModifier;
 
-@Deprecated
-public class WrappedAttributeModifier {
+@APIVersion(since = 9)
+public class WrappedAttributeModifier extends StarboxWrapper<AttributeModifier> {
 
-  @NonNull
-  private static final WrappedClass ATTRIBUTE_MODIFIER_CLASS =
-      WrappedClass.forName("org.bukkit.attribute.AttributeModifier");
-
-  @NonNull
-  private static final WrappedClass OPERATION_CLASS =
-      WrappedClass.forName("org.bukkit.attribute.AttributeModifier.Operation");
-
-  @NonNull
-  private static final WrappedConstructor<?> ATTRIBUTE_MODIFIER_CONSTRUCTOR =
-      WrappedAttributeModifier.ATTRIBUTE_MODIFIER_CLASS.getConstructor(
-          UUID.class,
-          String.class,
-          double.class,
-          WrappedAttributeModifier.OPERATION_CLASS.getClazz());
-
-  @NonNull
-  private static final WrappedMethod<?> OPERATION_VALUE_OF =
-      WrappedAttributeModifier.OPERATION_CLASS.getMethod("valueOf", String.class);
-
-  @NonNull @Getter private final UUID uuid;
-  @NonNull @Getter private final String name;
-  @Getter private final double amount;
-  @NonNull @Getter private final WrappedOperation operation;
-
-  public WrappedAttributeModifier(
-      @NonNull UUID uuid,
-      @NonNull String name,
-      double amount,
-      @NonNull WrappedOperation operation) {
-    if (name.isEmpty()) throw new IllegalArgumentException("`name` must not be empty");
-    this.uuid = uuid;
-    this.name = name;
-    this.amount = amount;
-    this.operation = operation;
+  /**
+   * Create the wrapper.
+   *
+   * @param reference the reference of the wrapper
+   */
+  public WrappedAttributeModifier(@NonNull AttributeModifier reference) {
+    super(reference);
   }
 
-  public WrappedAttributeModifier(
-      @NonNull String name, double amount, @NonNull WrappedOperation operation) {
-    this(UUID.randomUUID(), name, amount, operation);
+  @NonNull
+  @Delegate
+  public AttributeModifier getAttributeModifier() {
+    return this.get().orElseThrow(NullPointerException::new);
   }
 
-  public Object toAttributeModifier() {
-    return WrappedAttributeModifier.ATTRIBUTE_MODIFIER_CONSTRUCTOR
-        .invoke(this.uuid, this.name, this.amount, this.operation.toOperation())
-        .provide()
-        .orElse(null);
-  }
-
-  @Deprecated
-  public enum WrappedOperation {
-    ADD_NUMBER,
-    ADD_SCALAR,
-    MULTIPLY_SCALAR_1;
-
-    /**
-     * Get as the actual operation
-     *
-     * @return the actual operation
-     */
-    @NonNull
-    public Object toOperation() {
-      if (Versions.BUKKIT > 9) {
-        Object invoke =
-            WrappedAttributeModifier.OPERATION_VALUE_OF
-                .prepare(null, this.name())
-                .provide()
-                .orElse(null);
-        if (invoke != null) return invoke;
-      }
-      throw new IllegalStateException(
-          "Attempted to get operation in an illegal version of Minecraft");
-    }
+  @Override
+  public @NonNull WrappedAttributeModifier set(@NonNull AttributeModifier object) {
+    return (WrappedAttributeModifier) super.set(object);
   }
 }

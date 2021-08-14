@@ -1,6 +1,7 @@
 package me.googas.starbox;
 
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.NonNull;
@@ -9,6 +10,10 @@ import lombok.NonNull;
 public class Starbox {
 
   @Getter private static StarboxPlugin instance;
+
+  public static void handle(@NonNull Exception e) {
+    Starbox.getLogger().log(Level.SEVERE, e, () -> "");
+  }
 
   /**
    * Set the instance of the plugin.

@@ -59,13 +59,11 @@ public class HandledExpression<O> {
     } catch (Exception e) {
       handle.accept(e);
     } finally {
-      if (next != null) {
-        for (RunnableExpression next : this.next) {
-          try {
-            next.run();
-          } catch (Exception e) {
-            handle.accept(e);
-          }
+      for (RunnableExpression next : this.next) {
+        try {
+          next.run();
+        } catch (Exception e) {
+          handle.accept(e);
         }
       }
     }
@@ -113,7 +111,6 @@ public class HandledExpression<O> {
      * @return any object
      * @throws Exception any exception
      */
-    @NonNull
     O run() throws Exception;
   }
 

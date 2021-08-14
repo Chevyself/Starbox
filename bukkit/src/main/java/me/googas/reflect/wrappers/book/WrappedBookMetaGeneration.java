@@ -1,35 +1,31 @@
 package me.googas.reflect.wrappers.book;
 
 import lombok.NonNull;
+import lombok.experimental.Delegate;
 import me.googas.reflect.APIVersion;
-import me.googas.reflect.wrappers.WrappedClass;
-import me.googas.reflect.wrappers.WrappedMethod;
-import me.googas.starbox.utility.Versions;
+import me.googas.reflect.StarboxWrapper;
+import org.bukkit.inventory.meta.BookMeta;
 
-@APIVersion(12)
-@Deprecated
-public enum WrappedBookMetaGeneration {
-  ORIGINAL,
-  COPY_OF_ORIGINAL,
-  COPY_OF_COPY,
-  TATTERED;
+@APIVersion(since = 9)
+public class WrappedBookMetaGeneration extends StarboxWrapper<BookMeta.Generation> {
 
-  @NonNull
-  public static final WrappedClass GENERATION =
-      WrappedClass.forName("org.bukkit.inventory.meta.BookMeta.Generation");
-
-  @NonNull
-  private static final WrappedMethod<?> VALUE_OF =
-      WrappedBookMetaGeneration.GENERATION.getMethod("valueOf");
+  /**
+   * Create the wrapper.
+   *
+   * @param reference the reference of the wrapper
+   */
+  public WrappedBookMetaGeneration(@NonNull BookMeta.Generation reference) {
+    super(reference);
+  }
 
   @NonNull
-  public Object toGeneration() {
-    if (Versions.BUKKIT >= 12) {
-      Object invoke =
-          WrappedBookMetaGeneration.VALUE_OF.prepare(null, this.name()).provide().orElse(null);
-      if (invoke != null) return invoke;
-    }
-    throw new IllegalStateException(
-        "Attempted to get attribute in an illegal version of Minecraft");
+  @Delegate
+  public BookMeta.Generation getGeneration() {
+    return this.get().orElseThrow(NullPointerException::new);
+  }
+
+  @Override
+  public @NonNull WrappedBookMetaGeneration set(@NonNull BookMeta.Generation object) {
+    return (WrappedBookMetaGeneration) super.set(object);
   }
 }

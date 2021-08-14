@@ -92,6 +92,11 @@ public class StarboxFile {
     this(new File(parent.getFile(), child));
   }
 
+  @NonNull
+  public static StarboxFile of(@NonNull File file) {
+    return new StarboxFile(file);
+  }
+
   /**
    * Prepare a {@link FileWriter} this will check that the file exists else it will be created.
    *

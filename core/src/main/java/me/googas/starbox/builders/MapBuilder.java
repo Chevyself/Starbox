@@ -25,7 +25,7 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
   }
 
   /** Create a map builder. */
-  protected MapBuilder() {
+  public MapBuilder() {
     this.map = new HashMap<>();
   }
 

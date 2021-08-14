@@ -7,6 +7,7 @@ import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.reflect.wrappers.profile.WrappedGameProfile;
 import me.googas.reflect.wrappers.properties.WrappedProperty;
+import me.googas.starbox.Starbox;
 import me.googas.starbox.utility.Versions;
 import me.googas.starbox.utility.items.ItemBuilder;
 import org.bukkit.OfflinePlayer;
@@ -20,14 +21,9 @@ public class SkullMetaBuilder extends ItemMetaBuilder {
   @NonNull private static final WrappedClass SKULL_META = WrappedClass.of(SkullMeta.class);
 
   @NonNull
-  @APIVersion(value = 8, max = 11)
+  @APIVersion(since = 8, max = 11)
   private static final WrappedMethod<?> SET_OWNER =
       SkullMetaBuilder.SKULL_META.getMethod("setOwner", String.class);
-
-  @NonNull
-  @APIVersion(12)
-  private static final WrappedMethod<?> SET_OWNING_PLAYER =
-      SkullMetaBuilder.SKULL_META.getMethod("setOwningPlayer", OfflinePlayer.class);
 
   private OfflinePlayer owner;
   private String skin;
@@ -41,13 +37,29 @@ public class SkullMetaBuilder extends ItemMetaBuilder {
     super(itemBuilder);
   }
 
-  private void appendSkin(@NonNull SkullMeta meta) {
+  public SkullMetaBuilder() {
+    super();
+  }
+
+  public SkullMetaBuilder(@NonNull ItemMetaBuilder other) {
+    super(other);
+  }
+
+  private void appendSkin(@NonNull ItemStack stack, @NonNull SkullMeta meta) {
     if (this.skin != null) {
+      if (Versions.BUKKIT <= 11) {
+        ItemBuilder.SET_DURABILITY.invoke(stack, (short) 3).run();
+      }
       WrappedGameProfile gameProfile = WrappedGameProfile.construct(UUID.randomUUID(), null);
-      gameProfile.getProperties().put("textures", WrappedProperty.construct("textures", this.skin));
+      boolean put =
+          gameProfile
+              .getProperties()
+              .put("textures", WrappedProperty.construct("textures", this.skin));
+      System.out.println("put = " + put);
       WrappedClass.of(meta.getClass())
           .getDeclaredField("profile")
-          .set(meta, gameProfile.get())
+          .set(meta, gameProfile.get().orElseThrow(NullPointerException::new))
+          .handle(Starbox::handle)
           .run();
     }
   }
@@ -77,21 +89,20 @@ public class SkullMetaBuilder extends ItemMetaBuilder {
   }
 
   @Override
-  @NonNull
   public SkullMeta build(@NonNull ItemStack stack) {
     ItemMeta itemMeta = super.build(stack);
-    SkullMeta meta = null;
     if (itemMeta instanceof SkullMeta) {
-      meta = (SkullMeta) itemMeta;
+      SkullMeta meta = (SkullMeta) itemMeta;
       if (this.owner != null) {
         if (Versions.BUKKIT > 11) {
-          SkullMetaBuilder.SET_OWNING_PLAYER.prepare(meta, this.owner).run();
+          meta.setOwningPlayer(owner);
         } else {
-          SkullMetaBuilder.SET_OWNER.prepare(meta, this.owner.getName()).run();
+          SkullMetaBuilder.SET_OWNER.invoke(meta, this.owner.getName()).run();
         }
       }
-      this.appendSkin(meta);
+      this.appendSkin(stack, meta);
+      return meta;
     }
-    return meta;
+    return null;
   }
 }

@@ -12,7 +12,7 @@ import me.googas.reflect.Wrapper;
  */
 public class LangWrapper<T> implements Wrapper<T> {
 
-  @NonNull final T reference;
+  final T reference;
 
   LangWrapper(T reference) {
     this.reference = reference;

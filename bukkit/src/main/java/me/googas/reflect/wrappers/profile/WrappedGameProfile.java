@@ -8,6 +8,7 @@ import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedConstructor;
 import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.reflect.wrappers.properties.WrappedPropertyMap;
+import me.googas.starbox.Starbox;
 
 /** Wraps the 'com.mojang.authlib.GameProfile' class. */
 public class WrappedGameProfile extends StarboxWrapper<Object> {
@@ -56,6 +57,7 @@ public class WrappedGameProfile extends StarboxWrapper<Object> {
     Object object =
         WrappedGameProfile.CONSTRUCTOR
             .invoke(uuid, name)
+            .handle(Starbox::handle)
             .provide()
             .orElseThrow(() -> new IllegalStateException("GameProfile could not be created"));
     return new WrappedGameProfile(object);
@@ -93,7 +95,8 @@ public class WrappedGameProfile extends StarboxWrapper<Object> {
   public WrappedPropertyMap getProperties() {
     Object object =
         WrappedGameProfile.GET_PROPERTIES
-            .prepare(this.get())
+            .invoke(this.get().orElseThrow(IllegalStateException::new))
+            .handle(Throwable::printStackTrace)
             .provide()
             .orElseThrow(() -> new IllegalStateException("Could not prepare #getProperties"));
     return new WrappedPropertyMap(object);

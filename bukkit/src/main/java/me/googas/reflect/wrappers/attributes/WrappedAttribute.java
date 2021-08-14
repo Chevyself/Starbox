@@ -1,45 +1,36 @@
 package me.googas.reflect.wrappers.attributes;
 
 import lombok.NonNull;
+import lombok.experimental.Delegate;
 import me.googas.reflect.APIVersion;
-import me.googas.reflect.wrappers.WrappedClass;
-import me.googas.reflect.wrappers.WrappedMethod;
-import me.googas.starbox.utility.Versions;
+import me.googas.reflect.StarboxWrapper;
+import org.bukkit.attribute.Attribute;
 
-@APIVersion(9)
-@Deprecated
-public enum WrappedAttribute {
-  GENERIC_MAX_HEALTH,
-  GENERIC_FOLLOW_RANGE,
-  GENERIC_KNOCKBACK_RESISTANCE,
-  GENERIC_MOVEMENT_SPEED,
-  GENERIC_ATTACK_DAMAGE,
-  GENERIC_ATTACK_SPEED,
-  GENERIC_ARMOR,
-  GENERIC_LUCK,
-  HORSE_JUMP_STRENGTH,
-  ZOMBIE_SPAWN_REINFORCEMENTS;
-
-  @NonNull
-  public static final WrappedClass ATTRIBUTE =
-      WrappedClass.forName("org.bukkit.attribute.Attribute");
-
-  @NonNull
-  private static final WrappedMethod<?> VALUE_OF =
-      WrappedAttribute.ATTRIBUTE.getMethod("valueOf", String.class);
+@APIVersion(since = 9)
+public class WrappedAttribute extends StarboxWrapper<Attribute> {
 
   /**
-   * Get as the actual attribute.
+   * Create the wrapper.
    *
-   * @return the actual attribute
+   * @param reference the reference of the wrapper
    */
+  public WrappedAttribute(@NonNull Attribute reference) {
+    super(reference);
+  }
+
   @NonNull
-  public Object toAttribute() {
-    if (Versions.BUKKIT >= 9) {
-      Object invoke = WrappedAttribute.VALUE_OF.prepare(null, this.name()).provide().orElse(null);
-      if (invoke != null) return invoke;
-    }
-    throw new IllegalStateException(
-        "Attempted to get attribute in an illegal version of Minecraft");
+  public static WrappedAttribute valueOf(@NonNull String name) {
+    return new WrappedAttribute(Attribute.valueOf(name));
+  }
+
+  @NonNull
+  @Delegate
+  public Attribute getAttribute() {
+    return this.get().orElseThrow(NullPointerException::new);
+  }
+
+  @Override
+  public @NonNull WrappedAttribute set(@NonNull Attribute object) {
+    return (WrappedAttribute) super.set(object);
   }
 }

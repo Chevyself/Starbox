@@ -4,7 +4,7 @@ import lombok.NonNull;
 import me.googas.reflect.APIVersion;
 import org.bukkit.Material;
 
-@APIVersion(14)
+@APIVersion(since = 14)
 @Deprecated
 public class WrappedBlockDataMeta {
 

@@ -36,14 +36,14 @@ public class StarboxButton implements Button {
    */
   @NonNull
   public static Button back() {
-    return new ItemBuilder(Material.ARROW, 1)
-        .setName("Back")
-        .buildAll(
-            event -> {
-              InventoryHolder holder = event.getInventory().getHolder();
-              if (!(holder instanceof PaginatedInventory)) return;
-              ((PaginatedInventory) holder).previous();
-            });
+    ItemBuilder builder = new ItemBuilder(Material.ARROW, 1);
+    builder.setName("Back");
+    return builder.buildForUI(
+        event -> {
+          InventoryHolder holder = event.getInventory().getHolder();
+          if (!(holder instanceof PaginatedInventory)) return;
+          ((PaginatedInventory) holder).previous();
+        });
   }
 
   /**
@@ -53,14 +53,14 @@ public class StarboxButton implements Button {
    */
   @NonNull
   public static Button next() {
-    return new ItemBuilder(Material.ARROW, 1)
-        .setName("Next")
-        .buildAll(
-            event -> {
-              InventoryHolder holder = event.getInventory().getHolder();
-              if (!(holder instanceof PaginatedInventory)) return;
-              ((PaginatedInventory) holder).next();
-            });
+    ItemBuilder builder = new ItemBuilder(Material.ARROW, 1);
+    builder.setName("Next");
+    return builder.buildForUI(
+        event -> {
+          InventoryHolder holder = event.getInventory().getHolder();
+          if (!(holder instanceof PaginatedInventory)) return;
+          ((PaginatedInventory) holder).next();
+        });
   }
 
   /**

@@ -8,7 +8,7 @@ import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedMethod;
 import org.bukkit.Material;
 
-@APIVersion(14)
+@APIVersion(since = 14)
 @Deprecated
 public class WrappedBlockData {
 

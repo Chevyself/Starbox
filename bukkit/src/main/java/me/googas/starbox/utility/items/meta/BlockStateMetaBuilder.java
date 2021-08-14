@@ -22,6 +22,10 @@ public class BlockStateMetaBuilder extends ItemMetaBuilder {
     super(itemBuilder);
   }
 
+  public BlockStateMetaBuilder(@NonNull ItemMetaBuilder other) {
+    super(other);
+  }
+
   /**
    * Set the state of the meta.
    *
@@ -35,13 +39,14 @@ public class BlockStateMetaBuilder extends ItemMetaBuilder {
   }
 
   @Override
+  @NonNull
   public BlockStateMeta build(@NonNull ItemStack stack) {
     ItemMeta itemMeta = super.build(stack);
-    BlockStateMeta meta = null;
     if (itemMeta instanceof BlockStateMeta) {
-      meta = (BlockStateMeta) itemMeta;
+      BlockStateMeta meta = (BlockStateMeta) itemMeta;
       if (this.state != null) meta.setBlockState(this.state);
+      return meta;
     }
-    return meta;
+    return null;
   }
 }

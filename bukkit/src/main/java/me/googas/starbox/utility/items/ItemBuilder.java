@@ -1,8 +1,17 @@
 package me.googas.starbox.utility.items;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.annotations.SerializedName;
+import java.lang.reflect.Type;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Delegate;
+import me.googas.reflect.wrappers.WrappedClass;
+import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.starbox.builders.Builder;
 import me.googas.starbox.builders.SuppliedBuilder;
 import me.googas.starbox.modules.ui.Button;
@@ -11,11 +20,7 @@ import me.googas.starbox.modules.ui.buttons.StarboxButton;
 import me.googas.starbox.modules.ui.item.ItemButton;
 import me.googas.starbox.modules.ui.item.ItemButtonListener;
 import me.googas.starbox.modules.ui.item.StarboxItemButton;
-import me.googas.starbox.utility.Materials;
-import me.googas.starbox.utility.items.meta.BannerMetaBuilder;
-import me.googas.starbox.utility.items.meta.BookMetaBuilder;
 import me.googas.starbox.utility.items.meta.ItemMetaBuilder;
-import me.googas.starbox.utility.items.meta.SkullMetaBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -26,15 +31,32 @@ import org.bukkit.inventory.meta.ItemMeta;
  */
 public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonListener, Button> {
 
-  @Getter
-  @Delegate(excludes = IgnoredMethods.class)
-  private ItemMetaBuilder metaBuilder = new ItemMetaBuilder(this);
+  @NonNull private static final WrappedClass ITEM_STACK = WrappedClass.of(ItemStack.class);
 
-  @NonNull @Getter private Material material = Material.GLASS;
-  @Getter private int amount = 1;
+  @NonNull
+  public static final WrappedMethod<?> SET_DURABILITY =
+          ItemBuilder.ITEM_STACK.getMethod("setDurability", short.class);
+
+  @Delegate(excludes = IgnoredMethods.class)
+  @NonNull
+  @Getter
+  @SerializedName("meta-builder")
+  private ItemMetaBuilder metaBuilder;
+
+  @NonNull @Getter private Material material;
+  @Getter private int amount;
+
+  protected ItemBuilder(
+      @NonNull ItemMetaBuilder metaBuilder, @NonNull Material material, int amount) {
+    this.metaBuilder = metaBuilder;
+    this.material = material;
+    this.amount = amount;
+  }
 
   /** Create the builder. */
-  public ItemBuilder() {}
+  public ItemBuilder() {
+    this(new ItemMetaBuilder(), Material.GLASS, 1);
+  }
 
   /**
    * Create the builder with an initial amount and material.
@@ -43,8 +65,7 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
    * @param amount the amount of items in the stack
    */
   public ItemBuilder(@NonNull Material material, int amount) {
-    this.amount = amount;
-    this.setMaterial(material);
+    this(ItemMetaBuilder.getMeta(material), material, amount);
   }
 
   /**
@@ -53,7 +74,7 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
    * @param material the material of the item
    */
   public ItemBuilder(@NonNull Material material) {
-    this.setMaterial(material);
+    this(material, 1);
   }
 
   /**
@@ -62,7 +83,7 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
    * @param amount the amount of items in the stack
    */
   public ItemBuilder(int amount) {
-    this.amount = amount;
+    this(Material.GLASS, amount);
   }
 
   /**
@@ -76,6 +97,16 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
   }
 
   /**
+   * Build this as a {@link Button}.
+   *
+   * @param listener the listener that handles actions of the button
+   * @return the created button
+   */
+  public @NonNull StarboxButton buildForUI(@NonNull ButtonListener listener) {
+    return new StarboxButton(listener, this.build());
+  }
+
+  /**
    * Set the material of the item.
    *
    * @param material the new material
@@ -84,17 +115,7 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
   @NonNull
   public ItemBuilder setMaterial(Material material) {
     this.material = material;
-    if (material == Material.BOOK) {
-      this.metaBuilder = new BookMetaBuilder(this);
-    } else {
-      if (Materials.isBanner(material)) {
-        this.metaBuilder = new BannerMetaBuilder(this);
-        return this;
-      }
-      if (Materials.isSkull(material)) {
-        this.metaBuilder = new SkullMetaBuilder(this);
-      }
-    }
+    this.metaBuilder = ItemMetaBuilder.getMeta(material, this.metaBuilder);
     return this;
   }
 
@@ -113,9 +134,7 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
   @Override
   public @NonNull ItemStack build() {
     ItemStack item = new ItemStack(this.material, this.amount);
-    if (this.metaBuilder != null) {
-      this.metaBuilder.ifBuildPresent(item, item::setItemMeta);
-    }
+    this.metaBuilder.ifBuildPresent(item, item::setItemMeta);
     return item;
   }
 
@@ -127,5 +146,27 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
 
   private interface IgnoredMethods {
     <T extends ItemMeta> T build(@NonNull ItemStack stack);
+  }
+
+  public static class Deserializer implements JsonDeserializer<ItemBuilder> {
+    @Override
+    public ItemBuilder deserialize(
+        JsonElement json, Type typeOfT, JsonDeserializationContext context)
+        throws JsonParseException {
+      if (json instanceof JsonObject) {
+        JsonObject object = json.getAsJsonObject();
+        JsonElement materialElement = object.get("material");
+        JsonElement amountElement = object.get("amount");
+        Material material =
+            Material.valueOf(materialElement == null ? "glass" : materialElement.getAsString());
+        int amount = amountElement == null ? 1 : amountElement.getAsInt();
+        return new ItemBuilder(
+            context.deserialize(
+                object.get("meta-builder"), ItemMetaBuilder.getMeta(material).getClass()),
+            material,
+            amount);
+      }
+      throw new JsonParseException("Expected an object");
+    }
   }
 }
