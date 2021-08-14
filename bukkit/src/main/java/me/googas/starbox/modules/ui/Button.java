@@ -1,6 +1,8 @@
 package me.googas.starbox.modules.ui;
 
 import lombok.NonNull;
+import me.googas.starbox.builders.Builder;
+import me.googas.starbox.utility.items.ItemBuilder;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -29,4 +31,25 @@ public interface Button {
    */
   @NonNull
   ItemStack getItem();
+
+  /**
+   * Start a new builder.
+   *
+   * @return the new builder
+   */
+  @NonNull
+  static ButtonBuilder builder() {
+    return new ButtonBuilder();
+  }
+
+  /**
+   * Start a new builder with an initial item.
+   *
+   * @param item the initial item
+   * @return the new builder
+   */
+  @NonNull
+  static ButtonBuilder builder(@NonNull ItemBuilder item) {
+    return new ButtonBuilder(item);
+  }
 }
