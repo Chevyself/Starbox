@@ -7,14 +7,17 @@ import lombok.NonNull;
 import me.googas.starbox.expressions.HandledExpression;
 
 /** This class wraps a {@link Field} to set or get the declaration. */
-public class WrappedField extends LangWrapper<Field> {
+public class WrappedField<O> extends LangWrapper<Field> {
 
-  private WrappedField(Field reference) {
+  private final Class<O> fieldType;
+
+  private WrappedField(Field reference, Class<O> fieldType) {
     super(reference);
+    this.fieldType = fieldType;
   }
 
   WrappedField() {
-    this(null);
+    this(null, null);
   }
 
   /**
@@ -24,9 +27,23 @@ public class WrappedField extends LangWrapper<Field> {
    * @return the wrapper of the field
    */
   @NonNull
-  public static WrappedField of(Field field) {
+  public static WrappedField<?> of(Field field) {
     if (field != null) field.setAccessible(true);
-    return new WrappedField(field);
+    return new WrappedField<>(field, null);
+  }
+
+  /**
+   * Wrap a {@link Field} instance.
+   *
+   * @param fieldType the class of the object that the field contains
+   * @param field the field to wrap
+   * @param <T> the type of the object in the field
+   * @return the wrapped field
+   */
+  @NonNull
+  public static <T> WrappedField<T> of(Class<T> fieldType, Field field) {
+    if (field != null) field.setAccessible(true);
+    return new WrappedField<>(field, fieldType);
   }
 
   /**
@@ -37,7 +54,7 @@ public class WrappedField extends LangWrapper<Field> {
    *     IllegalAccessException}
    */
   @NonNull
-  public HandledExpression<Object> get(@NonNull Object obj) {
+  public HandledExpression<Object> provide(@NonNull Object obj) {
     return HandledExpression.using(
         () -> {
           Object other = null;
@@ -46,6 +63,23 @@ public class WrappedField extends LangWrapper<Field> {
           }
           return other;
         });
+  }
+
+  /**
+   * Get the value that is stored in the field for the parameter object and cast it to the field type.
+   *
+   * @param instance the object to get the value of the field from
+   * @return a {@link HandledExpression} which gets the object in the field or handles a {@link
+   *     IllegalAccessException}
+   */
+  public HandledExpression<O> get(@NonNull Object instance) {
+    return HandledExpression.using(() -> {
+      O other = null;
+      if (this.reference != null && this.fieldType != null) {
+        other = this.fieldType.cast(this.reference.get(instance));
+      }
+      return other;
+    });
   }
 
   /**
@@ -89,7 +123,7 @@ public class WrappedField extends LangWrapper<Field> {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || this.getClass() != o.getClass()) return false;
-    WrappedField that = (WrappedField) o;
+    WrappedField<?> that = (WrappedField<?>) o;
     return Objects.equals(reference, that.reference);
   }
 

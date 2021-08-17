@@ -86,9 +86,9 @@ public class WrappedClass<O> extends LangWrapper<Class<O>> {
    * @return a {@link WrappedField} instance containing the field or empty if not found
    */
   @NonNull
-  public WrappedField getField(@NonNull String name) {
+  public WrappedField<?> getField(@NonNull String name) {
     Field field = null;
-    if (this.hasField(name)) {
+    if (this.hasField(null, name)) {
       try {
         field = this.reference.getField(name);
       } catch (NoSuchFieldException e) {
@@ -99,15 +99,36 @@ public class WrappedClass<O> extends LangWrapper<Class<O>> {
   }
 
   /**
+   * Get the field matching the name.
+   *
+   * @param fieldType the the class of the object that the field contains
+   * @param name the name to match the field with
+   * @return a {@link WrappedField} instance containing the field or empty if not found
+   * @param <T> the type of the object that the field contains
+   */
+  @NonNull
+  public <T> WrappedField<T> getField(@NonNull Class<T> fieldType, @NonNull String name) {
+    Field field = null;
+    if (this.hasField(fieldType, name)) {
+      try {
+        field = this.reference.getField(name);
+      } catch (NoSuchFieldException e) {
+        throw new IllegalStateException("Field was not found even after check was true", e);
+      }
+    }
+    return WrappedField.of(fieldType, field);
+  }
+
+  /**
    * Get a declared field matching the name.
    *
    * @param name the name to match the field with
    * @return a {@link WrappedField} instance containing the field or empty if not found
    */
   @NonNull
-  public WrappedField getDeclaredField(@NonNull String name) {
+  public WrappedField<?> getDeclaredField(@NonNull String name) {
     Field field = null;
-    if (this.hasDeclaredField(name)) {
+    if (this.hasDeclaredField(null, name)) {
       try {
         field = this.reference.getDeclaredField(name);
       } catch (NoSuchFieldException e) {
@@ -115,6 +136,27 @@ public class WrappedClass<O> extends LangWrapper<Class<O>> {
       }
     }
     return WrappedField.of(field);
+  }
+
+  /**
+   * Get a declared field matching the name.
+   *
+   * @param fieldType the the class of the object that the field contains
+   * @param name the name to match the field with
+   * @return a {@link WrappedField} instance containing the field or empty if not found
+   * @param <T> the type of the object that the field contains
+   */
+  @NonNull
+  public <T> WrappedField<?> getDeclaredField(@NonNull Class<T> fieldType, @NonNull String name) {
+    Field field = null;
+    if (this.hasDeclaredField(fieldType, name)) {
+      try {
+        field = this.reference.getDeclaredField(name);
+      } catch (NoSuchFieldException e) {
+        throw new IllegalStateException("Field was not found even after check was true", e);
+      }
+    }
+    return WrappedField.of(fieldType, field);
   }
 
   /**
@@ -178,13 +220,14 @@ public class WrappedClass<O> extends LangWrapper<Class<O>> {
   /**
    * Checks if a field with the given name exists in the class.
    *
+   * @param fieldType the the class of the object that the field contains
    * @param name the name of the field to find
    * @return true if the field is found false otherwise
    */
-  public boolean hasField(@NonNull String name) {
+  public boolean hasField(Class<?> fieldType, @NonNull String name) {
     if (this.reference != null) {
       for (Field field : this.reference.getFields()) {
-        if (field.getName().equals(name)) return true;
+        if (field.getName().equals(name) && (fieldType == null || fieldType.isAssignableFrom(field.getType()))) return true;
       }
     }
     return false;
@@ -193,13 +236,14 @@ public class WrappedClass<O> extends LangWrapper<Class<O>> {
   /**
    * Checks if a declared field with the given name exists in the class.
    *
+   * @param fieldType the the class of the object that the field contains
    * @param name the name of the field to find
    * @return true if the field is found false otherwise
    */
-  public boolean hasDeclaredField(@NonNull String name) {
+  public boolean hasDeclaredField(Class<?> fieldType, @NonNull String name) {
     if (this.reference != null) {
       for (Field field : this.reference.getDeclaredFields()) {
-        if (field.getName().equals(name)) return true;
+        if (field.getName().equals(name) && (fieldType == null || fieldType.isAssignableFrom(field.getType()))) return true;
       }
     }
     return false;
