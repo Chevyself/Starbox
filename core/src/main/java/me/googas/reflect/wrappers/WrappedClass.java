@@ -70,7 +70,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
       try {
         constructor = this.reference.getConstructor(params);
       } catch (NoSuchMethodException e) {
-        throw new IllegalStateException("Constructor was not found even after check was true");
+        throw new IllegalStateException("Constructor was not found even after check was true", e);
       }
     }
     return WrappedConstructor.of(constructor);
@@ -89,7 +89,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
       try {
         field = this.reference.getField(name);
       } catch (NoSuchFieldException e) {
-        throw new IllegalStateException("Field was not found even after check was true");
+        throw new IllegalStateException("Field was not found even after check was true", e);
       }
     }
     return WrappedField.of(field);
@@ -108,7 +108,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
       try {
         field = this.reference.getDeclaredField(name);
       } catch (NoSuchFieldException e) {
-        throw new IllegalStateException("Field was not found even after check was true");
+        throw new IllegalStateException("Field was not found even after check was true", e);
       }
     }
     return WrappedField.of(field);
@@ -143,7 +143,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
       try {
         method = this.reference.getMethod(name, params);
       } catch (NoSuchMethodException e) {
-        throw new IllegalStateException("Method was not found even after check was true");
+        throw new IllegalStateException("Method was not found even after check was true", e);
       }
     }
     return WrappedMethod.of(method, returnType);
