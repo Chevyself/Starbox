@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 public class WrappedGameProfile extends StarboxWrapper<Object> {
 
   @NonNull
-  private static final WrappedClass GAME_PROFILE =
+  private static final WrappedClass<?> GAME_PROFILE =
       WrappedClass.forName("com.mojang.authlib.GameProfile");
 
   @NonNull

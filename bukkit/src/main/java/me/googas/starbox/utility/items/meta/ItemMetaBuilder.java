@@ -22,11 +22,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 /** Builds {@link ItemMeta}. */
 public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
 
-  @NonNull private static final WrappedClass ITEM_META = WrappedClass.of(ItemMeta.class);
+  @NonNull private static final WrappedClass<ItemMeta> ITEM_META = WrappedClass.of(ItemMeta.class);
 
   @NonNull
   @APIVersion(since = 8, max = 15)
-  private static final WrappedClass ITEM_META_SPIGOT =
+  private static final WrappedClass<?> ITEM_META_SPIGOT =
       WrappedClass.forName("org.bukkit.inventory.meta.ItemMeta.Spigot");
 
   @NonNull

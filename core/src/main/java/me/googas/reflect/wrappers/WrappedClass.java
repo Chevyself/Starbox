@@ -18,10 +18,12 @@ import me.googas.reflect.utility.ReflectUtil;
  * <p>The method {@link Class#forName(String)} would throw a {@link ClassNotFoundException} mean
  * while {@link WrappedClass#forName(String)} will just return an empty instance if that is the case
  * most of the methods declared in this class would return empty instances too
+ *
+ * @param <O> the type of the class object
  */
-public class WrappedClass extends LangWrapper<Class<?>> {
+public class WrappedClass<O> extends LangWrapper<Class<O>> {
 
-  private WrappedClass(Class<?> clazz) {
+  private WrappedClass(Class<O> clazz) {
     super(clazz);
   }
 
@@ -38,11 +40,11 @@ public class WrappedClass extends LangWrapper<Class<?>> {
    * @return the wrapped {@link Class} instance
    */
   @NonNull
-  public static WrappedClass forName(@NonNull String name) {
+  public static WrappedClass<?> forName(@NonNull String name) {
     try {
-      return new WrappedClass(Class.forName(name));
+      return new WrappedClass<>(Class.forName(name));
     } catch (ClassNotFoundException e) {
-      return new WrappedClass();
+      return new WrappedClass<>();
     }
   }
 
@@ -51,10 +53,11 @@ public class WrappedClass extends LangWrapper<Class<?>> {
    *
    * @param clazz the class to wrap
    * @return the wrapper of {@link Class}
+   * @param <T> the type of the class object
    */
   @NonNull
-  public static WrappedClass of(Class<?> clazz) {
-    return new WrappedClass(clazz);
+  public static <T> WrappedClass<T> of(Class<T> clazz) {
+    return new WrappedClass<>(clazz);
   }
 
   /**
@@ -64,8 +67,8 @@ public class WrappedClass extends LangWrapper<Class<?>> {
    * @return a {@link WrappedConstructor} instance containing the constructor or empty if not found
    */
   @NonNull
-  public WrappedConstructor<?> getConstructor(Class<?>... params) {
-    Constructor<?> constructor = null;
+  public WrappedConstructor<O> getConstructor(Class<?>... params) {
+    Constructor<O> constructor = null;
     if (this.hasConstructor(params)) {
       try {
         constructor = this.reference.getConstructor(params);
@@ -263,7 +266,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
    * @return the wrapped class
    */
   @NonNull
-  public Class<?> getClazz() {
+  public Class<O> getClazz() {
     return this.reference;
   }
 
@@ -271,7 +274,7 @@ public class WrappedClass extends LangWrapper<Class<?>> {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || this.getClass() != o.getClass()) return false;
-    WrappedClass that = (WrappedClass) o;
+    WrappedClass<?> that = (WrappedClass<?>) o;
     return Objects.equals(reference, that.reference);
   }
 

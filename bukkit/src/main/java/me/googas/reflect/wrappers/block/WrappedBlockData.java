@@ -7,14 +7,14 @@ import me.googas.reflect.APIVersion;
 import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedMethod;
 import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 
 @APIVersion(since = 14)
 @Deprecated
 public class WrappedBlockData {
 
   @NonNull
-  private static final WrappedClass BLOCK_DATA =
-      WrappedClass.forName("org.bukkit.block.data.BlockData");
+  private static final WrappedClass<BlockData> BLOCK_DATA = WrappedClass.of(BlockData.class);
 
   @NonNull
   private static final WrappedMethod<Material> GET_MATERIAL =

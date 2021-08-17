@@ -10,7 +10,7 @@ import me.googas.starbox.Starbox;
 public class WrappedProperty extends StarboxWrapper<Object> {
 
   @NonNull
-  public static final WrappedClass PROPERTY =
+  public static final WrappedClass<?> PROPERTY =
       WrappedClass.forName("com.mojang.authlib.properties.Property");
 
   @NonNull

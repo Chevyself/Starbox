@@ -3,7 +3,7 @@ package me.googas.starbox.scheduler;
 import lombok.NonNull;
 import me.googas.starbox.time.Time;
 
-/** Represents a task that may be registered in a {@link Scheduler} */
+/** Represents a task that may be registered in a {@link Scheduler}. */
 public interface Task extends Runnable {
 
   /**

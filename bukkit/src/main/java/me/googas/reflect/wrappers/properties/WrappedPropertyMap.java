@@ -11,7 +11,7 @@ import me.googas.starbox.Starbox;
 public class WrappedPropertyMap extends StarboxWrapper<Object> {
 
   @NonNull
-  public static final WrappedClass PROPERTY_MAP =
+  public static final WrappedClass<?> PROPERTY_MAP =
       WrappedClass.forName("com.mojang.authlib.properties.PropertyMap");
 
   @NonNull
