@@ -10,14 +10,17 @@ import me.googas.commands.annotations.Required;
 import me.googas.commands.bukkit.annotations.Command;
 import me.googas.commands.bukkit.result.Result;
 import me.googas.io.StarboxFile;
+import me.googas.reflect.wrappers.WrappedClass;
+import me.googas.reflect.wrappers.WrappedConstructor;
+import me.googas.reflect.wrappers.chat.WrappedText;
 import me.googas.starbox.Starbox;
 import me.googas.starbox.StarboxBukkitFiles;
+import me.googas.starbox.utility.Versions;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.entity.Player;
 
@@ -28,6 +31,14 @@ import org.bukkit.entity.Player;
 @SuppressWarnings("JavaDoc")
 public class ComponentBuilderCommands {
 
+  @NonNull
+  private static final WrappedClass<HoverEvent> HOVER_EVENT = WrappedClass.of(HoverEvent.class);
+
+  @NonNull
+  private static final WrappedConstructor<HoverEvent> HOVER_EVENT_CONSTRUCTOR =
+      ComponentBuilderCommands.HOVER_EVENT.getConstructor(
+          HoverEvent.Action.class, BaseComponent[].class);
+
   @NonNull private final Map<UUID, ComponentBuilder> builders = new HashMap<>();
 
   @Parent
@@ -35,9 +46,8 @@ public class ComponentBuilderCommands {
       aliases = {"componentBuilder", "cb"},
       description = "Helps with the construction of Chat Components",
       permission = "starbox.component-builder")
-  public Result componentBuilder() {
-    // TODO list commands
-    return new Result("&7Build your own components using the commands");
+  public Result componentBuilder(Player player) {
+    return new Result(this.getBuilder(player).create());
   }
 
   @Command(
@@ -92,9 +102,20 @@ public class ComponentBuilderCommands {
       Player player,
       @Required(name = "action", description = "The action of the event") HoverEvent.Action action,
       @Required(name = "name", description = "The name of the component to import to set as value")
-          String value) {
-    this.getBuilder(player)
-        .event(new HoverEvent(action, new Text(this.getBuilder(player).create())));
+          String name) {
+    ComponentBuilder builder = this.importBuilder(name);
+    if (Versions.BUKKIT < 16) {
+      this.getBuilder(player)
+          .event(
+              ComponentBuilderCommands.HOVER_EVENT_CONSTRUCTOR
+                  .invoke(action, builder.create())
+                  .handle(Starbox::severe)
+                  .provide()
+                  .orElseThrow(IllegalStateException::new));
+    } else {
+      this.getBuilder(player)
+          .event(new HoverEvent(action, new WrappedText(builder.create()).getText()));
+    }
     return new Result();
   }
 
@@ -108,9 +129,8 @@ public class ComponentBuilderCommands {
     StarboxFile file =
         new StarboxFile(StarboxBukkitFiles.EXPORTS, name.endsWith(".json") ? name : name + ".json");
     boolean exported =
-        file.write(
-                StarboxBukkitFiles.Contexts.TXT,
-                ComponentSerializer.toString(this.getBuilder(player).create()))
+        StarboxBukkitFiles.Contexts.TXT
+            .write(file, ComponentSerializer.toString(this.getBuilder(player).create()), true)
             .handle(Starbox::severe)
             .provide()
             .orElse(false);
@@ -136,7 +156,7 @@ public class ComponentBuilderCommands {
   private ComponentBuilder importBuilder(@NonNull String name) {
     StarboxFile file =
         new StarboxFile(StarboxBukkitFiles.EXPORTS, name.endsWith(".json") ? name : name + ".json");
-    ComponentBuilder builder = new ComponentBuilder();
+    ComponentBuilder builder = new ComponentBuilder("");
     BaseComponent[] parts =
         ComponentSerializer.parse(
             file.read(StarboxBukkitFiles.Contexts.TXT)
@@ -144,13 +164,13 @@ public class ComponentBuilderCommands {
                 .provide()
                 .orElse("[]"));
     for (BaseComponent part : parts) {
-      builder.append(part);
+      builder.append(part.toLegacyText());
     }
     return builder;
   }
 
   @NonNull
   private ComponentBuilder getBuilder(@NonNull Player player) {
-    return this.builders.computeIfAbsent(player.getUniqueId(), uuid -> new ComponentBuilder());
+    return this.builders.computeIfAbsent(player.getUniqueId(), uuid -> new ComponentBuilder(""));
   }
 }

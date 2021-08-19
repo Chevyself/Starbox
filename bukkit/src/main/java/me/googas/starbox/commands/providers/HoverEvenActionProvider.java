@@ -28,7 +28,7 @@ public class HoverEvenActionProvider implements BukkitArgumentProvider<HoverEven
   public @NonNull HoverEvent.Action fromString(
       @NonNull String string, @NonNull CommandContext context) throws ArgumentProviderException {
     try {
-      return HoverEvent.Action.valueOf(string);
+      return HoverEvent.Action.valueOf(string.toUpperCase());
     } catch (IllegalArgumentException e) {
       throw new ArgumentProviderException("&c" + string + " did not match any action");
     }
