@@ -16,6 +16,8 @@ import me.googas.starbox.modules.ModuleRegistry;
 import me.googas.starbox.modules.ui.UIModule;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Objects;
+
 /** Main class of the Starbox Bukkit plugin. */
 public class StarboxPlugin extends JavaPlugin {
 
@@ -25,6 +27,7 @@ public class StarboxPlugin extends JavaPlugin {
   public void onEnable() {
     Starbox.setInstance(this);
     modules.engage(new UIModule());
+    BukkitLanguage.languages.add(BukkitYamlLanguage.of(Objects.requireNonNull(this.getResource("language.yml"))));
     BukkitMessagesProvider messagesProvider = new BukkitMessagesProvider();
     ProvidersRegistry<CommandContext> registry =
         new BukkitProvidersRegistry(messagesProvider)
@@ -43,6 +46,7 @@ public class StarboxPlugin extends JavaPlugin {
   @Override
   public void onDisable() {
     modules.disengageAll();
+    BukkitLanguage.languages.clear();
     super.onDisable();
   }
 }

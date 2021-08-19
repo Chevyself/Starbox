@@ -62,11 +62,11 @@ public class Players {
   public static String getLocale(@NonNull Player player) {
     switch (Versions.BUKKIT) {
       case 8:
-        return Players.SPIGOT_GET_LANG.prepare(player.spigot()).provide().orElse("en");
+        return Players.SPIGOT_GET_LANG.prepare(player.spigot()).provide().orElse("en_US");
       case 9:
       case 10:
       case 11:
-        return Players.SPIGOT_GET_LOCALE.prepare(player.spigot()).provide().orElse("en");
+        return Players.SPIGOT_GET_LOCALE.prepare(player.spigot()).provide().orElse("en_US");
       default:
         return player.getLocale();
     }
