@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 import lombok.NonNull;
 import me.googas.commands.annotations.Multiple;
+import me.googas.commands.annotations.Parent;
 import me.googas.commands.annotations.Required;
 import me.googas.commands.bukkit.annotations.Command;
 import me.googas.commands.bukkit.result.Result;
@@ -29,13 +30,14 @@ public class ComponentBuilderCommands {
 
   @NonNull private final Map<UUID, ComponentBuilder> builders = new HashMap<>();
 
+  @Parent
   @Command(
       aliases = {"componentBuilder", "cb"},
       description = "Helps with the construction of Chat Components",
       permission = "starbox.component-builder")
   public Result componentBuilder() {
     // TODO list commands
-    return new Result("Build your own components using the commands");
+    return new Result("&7Build your own components using the commands");
   }
 
   @Command(
