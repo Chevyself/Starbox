@@ -9,13 +9,13 @@ import me.googas.commands.exceptions.ArgumentProviderException;
 import net.md_5.bungee.api.chat.HoverEvent;
 
 /** Provides {@link HoverEvent.Action} to the {@link me.googas.commands.bukkit.CommandManager}. */
-public class HoverEvenActionProvider implements BukkitArgumentProvider<HoverEvent.Action> {
+public class HoverEventActionProvider implements BukkitArgumentProvider<HoverEvent.Action> {
 
   @NonNull private static final List<String> suggestions = new ArrayList<>();
 
   static {
     for (HoverEvent.Action value : HoverEvent.Action.values()) {
-      HoverEvenActionProvider.suggestions.add(value.name().toLowerCase());
+      HoverEventActionProvider.suggestions.add(value.name().toLowerCase());
     }
   }
 
@@ -36,6 +36,6 @@ public class HoverEvenActionProvider implements BukkitArgumentProvider<HoverEven
 
   @Override
   public @NonNull List<String> getSuggestions(@NonNull String string, CommandContext context) {
-    return HoverEvenActionProvider.suggestions;
+    return HoverEventActionProvider.suggestions;
   }
 }

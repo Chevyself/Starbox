@@ -11,7 +11,7 @@ import me.googas.starbox.commands.ItemBuilderCommands;
 import me.googas.starbox.commands.providers.BungeeChatColorProvider;
 import me.googas.starbox.commands.providers.ClickEventActionProvider;
 import me.googas.starbox.commands.providers.FormatRetentionProvider;
-import me.googas.starbox.commands.providers.HoverEvenActionProvider;
+import me.googas.starbox.commands.providers.HoverEventActionProvider;
 import me.googas.starbox.modules.ModuleRegistry;
 import me.googas.starbox.modules.ui.UIModule;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -32,7 +32,7 @@ public class StarboxPlugin extends JavaPlugin {
                 new BungeeChatColorProvider(),
                 new ClickEventActionProvider(),
                 new FormatRetentionProvider(),
-                new HoverEvenActionProvider());
+                new HoverEventActionProvider());
     CommandManager manager =
         new CommandManager(this, registry, messagesProvider)
             .parseAndRegisterAll(new ComponentBuilderCommands(), new ItemBuilderCommands());
