@@ -1,10 +1,12 @@
 package me.googas.reflect;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /** Represents the required version of Spigot API to be used. */
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface APIVersion {
   /**
    * Get the minimum version that is required to be used.
