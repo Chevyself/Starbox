@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import lombok.NonNull;
+import me.googas.commands.annotations.Free;
 import me.googas.commands.annotations.Multiple;
 import me.googas.commands.annotations.Parent;
 import me.googas.commands.annotations.Required;
@@ -51,13 +52,56 @@ public class ComponentBuilderCommands {
   }
 
   @Command(
+      aliases = "reset",
+      description = "Reset the builder",
+      permission = "starbox.component-builder")
+  public Result reset(Player player) {
+    builders.remove(player.getUniqueId());
+    return new Result("&7Your builder has been reset");
+  }
+
+  @Command(
       aliases = "see",
-      description = "See how a text component would look like",
+      description = "See how a text component would look like using color codes",
       permission = "starbox.component-builder")
   public Result see(
       Player player,
       @Required(name = "text", description = "The text to test") @Multiple String text) {
     return new Result(text);
+  }
+
+  @Command(
+      aliases = "space",
+      description = "Appends spaces in the builder",
+      permission = "starbox.component-builder")
+  public Result space(
+      Player player,
+      @Free(
+              name = "number",
+              description = "The number of spaces to add",
+              suggestions = {"1", "2", "3"})
+          int spaces) {
+    if (spaces < 1) {
+      return new Result("&cNumber cannot be less than 1");
+    } else {
+      ComponentBuilder builder = this.getBuilder(player);
+      for (int i = 0; i < spaces; i++) {
+        builder.append(" ");
+      }
+      return new Result("&7Spaces have been appended");
+    }
+  }
+
+  @Command(
+      aliases = "text",
+      description = "Append some text to the component and decide the format retention",
+      permission = "starbox.component-builder")
+  public Result text(
+      Player player,
+      @Required(name = "") ComponentBuilder.FormatRetention retention,
+      @Required(name = "text", description = "The text to append") @Multiple String text) {
+    this.getBuilder(player).append(text, retention);
+    return new Result("&7Text has been appended to your builder");
   }
 
   @Command(
@@ -91,7 +135,7 @@ public class ComponentBuilderCommands {
       @Multiple @Required(name = "value", description = "The value of the action for the event")
           String value) {
     this.getBuilder(player).event(new ClickEvent(action, value));
-    return new Result();
+    return new Result("&7Click event has been added");
   }
 
   @Command(
@@ -100,23 +144,28 @@ public class ComponentBuilderCommands {
       permission = "starbox.component-builder")
   public Result hover(
       Player player,
-      @Required(name = "action", description = "The action of the event") HoverEvent.Action action,
       @Required(name = "name", description = "The name of the component to import to set as value")
           String name) {
-    ComponentBuilder builder = this.importBuilder(name);
-    if (Versions.BUKKIT < 16) {
-      this.getBuilder(player)
-          .event(
-              ComponentBuilderCommands.HOVER_EVENT_CONSTRUCTOR
-                  .invoke(action, builder.create())
-                  .handle(Starbox::severe)
-                  .provide()
-                  .orElseThrow(IllegalStateException::new));
-    } else {
-      this.getBuilder(player)
-          .event(new HoverEvent(action, new WrappedText(builder.create()).getText()));
+    HoverEvent.Action action = HoverEvent.Action.SHOW_TEXT;
+    StarboxFile file =
+        new StarboxFile(StarboxBukkitFiles.EXPORTS, name.endsWith(".json") ? name : name + ".json");
+    ComponentBuilder builder = this.importBuilder(file);
+    if (file.exists()) {
+      if (Versions.BUKKIT < 16) {
+        this.getBuilder(player)
+            .event(
+                ComponentBuilderCommands.HOVER_EVENT_CONSTRUCTOR
+                    .invoke(action, builder.create())
+                    .handle(Starbox::severe)
+                    .provide()
+                    .orElseThrow(IllegalStateException::new));
+      } else {
+        this.getBuilder(player)
+            .event(new HoverEvent(action, new WrappedText(builder.create()).getText()));
+      }
+      return new Result("&7Hover event has been set");
     }
-    return new Result();
+    return new Result("&cFile {0} does not exist", file);
   }
 
   @Command(
@@ -148,14 +197,18 @@ public class ComponentBuilderCommands {
   public Result importBuilder(
       Player player,
       @Required(name = "name", description = "The name of the file to import") String name) {
-    this.builders.put(player.getUniqueId(), this.importBuilder(name));
-    return new Result("&7Successfully loaded builder");
+    StarboxFile file =
+        new StarboxFile(StarboxBukkitFiles.EXPORTS, name.endsWith(".json") ? name : name + ".json");
+    if (file.exists()) {
+      this.builders.put(player.getUniqueId(), this.importBuilder(file));
+      return new Result("&7Successfully loaded builder");
+    } else {
+      return new Result("&cFile {0} does not exist", file);
+    }
   }
 
   @NonNull
-  private ComponentBuilder importBuilder(@NonNull String name) {
-    StarboxFile file =
-        new StarboxFile(StarboxBukkitFiles.EXPORTS, name.endsWith(".json") ? name : name + ".json");
+  private ComponentBuilder importBuilder(@NonNull StarboxFile file) {
     ComponentBuilder builder = new ComponentBuilder("");
     BaseComponent[] parts =
         ComponentSerializer.parse(

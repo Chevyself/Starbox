@@ -178,22 +178,25 @@ public class ItemBuilderCommands {
       @Required(name = "name", description = "The name of the file to import") String name) {
     StarboxFile file =
         new StarboxFile(StarboxBukkitFiles.EXPORTS, name.endsWith(".json") ? name : name + ".json");
-    AtomicBoolean successful = new AtomicBoolean(true);
-    ItemBuilder builder =
-        file.read(StarboxBukkitFiles.Contexts.JSON, ItemBuilder.class)
-            .handle(Starbox::severe)
-            .provide()
-            .orElseGet(
-                () -> {
-                  successful.set(false);
-                  return new ItemBuilder();
-                });
-    this.builders.put(player.getUniqueId(), builder);
-    if (successful.get()) {
-      return new Result("&7Successfully loaded builder from: &b{0}", file);
-    } else {
-      return new Result("&7Could not load builder from: &d{0}", file);
+    if (file.exists()) {
+      AtomicBoolean successful = new AtomicBoolean(true);
+      ItemBuilder builder =
+          file.read(StarboxBukkitFiles.Contexts.JSON, ItemBuilder.class)
+              .handle(Starbox::severe)
+              .provide()
+              .orElseGet(
+                  () -> {
+                    successful.set(false);
+                    return new ItemBuilder();
+                  });
+      this.builders.put(player.getUniqueId(), builder);
+      if (successful.get()) {
+        return new Result("&7Successfully loaded builder from: &b{0}", file);
+      } else {
+        return new Result("&7Could not load builder from: &d{0}", file);
+      }
     }
+    return new Result("&cFile {0} does not exist", file);
   }
 
   @NonNull
