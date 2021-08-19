@@ -31,7 +31,8 @@ import org.bukkit.inventory.meta.ItemMeta;
  */
 public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonListener, Button> {
 
-  @NonNull private static final WrappedClass<ItemStack> ITEM_STACK = WrappedClass.of(ItemStack.class);
+  @NonNull
+  private static final WrappedClass<ItemStack> ITEM_STACK = WrappedClass.of(ItemStack.class);
 
   @NonNull
   public static final WrappedMethod<?> SET_DURABILITY =

@@ -24,10 +24,14 @@ public class Players {
       WrappedClass.forName("org.bukkit.craftbukkit.entity.CraftPlayer");
 
   @NonNull public static final WrappedClass<Player> PLAYER = WrappedClass.of(Player.class);
-  @NonNull public static final WrappedClass<Player.Spigot> SPIGOT_PLAYER = WrappedClass.of(Player.Spigot.class);
 
   @NonNull
-  public static final WrappedClass<PlayerInventory> PLAYER_INVENTORY = WrappedClass.of(PlayerInventory.class);
+  public static final WrappedClass<Player.Spigot> SPIGOT_PLAYER =
+      WrappedClass.of(Player.Spigot.class);
+
+  @NonNull
+  public static final WrappedClass<PlayerInventory> PLAYER_INVENTORY =
+      WrappedClass.of(PlayerInventory.class);
 
   @NonNull
   public static final WrappedMethod<?> GET_PROFILE = Players.CRAFT_PLAYER.getMethod("getProfile");

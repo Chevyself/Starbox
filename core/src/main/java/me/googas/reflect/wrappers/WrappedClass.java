@@ -227,7 +227,8 @@ public class WrappedClass<O> extends LangWrapper<Class<O>> {
   public boolean hasField(Class<?> fieldType, @NonNull String name) {
     if (this.reference != null) {
       for (Field field : this.reference.getFields()) {
-        if (field.getName().equals(name) && (fieldType == null || fieldType.isAssignableFrom(field.getType()))) return true;
+        if (field.getName().equals(name)
+            && (fieldType == null || fieldType.isAssignableFrom(field.getType()))) return true;
       }
     }
     return false;
@@ -243,7 +244,8 @@ public class WrappedClass<O> extends LangWrapper<Class<O>> {
   public boolean hasDeclaredField(Class<?> fieldType, @NonNull String name) {
     if (this.reference != null) {
       for (Field field : this.reference.getDeclaredFields()) {
-        if (field.getName().equals(name) && (fieldType == null || fieldType.isAssignableFrom(field.getType()))) return true;
+        if (field.getName().equals(name)
+            && (fieldType == null || fieldType.isAssignableFrom(field.getType()))) return true;
       }
     }
     return false;

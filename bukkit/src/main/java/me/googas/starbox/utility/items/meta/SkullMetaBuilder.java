@@ -18,7 +18,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 /** Builds {@link SkullMeta}. */
 public class SkullMetaBuilder extends ItemMetaBuilder {
 
-  @NonNull private static final WrappedClass<SkullMeta> SKULL_META = WrappedClass.of(SkullMeta.class);
+  @NonNull
+  private static final WrappedClass<SkullMeta> SKULL_META = WrappedClass.of(SkullMeta.class);
 
   @NonNull
   @APIVersion(since = 8, max = 11)

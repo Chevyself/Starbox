@@ -66,20 +66,22 @@ public class WrappedField<O> extends LangWrapper<Field> {
   }
 
   /**
-   * Get the value that is stored in the field for the parameter object and cast it to the field type.
+   * Get the value that is stored in the field for the parameter object and cast it to the field
+   * type.
    *
    * @param instance the object to get the value of the field from
    * @return a {@link HandledExpression} which gets the object in the field or handles a {@link
    *     IllegalAccessException}
    */
   public HandledExpression<O> get(@NonNull Object instance) {
-    return HandledExpression.using(() -> {
-      O other = null;
-      if (this.reference != null && this.fieldType != null) {
-        other = this.fieldType.cast(this.reference.get(instance));
-      }
-      return other;
-    });
+    return HandledExpression.using(
+        () -> {
+          O other = null;
+          if (this.reference != null && this.fieldType != null) {
+            other = this.fieldType.cast(this.reference.get(instance));
+          }
+          return other;
+        });
   }
 
   /**
