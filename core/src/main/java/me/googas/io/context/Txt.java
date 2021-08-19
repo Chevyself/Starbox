@@ -56,12 +56,15 @@ public class Txt implements FileContext<String> {
             () -> {
               FileWriter writer = file.getPreparedWriter(append);
               writer.write(string);
+              writer.flush();
               return true;
             })
         .next(
             () -> {
               Writer writer = atomicWriter.get();
-              if (writer != null) writer.close();
+              if (writer != null) {
+                writer.close();
+              }
             });
   }
 
