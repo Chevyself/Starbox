@@ -147,7 +147,7 @@ public class WrappedClass<O> extends LangWrapper<Class<O>> {
    * @param <T> the type of the object that the field contains
    */
   @NonNull
-  public <T> WrappedField<?> getDeclaredField(@NonNull Class<T> fieldType, @NonNull String name) {
+  public <T> WrappedField<T> getDeclaredField(@NonNull Class<T> fieldType, @NonNull String name) {
     Field field = null;
     if (this.hasDeclaredField(fieldType, name)) {
       try {

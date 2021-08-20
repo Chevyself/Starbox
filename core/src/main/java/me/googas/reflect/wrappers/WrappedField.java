@@ -73,7 +73,7 @@ public class WrappedField<O> extends LangWrapper<Field> {
    * @return a {@link HandledExpression} which gets the object in the field or handles a {@link
    *     IllegalAccessException}
    */
-  public HandledExpression<O> get(@NonNull Object instance) {
+  public HandledExpression<O> get(Object instance) {
     return HandledExpression.using(
         () -> {
           O other = null;
