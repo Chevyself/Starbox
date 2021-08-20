@@ -1,6 +1,6 @@
 package me.googas.starbox.commands;
 
-`1import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -18,6 +18,7 @@ import me.googas.reflect.wrappers.WrappedConstructor;
 import me.googas.reflect.wrappers.chat.AbstractComponentBuilder;
 import me.googas.reflect.wrappers.chat.WrappedHoverEvent;
 import me.googas.reflect.wrappers.chat.WrappedText;
+import me.googas.starbox.BukkitLanguage;
 import me.googas.starbox.Starbox;
 import me.googas.starbox.StarboxBukkitFiles;
 import me.googas.starbox.utility.Versions;
@@ -45,36 +46,21 @@ public class ComponentBuilderCommands {
 
   @NonNull private final Map<UUID, AbstractComponentBuilder> builders = new HashMap<>();
 
-  public static class Parent extends StarboxParentCommand {
-
-    public Parent(@NonNull CommandManager manager) {
-      super(
-          "componentBuilder",
-          "Helps with the construction of chat components",
-          "componentBuilder <subcommand>",
-          Arrays.asList("cb"),
-          false,
-          manager);
-    }
-  }
-
   @Command(
       aliases = "reset",
       description = "Reset the builder",
       permission = "starbox.component-builder")
   public Result reset(Player player) {
     builders.remove(player.getUniqueId());
-    return new Result("&7Your builder has been reset");
+    return BukkitLanguage.asResult(player, "component-builder.reset");
   }
 
   @Command(
-      aliases = "see",
-      description = "See how a text component would look like using color codes",
+      aliases = "build",
+      description = "Build an see your current component",
       permission = "starbox.component-builder")
-  public Result see(
-      Player player,
-      @Required(name = "text", description = "The text to test") @Multiple String text) {
-    return new Result(text);
+  public Result build(Player player) {
+    return BukkitLanguage.asResult(player, "component-builder.reset");
   }
 
   @Command(
@@ -89,14 +75,24 @@ public class ComponentBuilderCommands {
               suggestions = {"1", "2", "3"})
           int spaces) {
     if (spaces < 1) {
-      return new Result("&cNumber cannot be less than 1");
+      return BukkitLanguage.asResult(player, "component-builder.spaces.less-than-1");
     } else {
       AbstractComponentBuilder builder = this.getBuilder(player);
       for (int i = 0; i < spaces; i++) {
         builder.append(" ");
       }
-      return new Result("&7Spaces have been appended");
+      return BukkitLanguage.asResult(player, "component-builder.spaces.success");
     }
+  }
+
+  @Command(
+      aliases = "see",
+      description = "See how a text component would look like using color codes",
+      permission = "starbox.component-builder")
+  public Result see(
+      Player player,
+      @Required(name = "text", description = "The text to test") @Multiple String text) {
+    return new Result(text);
   }
 
   @Command(
@@ -105,10 +101,11 @@ public class ComponentBuilderCommands {
       permission = "starbox.component-builder")
   public Result text(
       Player player,
-      @Required(name = "") ComponentBuilder.FormatRetention retention,
+      @Required(name = "retention", description = "How should the text retain previous formats")
+          ComponentBuilder.FormatRetention retention,
       @Required(name = "text", description = "The text to append") @Multiple String text) {
     this.getBuilder(player).append(text, retention);
-    return new Result("&7Text has been appended to your builder");
+    return BukkitLanguage.asResult(player, "component-builder.append", text);
   }
 
   @Command(
@@ -119,7 +116,7 @@ public class ComponentBuilderCommands {
       Player player,
       @Required(name = "text", description = "The text to append") @Multiple String text) {
     this.getBuilder(player).append(text);
-    return new Result("&7Text has been appended to your builder");
+    return BukkitLanguage.asResult(player, "component-builder.append", text);
   }
 
   @Command(
@@ -129,7 +126,7 @@ public class ComponentBuilderCommands {
   public Result color(
       Player player, @Required(name = "color", description = "The color to set") ChatColor color) {
     this.getBuilder(player).color(color);
-    return new Result("&7Color has been applied to your builder");
+    return BukkitLanguage.asResult(player, "component-builder.color");
   }
 
   @Command(
@@ -142,7 +139,7 @@ public class ComponentBuilderCommands {
       @Multiple @Required(name = "value", description = "The value of the action for the event")
           String value) {
     this.getBuilder(player).event(new ClickEvent(action, value));
-    return new Result("&7Click event has been added");
+    return BukkitLanguage.asResult(player, "component-builder.event");
   }
 
   @Command(
@@ -164,9 +161,9 @@ public class ComponentBuilderCommands {
         this.getBuilder(player)
             .event(WrappedHoverEvent.construct(action, new WrappedText(components)));
       }
-      return new Result("&7Hover event has been set");
+      return BukkitLanguage.asResult(player, "component-builder.event");
     }
-    return new Result("&cFile {0} does not exist", file);
+    return BukkitLanguage.asResult(player, "component-builder.import.no-file", file);
   }
 
   @Command(
@@ -175,7 +172,7 @@ public class ComponentBuilderCommands {
       permission = "starbox.component-builder")
   public Result obfuscate(Player player) {
     this.getBuilder(player).obfuscated(true);
-    return new Result("&7Current part has been obfuscated");
+    return BukkitLanguage.asResult(player, "component-builder.modify");
   }
 
   @Command(
@@ -184,7 +181,7 @@ public class ComponentBuilderCommands {
       permission = "starbox.component-builder")
   public Result strikethrough(Player player) {
     this.getBuilder(player).strikethrough(true);
-    return new Result("&7Current part has been strikethrough");
+    return BukkitLanguage.asResult(player, "component-builder.modify");
   }
 
   @Command(
@@ -193,7 +190,7 @@ public class ComponentBuilderCommands {
       permission = "starbox.component-builder")
   public Result italic(Player player) {
     this.getBuilder(player).italic(true);
-    return new Result("&7Current part has been set to italic");
+    return BukkitLanguage.asResult(player, "component-builder.modify");
   }
 
   @Command(
@@ -202,7 +199,7 @@ public class ComponentBuilderCommands {
       permission = "starbox.component-builder")
   public Result bold(Player player) {
     this.getBuilder(player).bold(true);
-    return new Result("&7Current part has been set to bold");
+    return BukkitLanguage.asResult(player, "component-builder.modify");
   }
 
   @Command(
@@ -211,7 +208,7 @@ public class ComponentBuilderCommands {
       permission = "starbox.component-builder")
   public Result underline(Player player) {
     this.getBuilder(player).underline(true);
-    return new Result("&7Current part has been set to underline");
+    return BukkitLanguage.asResult(player, "component-builder.modify");
   }
 
   @Command(
@@ -229,9 +226,9 @@ public class ComponentBuilderCommands {
             .provide()
             .orElse(false);
     if (exported) {
-      return new Result("&7Successfully exported builder to: &b{0}", file);
+      return BukkitLanguage.asResult(player, "component-builder.export.success");
     } else {
-      return new Result("&7Could not export current builder");
+      return BukkitLanguage.asResult(player, "component-builder.export.not");
     }
   }
 
@@ -246,9 +243,22 @@ public class ComponentBuilderCommands {
         new StarboxFile(StarboxBukkitFiles.EXPORTS, name.endsWith(".json") ? name : name + ".json");
     if (file.exists()) {
       this.builders.put(player.getUniqueId(), this.importBuilder(file));
-      return new Result("&7Successfully loaded builder");
+      return BukkitLanguage.asResult(player, "component-builder.import.success");
     } else {
-      return new Result("&cFile {0} does not exist", file);
+      return BukkitLanguage.asResult(player, "component-builder.import.no-file", file);
+    }
+  }
+
+  public static class Parent extends StarboxParentCommand {
+
+    public Parent(@NonNull CommandManager manager) {
+      super(
+          "componentBuilder",
+          "Helps with the construction of chat components",
+          "componentBuilder <subcommand>",
+          Collections.singletonList("cb"),
+          false,
+          manager);
     }
   }
 
