@@ -1,21 +1,32 @@
 package me.googas.starbox.commands;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+import lombok.Getter;
 import lombok.NonNull;
 import me.googas.commands.annotations.Multiple;
-import me.googas.commands.annotations.Parent;
 import me.googas.commands.annotations.Required;
+import me.googas.commands.bukkit.CommandManager;
+import me.googas.commands.bukkit.StarboxBukkitCommand;
 import me.googas.commands.bukkit.annotations.Command;
+import me.googas.commands.bukkit.context.CommandContext;
 import me.googas.commands.bukkit.result.Result;
+import me.googas.commands.bukkit.utils.BukkitUtils;
 import me.googas.io.StarboxFile;
+import me.googas.reflect.wrappers.chat.AbstractComponentBuilder;
+import me.googas.starbox.BukkitLanguage;
 import me.googas.starbox.Starbox;
 import me.googas.starbox.StarboxBukkitFiles;
+import me.googas.starbox.builders.MapBuilder;
 import me.googas.starbox.utility.items.ItemBuilder;
 import me.googas.starbox.utility.items.meta.ItemMetaBuilder;
 import me.googas.starbox.utility.items.meta.SkullMetaBuilder;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -29,25 +40,10 @@ public class ItemBuilderCommands {
 
   @NonNull private final Map<UUID, ItemBuilder> builders = new HashMap<>();
 
-  @Parent
-  @Command(
-      aliases = {"itemBuilder", "ib"},
-      description = "Build an item",
-      permission = "starbox.item-builder")
-  public Result itemBuilder(Player player) {
-    if (builders.containsKey(player.getUniqueId())) {
-      return new Result(
-          "&cYou already have an active builder. Use &e/itemBuilder build &cto build it");
-    } else {
-      this.getBuilder(player);
-      return new Result("&bBuilder has been initialized");
-    }
-  }
-
   @Command(aliases = "build", description = "Build the item", permission = "starbox.item-builder")
   public Result build(Player player) {
     player.getInventory().addItem(this.getBuilder(player).build());
-    return new Result("&7The item is now in your inventory!");
+    return BukkitLanguage.asResult(player, "item-builder.build");
   }
 
   @Command(
@@ -59,7 +55,8 @@ public class ItemBuilderCommands {
       @Required(name = "material", description = "The new material of the item")
           Material material) {
     this.getBuilder(player).setMaterial(material);
-    return new Result("&7Material has been changed to: &b{0}", material.name().toLowerCase());
+    return BukkitLanguage.asResult(
+        player, "item-builder.material", material.toString().toLowerCase());
   }
 
   @Command(
@@ -70,7 +67,7 @@ public class ItemBuilderCommands {
       Player player,
       @Required(name = "amount", description = "The new amount of the item") int amount) {
     this.getBuilder(player).setAmount(amount);
-    return new Result("&7Amount has been changed to: &b{0}", amount);
+    return BukkitLanguage.asResult(player, "item-builder.amount", amount);
   }
 
   @Command(
@@ -81,7 +78,7 @@ public class ItemBuilderCommands {
       Player player,
       @Required(name = "name", description = "The new name of the item") @Multiple String name) {
     this.getBuilder(player).setName(name);
-    return new Result("&7Name has been changed to: " + name);
+    return BukkitLanguage.asResult(player, "item-builder.name", BukkitUtils.format(name));
   }
 
   @Command(
@@ -92,7 +89,7 @@ public class ItemBuilderCommands {
       Player player,
       @Required(name = "lore", description = "The new lore of the item") @Multiple String lore) {
     this.getBuilder(player).setLore(lore);
-    return new Result("&7Lore has been changed to: " + lore);
+    return BukkitLanguage.asResult(player, "item-builder.lore", BukkitUtils.format(lore));
   }
 
   @Command(
@@ -104,7 +101,7 @@ public class ItemBuilderCommands {
       @Required(name = "unbreakable", description = "Whether the item has to be unbreakable")
           boolean unbreakable) {
     this.getBuilder(player).setUnbreakable(unbreakable);
-    return new Result("&7Unbreakable has been set to: &b{0}", unbreakable);
+    return BukkitLanguage.asResult(player, "item-builder.unbreakable", unbreakable);
   }
 
   @Command(
@@ -119,9 +116,9 @@ public class ItemBuilderCommands {
     if (metaBuilder instanceof SkullMetaBuilder) {
       ((SkullMetaBuilder) metaBuilder).setOwner(owner);
       String name = owner.getName() == null ? owner.getUniqueId().toString() : owner.getName();
-      return new Result("&7Owner of the skull has been set to: &b" + name);
+      return BukkitLanguage.asResult(player, "item-builder.owner", name);
     }
-    return new Result("&eThe current material of the item is not a skull");
+    return BukkitLanguage.asResult(player, "item-builder.not-skull");
   }
 
   @Command(
@@ -135,9 +132,9 @@ public class ItemBuilderCommands {
     ItemMetaBuilder metaBuilder = builder.getMetaBuilder();
     if (metaBuilder instanceof SkullMetaBuilder) {
       ((SkullMetaBuilder) metaBuilder).setSkin(base64);
-      return new Result("&7The skin of the skull has been set to: &b" + base64);
+      return BukkitLanguage.asResult(player, "item-builder.skin", base64);
     }
-    return new Result("&eThe current material of the item is not a skull");
+    return BukkitLanguage.asResult(player, "item-builder.not-skull");
   }
 
   @Command(
@@ -146,7 +143,7 @@ public class ItemBuilderCommands {
       permission = "starbox.item-builder")
   public Result reset(Player player) {
     this.builders.remove(player.getUniqueId());
-    return new Result("&7Your builder has been reset");
+    return BukkitLanguage.asResult(player, "item-builder.reset");
   }
 
   @Command(
@@ -163,9 +160,9 @@ public class ItemBuilderCommands {
             .provide()
             .orElse(false);
     if (exported) {
-      return new Result("&7Successfully exported builder to: &b{0}", file);
+      return BukkitLanguage.asResult(player, "item-builder.export.success", file);
     } else {
-      return new Result("&7Could not export current builder");
+      return BukkitLanguage.asResult(player, "item-builder.export.not");
     }
   }
 
@@ -191,12 +188,53 @@ public class ItemBuilderCommands {
                   });
       this.builders.put(player.getUniqueId(), builder);
       if (successful.get()) {
-        return new Result("&7Successfully loaded builder from: &b{0}", file);
+        return BukkitLanguage.asResult(player, "item-builder.import.success", file);
       } else {
-        return new Result("&7Could not load builder from: &d{0}", file);
+        return BukkitLanguage.asResult(player, "item-builder.import.not", file);
       }
     }
-    return new Result("&cFile {0} does not exist", file);
+    return BukkitLanguage.asResult(player, "item-builder.import.no-file", file);
+  }
+
+  public static class Parent extends StarboxBukkitCommand {
+
+    @NonNull @Getter private final List<StarboxBukkitCommand> children = new ArrayList<>();
+
+    public Parent(@NonNull CommandManager manager) {
+      super(
+          "itemBuilder",
+          "Parent command to build items",
+          "itemBuilder <subcommand>",
+          Collections.singletonList("ib"),
+          false,
+          manager);
+    }
+
+    @Override
+    public Result execute(@NonNull CommandContext context) {
+      BukkitLanguage language = BukkitLanguage.getLanguage(context.getSender());
+      AbstractComponentBuilder builder =
+          new AbstractComponentBuilder(
+              BukkitLanguage.getLanguage(context.getSender()).get("subcommands.title"));
+      this.getChildren()
+          .forEach(
+              children ->
+                  builder.appendAll(
+                      ComponentBuilder.FormatRetention.NONE,
+                      language.get(
+                          "subcommands.children",
+                          MapBuilder.of("parent", "itemBuilder")
+                              .put("children", children.getName())
+                              .put("description", children.getDescription())
+                              .build())));
+      builder.appendAll(ComponentBuilder.FormatRetention.NONE, language.get("subcommands.bottom"));
+      return new Result(builder.build());
+    }
+
+    @Override
+    public boolean hasAlias(@NonNull String alias) {
+      return alias.equalsIgnoreCase("itemBuilder") || alias.equalsIgnoreCase("ib");
+    }
   }
 
   @NonNull

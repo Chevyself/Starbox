@@ -1,10 +1,6 @@
 package me.googas.starbox;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,11 +27,11 @@ public class Starbox {
    * @param e the exception to handle
    * @param supplier a supplier for an information string
    */
-    public static void warning(@NonNull Throwable e, @NonNull Supplier<String> supplier) {
-      Starbox.getLogger().log(Level.WARNING, e, supplier);
-    }
+  public static void warning(@NonNull Throwable e, @NonNull Supplier<String> supplier) {
+    Starbox.getLogger().log(Level.WARNING, e, supplier);
+  }
 
-    /**
+  /**
    * Set the instance of the plugin.
    *
    * @param instance the instance of the plugin

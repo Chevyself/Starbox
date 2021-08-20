@@ -1,1 +1,61 @@
 language: en
+item-builder:
+  build: "&dThe item is now in your inventory"
+  material: "&dMaterial is now {0}"
+  amount: "&dAmount is now {0}"
+  name: "&7Name is now &r{0}"
+  lore: "&7Lore is now &5&o{0}"
+  unbreakable: "&dUnbreakable is now {0}"
+  not-skull: "&6Current material is not a skull"
+  owner: "&7Owner is now &d{0}"
+  skin: "&7Skin is now &r{0}"
+  reset: "&dBuilder has been reset"
+  export:
+    success: "&7Builder has been exported to &d{0}"
+    not: "&6Could not export builder"
+  import:
+    sucess: "&7Imported builder from &d{0}"
+    not: "&6Could not load builder from &e{0}"
+    no-file: "&6Could not find file &e{0}"
+
+subcommands:
+  title: >
+    [
+      {
+        "color": "dark_gray",
+        "text": "----------- "
+      },
+      {
+        "color": "light_purple",
+        "text": "Subcommands"
+      },
+      {
+        "color": "dark_gray",
+        "text": " ---------------------- \n"
+      }
+    ]
+  children: >
+    [
+      {
+        "color": "gray",
+        "clickEvent": {
+          "action": "suggest_command",
+          "value": "/%parent% %children%"
+        },
+        "hoverEvent": {
+          "action": "show_text",
+          "value": [
+            {
+              "color": "light_purple",
+              "text": "Select command"
+            }
+          ]
+        },
+        "text": "/%parent% %children%: "
+      },
+      {
+        "text": "%description% \n"
+      }
+    ]
+  bottom: >
+    [{"color":"gold","text":"You must use a sub-command"}]

@@ -55,7 +55,7 @@ public class SkullMetaBuilder extends ItemMetaBuilder {
   private void appendSkin(@NonNull ItemStack stack, @NonNull SkullMeta meta) {
     if (this.skin != null) {
       if (Versions.BUKKIT <= 11) {
-        ItemBuilder.SET_DURABILITY.invoke(stack, (short) 3).run();
+        ItemBuilder.SET_DURABILITY.invoke(stack, (short) 3).handle(Starbox::severe).run();
       }
       WrappedGameProfile gameProfile = WrappedGameProfile.construct(UUID.randomUUID(), null);
       gameProfile.getProperties().put("textures", WrappedProperty.construct("textures", this.skin));

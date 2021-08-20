@@ -2,6 +2,7 @@ package me.googas.starbox.commands;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.NonNull;
 import me.googas.commands.annotations.Free;
@@ -13,6 +14,8 @@ import me.googas.commands.bukkit.result.Result;
 import me.googas.io.StarboxFile;
 import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedConstructor;
+import me.googas.reflect.wrappers.chat.AbstractComponentBuilder;
+import me.googas.reflect.wrappers.chat.WrappedHoverEvent;
 import me.googas.reflect.wrappers.chat.WrappedText;
 import me.googas.starbox.Starbox;
 import me.googas.starbox.StarboxBukkitFiles;
@@ -22,7 +25,6 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.entity.Player;
 
 /**
@@ -40,7 +42,7 @@ public class ComponentBuilderCommands {
       ComponentBuilderCommands.HOVER_EVENT.getConstructor(
           HoverEvent.Action.class, BaseComponent[].class);
 
-  @NonNull private final Map<UUID, ComponentBuilder> builders = new HashMap<>();
+  @NonNull private final Map<UUID, AbstractComponentBuilder> builders = new HashMap<>();
 
   @Parent
   @Command(
@@ -48,7 +50,7 @@ public class ComponentBuilderCommands {
       description = "Helps with the construction of Chat Components",
       permission = "starbox.component-builder")
   public Result componentBuilder(Player player) {
-    return new Result(this.getBuilder(player).create());
+    return new Result(this.getBuilder(player).build());
   }
 
   @Command(
@@ -84,7 +86,7 @@ public class ComponentBuilderCommands {
     if (spaces < 1) {
       return new Result("&cNumber cannot be less than 1");
     } else {
-      ComponentBuilder builder = this.getBuilder(player);
+      AbstractComponentBuilder builder = this.getBuilder(player);
       for (int i = 0; i < spaces; i++) {
         builder.append(" ");
       }
@@ -149,23 +151,62 @@ public class ComponentBuilderCommands {
     HoverEvent.Action action = HoverEvent.Action.SHOW_TEXT;
     StarboxFile file =
         new StarboxFile(StarboxBukkitFiles.EXPORTS, name.endsWith(".json") ? name : name + ".json");
-    ComponentBuilder builder = this.importBuilder(file);
+    BaseComponent[] components = this.importComponents(file).orElseGet(() -> new BaseComponent[0]);
     if (file.exists()) {
       if (Versions.BUKKIT < 16) {
-        this.getBuilder(player)
-            .event(
-                ComponentBuilderCommands.HOVER_EVENT_CONSTRUCTOR
-                    .invoke(action, builder.create())
-                    .handle(Starbox::severe)
-                    .provide()
-                    .orElseThrow(IllegalStateException::new));
+        this.getBuilder(player).event(WrappedHoverEvent.construct(action, components));
       } else {
         this.getBuilder(player)
-            .event(new HoverEvent(action, new WrappedText(builder.create()).getText()));
+            .event(WrappedHoverEvent.construct(action, new WrappedText(components)));
       }
       return new Result("&7Hover event has been set");
     }
     return new Result("&cFile {0} does not exist", file);
+  }
+
+  @Command(
+      aliases = "obfuscate",
+      description = "Obfuscates the current part",
+      permission = "starbox.component-builder")
+  public Result obfuscate(Player player) {
+    this.getBuilder(player).obfuscated(true);
+    return new Result("&7Current part has been obfuscated");
+  }
+
+  @Command(
+      aliases = "strikethrough",
+      description = "Strikethrough the current part",
+      permission = "starbox.component-builder")
+  public Result strikethrough(Player player) {
+    this.getBuilder(player).strikethrough(true);
+    return new Result("&7Current part has been strikethrough");
+  }
+
+  @Command(
+      aliases = "italic",
+      description = "Italic the current part",
+      permission = "starbox.component-builder")
+  public Result italic(Player player) {
+    this.getBuilder(player).italic(true);
+    return new Result("&7Current part has been set to italic");
+  }
+
+  @Command(
+      aliases = "bold",
+      description = "Bold the current part",
+      permission = "starbox.component-builder")
+  public Result bold(Player player) {
+    this.getBuilder(player).bold(true);
+    return new Result("&7Current part has been set to bold");
+  }
+
+  @Command(
+      aliases = "underline",
+      description = "Underline the current part",
+      permission = "starbox.component-builder")
+  public Result underline(Player player) {
+    this.getBuilder(player).underline(true);
+    return new Result("&7Current part has been set to underline");
   }
 
   @Command(
@@ -178,8 +219,7 @@ public class ComponentBuilderCommands {
     StarboxFile file =
         new StarboxFile(StarboxBukkitFiles.EXPORTS, name.endsWith(".json") ? name : name + ".json");
     boolean exported =
-        StarboxBukkitFiles.Contexts.TXT
-            .write(file, ComponentSerializer.toString(this.getBuilder(player).create()), true)
+        file.write(AbstractComponentBuilder.JSON, this.getBuilder(player).build())
             .handle(Starbox::severe)
             .provide()
             .orElse(false);
@@ -208,22 +248,21 @@ public class ComponentBuilderCommands {
   }
 
   @NonNull
-  private ComponentBuilder importBuilder(@NonNull StarboxFile file) {
-    ComponentBuilder builder = new ComponentBuilder("");
-    BaseComponent[] parts =
-        ComponentSerializer.parse(
-            file.read(StarboxBukkitFiles.Contexts.TXT)
-                .handle(Starbox::severe)
-                .provide()
-                .orElse("[]"));
-    for (BaseComponent part : parts) {
-      builder.append(part.toLegacyText());
-    }
-    return builder;
+  private AbstractComponentBuilder importBuilder(@NonNull StarboxFile file) {
+    return this.importComponents(file)
+        .map(AbstractComponentBuilder::new)
+        .orElseGet(AbstractComponentBuilder::new);
+  }
+
+  private @NonNull Optional<BaseComponent[]> importComponents(@NonNull StarboxFile file) {
+    return file.read(AbstractComponentBuilder.JSON, BaseComponent[].class)
+        .handle(Starbox::severe)
+        .provide();
   }
 
   @NonNull
-  private ComponentBuilder getBuilder(@NonNull Player player) {
-    return this.builders.computeIfAbsent(player.getUniqueId(), uuid -> new ComponentBuilder(""));
+  private AbstractComponentBuilder getBuilder(@NonNull Player player) {
+    return this.builders.computeIfAbsent(
+        player.getUniqueId(), uuid -> new AbstractComponentBuilder());
   }
 }

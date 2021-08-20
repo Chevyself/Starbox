@@ -6,6 +6,7 @@ import lombok.NonNull;
 import me.googas.commands.bukkit.context.CommandContext;
 import me.googas.commands.bukkit.providers.type.BukkitArgumentProvider;
 import me.googas.commands.exceptions.ArgumentProviderException;
+import me.googas.reflect.APIVersion;
 import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.starbox.utility.Versions;
@@ -18,6 +19,7 @@ public class BungeeChatColorProvider implements BukkitArgumentProvider<ChatColor
   private static final WrappedClass<ChatColor> CHAT_COLOR = WrappedClass.of(ChatColor.class);
 
   @NonNull
+  @APIVersion(since = 8, max = 15)
   private static final WrappedMethod<ChatColor> VALUE_OF =
       BungeeChatColorProvider.CHAT_COLOR.getMethod(ChatColor.class, "valueOf", String.class);
 
@@ -38,13 +40,7 @@ public class BungeeChatColorProvider implements BukkitArgumentProvider<ChatColor
           "red",
           "light_purple",
           "yellow",
-          "white",
-          "obfuscated",
-          "bold",
-          "strikethrough",
-          "underline",
-          "italic",
-          "reset");
+          "white");
 
   @Override
   public @NonNull Class<ChatColor> getClazz() {

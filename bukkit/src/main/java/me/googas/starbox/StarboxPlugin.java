@@ -1,5 +1,6 @@
 package me.googas.starbox;
 
+import java.util.Objects;
 import lombok.NonNull;
 import me.googas.commands.bukkit.CommandManager;
 import me.googas.commands.bukkit.context.CommandContext;
@@ -16,8 +17,6 @@ import me.googas.starbox.modules.ModuleRegistry;
 import me.googas.starbox.modules.ui.UIModule;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Objects;
-
 /** Main class of the Starbox Bukkit plugin. */
 public class StarboxPlugin extends JavaPlugin {
 
@@ -27,7 +26,8 @@ public class StarboxPlugin extends JavaPlugin {
   public void onEnable() {
     Starbox.setInstance(this);
     modules.engage(new UIModule());
-    BukkitLanguage.languages.add(BukkitYamlLanguage.of(Objects.requireNonNull(this.getResource("language.yml"))));
+    BukkitLanguage.languages.add(
+        BukkitYamlLanguage.of(Objects.requireNonNull(this.getResource("language.yml"))));
     BukkitMessagesProvider messagesProvider = new BukkitMessagesProvider();
     ProvidersRegistry<CommandContext> registry =
         new BukkitProvidersRegistry(messagesProvider)
@@ -36,9 +36,10 @@ public class StarboxPlugin extends JavaPlugin {
                 new ClickEventActionProvider(),
                 new FormatRetentionProvider(),
                 new HoverEventActionProvider());
-    CommandManager manager =
-        new CommandManager(this, registry, messagesProvider)
-            .parseAndRegisterAll(new ComponentBuilderCommands(), new ItemBuilderCommands());
+    CommandManager manager = new CommandManager(this, registry, messagesProvider);
+    ItemBuilderCommands.Parent itemBuilder = new ItemBuilderCommands.Parent(manager);
+    itemBuilder.getChildren().addAll(manager.parseCommands(new ItemBuilderCommands()));
+    manager.register(itemBuilder).parseAndRegisterAll(new ComponentBuilderCommands());
     manager.registerPlugin();
     super.onEnable();
   }
