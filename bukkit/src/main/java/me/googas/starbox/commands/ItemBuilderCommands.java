@@ -1,13 +1,15 @@
 package me.googas.starbox.commands;
 
-import lombok.Getter;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.NonNull;
 import me.googas.commands.annotations.Multiple;
 import me.googas.commands.annotations.Required;
 import me.googas.commands.bukkit.CommandManager;
-import me.googas.commands.bukkit.StarboxBukkitCommand;
 import me.googas.commands.bukkit.annotations.Command;
-import me.googas.commands.bukkit.context.CommandContext;
 import me.googas.commands.bukkit.result.Result;
 import me.googas.commands.bukkit.utils.BukkitUtils;
 import me.googas.io.StarboxFile;
@@ -20,14 +22,6 @@ import me.googas.starbox.utility.items.meta.SkullMetaBuilder;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Commands to create items using {@link ItemBuilder}. Javadoc warnings are suppressed as commands
@@ -194,9 +188,7 @@ public class ItemBuilderCommands {
     return BukkitLanguage.asResult(player, "item-builder.import.no-file", file);
   }
 
-  public static class Parent extends StarboxBukkitCommand {
-
-    @NonNull @Getter private final List<StarboxBukkitCommand> children = new ArrayList<>();
+  public static class Parent extends StarboxParentCommand {
 
     public Parent(@NonNull CommandManager manager) {
       super(
@@ -206,16 +198,6 @@ public class ItemBuilderCommands {
           Collections.singletonList("ib"),
           false,
           manager);
-    }
-
-    @Override
-    public Result execute(@NonNull CommandContext context) {
-      return new Result(BukkitLanguage.getDefault().buildHelp(this, context));
-    }
-
-    @Override
-    public boolean hasAlias(@NonNull String alias) {
-      return alias.equalsIgnoreCase("itemBuilder") || alias.equalsIgnoreCase("ib");
     }
   }
 

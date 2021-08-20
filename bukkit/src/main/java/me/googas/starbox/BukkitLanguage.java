@@ -6,8 +6,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import lombok.NonNull;
-import me.googas.commands.bukkit.StarboxBukkitCommand;
-import me.googas.commands.bukkit.context.CommandContext;
 import me.googas.commands.bukkit.result.Result;
 import me.googas.starbox.utility.Players;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -48,16 +46,6 @@ public interface BukkitLanguage extends Language {
         .findFirst()
         .orElseGet(BukkitLanguage::getDefault);
   }
-
-  /**
-   * Builds a simple help message appending children commands for the parent.
-   *
-   * @param command the command to build the help for
-   * @param context the context of the command execution
-   * @return the base components
-   */
-  @NonNull
-  BaseComponent[] buildHelp(@NonNull StarboxBukkitCommand command, @NonNull CommandContext context);
 
   /**
    * Get a bukkit language from a command sender.

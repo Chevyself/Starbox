@@ -37,9 +37,11 @@ public class StarboxPlugin extends JavaPlugin {
                 new FormatRetentionProvider(),
                 new HoverEventActionProvider());
     CommandManager manager = new CommandManager(this, registry, messagesProvider);
+    ComponentBuilderCommands.Parent componentBuilder = new ComponentBuilderCommands.Parent(manager);
     ItemBuilderCommands.Parent itemBuilder = new ItemBuilderCommands.Parent(manager);
+    componentBuilder.getChildren().addAll(manager.parseCommands(new ComponentBuilderCommands()));
     itemBuilder.getChildren().addAll(manager.parseCommands(new ItemBuilderCommands()));
-    manager.register(itemBuilder).parseAndRegisterAll(new ComponentBuilderCommands());
+    manager.registerAll(componentBuilder, itemBuilder);
     manager.registerPlugin();
     super.onEnable();
   }

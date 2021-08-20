@@ -1,5 +1,6 @@
 package me.googas.starbox.commands;
 
+`1import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -7,8 +8,8 @@ import java.util.UUID;
 import lombok.NonNull;
 import me.googas.commands.annotations.Free;
 import me.googas.commands.annotations.Multiple;
-import me.googas.commands.annotations.Parent;
 import me.googas.commands.annotations.Required;
+import me.googas.commands.bukkit.CommandManager;
 import me.googas.commands.bukkit.annotations.Command;
 import me.googas.commands.bukkit.result.Result;
 import me.googas.io.StarboxFile;
@@ -44,13 +45,17 @@ public class ComponentBuilderCommands {
 
   @NonNull private final Map<UUID, AbstractComponentBuilder> builders = new HashMap<>();
 
-  @Parent
-  @Command(
-      aliases = {"componentBuilder", "cb"},
-      description = "Helps with the construction of Chat Components",
-      permission = "starbox.component-builder")
-  public Result componentBuilder(Player player) {
-    return new Result(this.getBuilder(player).build());
+  public static class Parent extends StarboxParentCommand {
+
+    public Parent(@NonNull CommandManager manager) {
+      super(
+          "componentBuilder",
+          "Helps with the construction of chat components",
+          "componentBuilder <subcommand>",
+          Arrays.asList("cb"),
+          false,
+          manager);
+    }
   }
 
   @Command(
