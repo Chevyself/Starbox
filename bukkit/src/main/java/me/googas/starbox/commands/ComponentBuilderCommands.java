@@ -12,6 +12,7 @@ import me.googas.commands.annotations.Required;
 import me.googas.commands.bukkit.CommandManager;
 import me.googas.commands.bukkit.annotations.Command;
 import me.googas.commands.bukkit.result.Result;
+import me.googas.commands.bukkit.utils.BukkitUtils;
 import me.googas.io.StarboxFile;
 import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedConstructor;
@@ -60,7 +61,7 @@ public class ComponentBuilderCommands {
       description = "Build an see your current component",
       permission = "starbox.component-builder")
   public Result build(Player player) {
-    return BukkitLanguage.asResult(player, "component-builder.reset");
+    return new Result(this.getBuilder(player).build());
   }
 
   @Command(
@@ -92,7 +93,7 @@ public class ComponentBuilderCommands {
   public Result see(
       Player player,
       @Required(name = "text", description = "The text to test") @Multiple String text) {
-    return new Result(text);
+    return new Result(BukkitUtils.format(text));
   }
 
   @Command(
@@ -226,7 +227,7 @@ public class ComponentBuilderCommands {
             .provide()
             .orElse(false);
     if (exported) {
-      return BukkitLanguage.asResult(player, "component-builder.export.success");
+      return BukkitLanguage.asResult(player, "component-builder.export.success", file);
     } else {
       return BukkitLanguage.asResult(player, "component-builder.export.not");
     }
