@@ -4,14 +4,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
 import lombok.NonNull;
+import me.googas.commands.bukkit.StarboxBukkitCommand;
+import me.googas.commands.bukkit.context.CommandContext;
 import me.googas.commands.bukkit.utils.BukkitUtils;
+import me.googas.reflect.wrappers.chat.AbstractComponentBuilder;
+import me.googas.starbox.builders.MapBuilder;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -80,5 +88,27 @@ public class BukkitYamlLanguage implements BukkitLanguage {
   public BaseComponent[] get(@NonNull String key, Object... objects) {
     return BukkitUtils.getComponent(
         BukkitUtils.format(this.getRaw(key).orElse(key), objects).trim());
+  }
+
+  @Override
+  public BaseComponent[] buildHelp(@NonNull StarboxBukkitCommand command, @NonNull CommandContext context) {
+    BukkitLanguage language = BukkitLanguage.getLanguage(context.getSender());
+    AbstractComponentBuilder builder =
+            new AbstractComponentBuilder(
+                    language.get("subcommands.title"));
+    List<StarboxBukkitCommand> children = command.getChildren()
+            .stream()
+            .filter(child -> child.getPermission() == null || context.getSender().hasPermission(child.getPermission())).collect(Collectors.toList());
+    if (children.isEmpty()) {
+      builder.append("subcommands.empty-children");
+    } else {
+      children.forEach(child -> {
+        builder.appendAll(ComponentBuilder.FormatRetention.NONE, language.get("subcommands.child", MapBuilder.of("parent", "itemBuilder")
+                .put("children", child.getName())
+                .put("description", child.getDescription())
+                .build()));
+      });
+    }
+    return builder.build();
   }
 }

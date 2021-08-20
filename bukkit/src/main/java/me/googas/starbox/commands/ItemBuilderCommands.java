@@ -1,12 +1,5 @@
 package me.googas.starbox.commands;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.commands.annotations.Multiple;
@@ -18,18 +11,23 @@ import me.googas.commands.bukkit.context.CommandContext;
 import me.googas.commands.bukkit.result.Result;
 import me.googas.commands.bukkit.utils.BukkitUtils;
 import me.googas.io.StarboxFile;
-import me.googas.reflect.wrappers.chat.AbstractComponentBuilder;
 import me.googas.starbox.BukkitLanguage;
 import me.googas.starbox.Starbox;
 import me.googas.starbox.StarboxBukkitFiles;
-import me.googas.starbox.builders.MapBuilder;
 import me.googas.starbox.utility.items.ItemBuilder;
 import me.googas.starbox.utility.items.meta.ItemMetaBuilder;
 import me.googas.starbox.utility.items.meta.SkullMetaBuilder;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Commands to create items using {@link ItemBuilder}. Javadoc warnings are suppressed as commands
@@ -212,23 +210,7 @@ public class ItemBuilderCommands {
 
     @Override
     public Result execute(@NonNull CommandContext context) {
-      BukkitLanguage language = BukkitLanguage.getLanguage(context.getSender());
-      AbstractComponentBuilder builder =
-          new AbstractComponentBuilder(
-              BukkitLanguage.getLanguage(context.getSender()).get("subcommands.title"));
-      this.getChildren()
-          .forEach(
-              children ->
-                  builder.appendAll(
-                      ComponentBuilder.FormatRetention.NONE,
-                      language.get(
-                          "subcommands.children",
-                          MapBuilder.of("parent", "itemBuilder")
-                              .put("children", children.getName())
-                              .put("description", children.getDescription())
-                              .build())));
-      builder.appendAll(ComponentBuilder.FormatRetention.NONE, language.get("subcommands.bottom"));
-      return new Result(builder.build());
+      return new Result(BukkitLanguage.getDefault().buildHelp(this, context));
     }
 
     @Override

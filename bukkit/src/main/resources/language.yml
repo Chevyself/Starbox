@@ -14,7 +14,7 @@ item-builder:
     success: "&7Builder has been exported to &d{0}"
     not: "&6Could not export builder"
   import:
-    sucess: "&7Imported builder from &d{0}"
+    success: "&7Imported builder from &d{0}"
     not: "&6Could not load builder from &e{0}"
     no-file: "&6Could not find file &e{0}"
 
@@ -34,7 +34,7 @@ subcommands:
         "text": " ---------------------- \n"
       }
     ]
-  children: >
+  child: >
     [
       {
         "color": "gray",
@@ -57,5 +57,7 @@ subcommands:
         "text": "%description% \n"
       }
     ]
+  empty-children: >
+    [{"color":"gold","text":"There's no sub-commands or you might not be allowed to use them"}]
   bottom: >
     [{"color":"gold","text":"You must use a sub-command"}]
