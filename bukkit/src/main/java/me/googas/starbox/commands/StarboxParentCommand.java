@@ -72,7 +72,8 @@ public abstract class StarboxParentCommand extends StarboxBukkitCommand {
                         || context.getSender().hasPermission(child.getPermission()))
             .collect(Collectors.toList());
     if (children.isEmpty()) {
-      builder.append("subcommands.empty-children");
+      builder.appendAll(
+          ComponentBuilder.FormatRetention.NONE, language.get("subcommands.empty-children"));
     } else {
       children.forEach(
           child ->
@@ -80,10 +81,11 @@ public abstract class StarboxParentCommand extends StarboxBukkitCommand {
                   ComponentBuilder.FormatRetention.NONE,
                   language.get(
                       "subcommands.child",
-                      MapBuilder.of("parent", "itemBuilder")
+                      MapBuilder.of("parent", this.getName())
                           .put("children", child.getName())
                           .put("description", child.getDescription())
                           .build())));
+      builder.appendAll(ComponentBuilder.FormatRetention.NONE, language.get("subcommands.bottom"));
     }
     return new Result(builder.build());
   }
