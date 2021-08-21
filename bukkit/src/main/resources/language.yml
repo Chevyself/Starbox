@@ -48,7 +48,7 @@ subcommands:
       },
       {
         "color": "dark_gray",
-        "text": " ---------------------- \n"
+        "text": " ----------------------"
       }
     ]
   child: >
@@ -71,7 +71,7 @@ subcommands:
         "text": "/%parent% %children%: "
       },
       {
-        "text": "%description% \n"
+        "text": "%description%"
       }
     ]
   empty-children: >

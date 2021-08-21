@@ -10,10 +10,10 @@ import me.googas.commands.bukkit.CommandManager;
 import me.googas.commands.bukkit.StarboxBukkitCommand;
 import me.googas.commands.bukkit.context.CommandContext;
 import me.googas.commands.bukkit.result.Result;
-import me.googas.reflect.wrappers.chat.AbstractComponentBuilder;
+import me.googas.commands.bukkit.utils.BukkitUtils;
 import me.googas.starbox.BukkitLanguage;
 import me.googas.starbox.builders.MapBuilder;
-import net.md_5.bungee.api.chat.ComponentBuilder;
+import org.bukkit.command.CommandSender;
 
 /** A simple extension of {@link StarboxBukkitCommand} to easily create parent commands. */
 public abstract class StarboxParentCommand extends StarboxBukkitCommand {
@@ -61,33 +61,31 @@ public abstract class StarboxParentCommand extends StarboxBukkitCommand {
 
   @Override
   public Result execute(@NonNull CommandContext context) {
-    BukkitLanguage language = BukkitLanguage.getLanguage(context.getSender());
-    AbstractComponentBuilder builder =
-        new AbstractComponentBuilder(language.get("subcommands.title"));
+    CommandSender sender = context.getSender();
+    BukkitLanguage language = BukkitLanguage.getLanguage(sender);
     List<StarboxBukkitCommand> children =
         this.getChildren().stream()
             .filter(
                 child ->
-                    child.getPermission() == null
-                        || context.getSender().hasPermission(child.getPermission()))
+                    child.getPermission() == null || sender.hasPermission(child.getPermission()))
             .collect(Collectors.toList());
     if (children.isEmpty()) {
-      builder.appendAll(
-          ComponentBuilder.FormatRetention.NONE, language.get("subcommands.empty-children"));
+      BukkitUtils.send(sender, language.get("subcommands.empty-children"));
     } else {
+      BukkitUtils.send(sender, language.get("subcommands.title"));
       children.forEach(
           child ->
-              builder.appendAll(
-                  ComponentBuilder.FormatRetention.NONE,
+              BukkitUtils.send(
+                  sender,
                   language.get(
                       "subcommands.child",
                       MapBuilder.of("parent", this.getName())
                           .put("children", child.getName())
                           .put("description", child.getDescription())
                           .build())));
-      builder.appendAll(ComponentBuilder.FormatRetention.NONE, language.get("subcommands.bottom"));
+      BukkitUtils.send(sender, language.get("subcommands.bottom"));
     }
-    return new Result(builder.build());
+    return null;
   }
 
   @Override
