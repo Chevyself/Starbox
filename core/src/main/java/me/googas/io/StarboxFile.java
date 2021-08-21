@@ -420,9 +420,8 @@ public class StarboxFile {
    * Deletes this file and if it is a directory it will delete everything inside of it.
    *
    * @return whether the file or directory has been deleted
-   * @throws IOException if a file or more cannot be deleted
    */
-  public boolean deleteAll() throws IOException {
+  public boolean deleteAll() {
     StarboxFile[] files = this.listFiles();
     boolean deleted = false;
     if (files != null) {
@@ -433,7 +432,7 @@ public class StarboxFile {
       }
     }
     if (this.exists()) {
-      Files.delete(this.toPath());
+        this.getFile().delete();
       deleted = true;
     }
     return deleted;
