@@ -354,8 +354,9 @@ public class StarboxFile {
     AtomicReference<OutputStream> atomicOutput = new AtomicReference<>();
     return HandledExpression.using(
             () -> {
-              if ((!this.getParentFile().exists() && !this.getParentFile().mkdirs())
-                  || (!this.exists() && !this.createNewFile())) return false;
+              if (source.exists()
+                  && (!this.getParentFile().exists() && !this.getParentFile().mkdirs())
+                  && (!this.exists() && !this.createNewFile())) return false;
               InputStream input = new FileInputStream(source.getFile());
               OutputStream output = new FileOutputStream(this.getFile());
               byte[] buffer = new byte[1024];
@@ -432,7 +433,7 @@ public class StarboxFile {
       }
     }
     if (this.exists()) {
-        this.getFile().delete();
+      this.getFile().delete();
       deleted = true;
     }
     return deleted;
