@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.NonNull;
+import me.googas.starbox.modules.ModuleRegistry;
 
 /** Static access for {@link StarboxPlugin}. */
 public class Starbox {
@@ -41,6 +42,15 @@ public class Starbox {
     if (Starbox.instance != null && instance != null)
       throw new IllegalStateException("Plugin is already initialized");
     Starbox.instance = instance;
+  }
+
+  /**
+   * Get the module registry.
+   *
+   * @return the module registry
+   */
+  public static @NonNull ModuleRegistry getModules() {
+    return Starbox.getInstance().getModules();
   }
 
   /**

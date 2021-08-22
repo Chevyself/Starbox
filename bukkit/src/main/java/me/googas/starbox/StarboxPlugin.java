@@ -1,6 +1,7 @@
 package me.googas.starbox;
 
 import java.util.Objects;
+import lombok.Getter;
 import lombok.NonNull;
 import me.googas.commands.bukkit.CommandManager;
 import me.googas.commands.bukkit.context.CommandContext;
@@ -10,29 +11,35 @@ import me.googas.commands.providers.registry.ProvidersRegistry;
 import me.googas.starbox.commands.ComponentBuilderCommands;
 import me.googas.starbox.commands.ItemBuilderCommands;
 import me.googas.starbox.commands.providers.BungeeChatColorProvider;
+import me.googas.starbox.commands.providers.ChannelProvider;
 import me.googas.starbox.commands.providers.ClickEventActionProvider;
 import me.googas.starbox.commands.providers.FormatRetentionProvider;
 import me.googas.starbox.commands.providers.HoverEventActionProvider;
 import me.googas.starbox.modules.ModuleRegistry;
+import me.googas.starbox.modules.language.LanguageModule;
 import me.googas.starbox.modules.ui.UIModule;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /** Main class of the Starbox Bukkit plugin. */
 public class StarboxPlugin extends JavaPlugin {
 
-  @NonNull private final ModuleRegistry modules = new ModuleRegistry(this);
+  @NonNull @Getter private final ModuleRegistry modules = new ModuleRegistry(this);
 
   @Override
   public void onEnable() {
     Starbox.setInstance(this);
-    modules.engage(new UIModule());
-    BukkitLanguage.languages.add(
-        BukkitYamlLanguage.of(Objects.requireNonNull(this.getResource("language.yml"))));
+    modules.engage(
+        new UIModule(),
+        new LanguageModule()
+            .register(
+                this,
+                BukkitYamlLanguage.of(Objects.requireNonNull(this.getResource("language.yml")))));
     BukkitMessagesProvider messagesProvider = new BukkitMessagesProvider();
     ProvidersRegistry<CommandContext> registry =
         new BukkitProvidersRegistry(messagesProvider)
             .addProviders(
                 new BungeeChatColorProvider(),
+                new ChannelProvider(),
                 new ClickEventActionProvider(),
                 new FormatRetentionProvider(),
                 new HoverEventActionProvider());
@@ -50,7 +57,6 @@ public class StarboxPlugin extends JavaPlugin {
   @Override
   public void onDisable() {
     modules.disengageAll();
-    BukkitLanguage.languages.clear();
     super.onDisable();
   }
 }

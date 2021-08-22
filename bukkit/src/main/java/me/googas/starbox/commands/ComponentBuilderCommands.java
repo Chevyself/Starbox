@@ -19,7 +19,7 @@ import me.googas.reflect.wrappers.WrappedConstructor;
 import me.googas.reflect.wrappers.chat.AbstractComponentBuilder;
 import me.googas.reflect.wrappers.chat.WrappedHoverEvent;
 import me.googas.reflect.wrappers.chat.WrappedText;
-import me.googas.starbox.BukkitLanguage;
+import me.googas.starbox.BukkitLine;
 import me.googas.starbox.Starbox;
 import me.googas.starbox.StarboxBukkitFiles;
 import me.googas.starbox.utility.Versions;
@@ -53,7 +53,7 @@ public class ComponentBuilderCommands {
       permission = "starbox.component-builder")
   public Result reset(Player player) {
     builders.remove(player.getUniqueId());
-    return BukkitLanguage.asResult(player, "component-builder.reset");
+    return BukkitLine.localized(player, "component-builder.reset").asResult();
   }
 
   @Command(
@@ -76,13 +76,13 @@ public class ComponentBuilderCommands {
               suggestions = {"1", "2", "3"})
           int spaces) {
     if (spaces < 1) {
-      return BukkitLanguage.asResult(player, "component-builder.spaces.less-than-1");
+      return BukkitLine.localized(player, "component-builder.spaces.less-than-1").asResult();
     } else {
       AbstractComponentBuilder builder = this.getBuilder(player);
       for (int i = 0; i < spaces; i++) {
         builder.append(" ");
       }
-      return BukkitLanguage.asResult(player, "component-builder.spaces.success");
+      return BukkitLine.localized(player, "component-builder.spaces.success").asResult();
     }
   }
 
@@ -93,7 +93,7 @@ public class ComponentBuilderCommands {
   public Result see(
       Player player,
       @Required(name = "text", description = "The text to test") @Multiple String text) {
-    return new Result(BukkitUtils.format(text));
+    return Result.of(BukkitUtils.format(text));
   }
 
   @Command(
@@ -106,7 +106,7 @@ public class ComponentBuilderCommands {
           ComponentBuilder.FormatRetention retention,
       @Required(name = "text", description = "The text to append") @Multiple String text) {
     this.getBuilder(player).append(text, retention);
-    return BukkitLanguage.asResult(player, "component-builder.append", text);
+    return BukkitLine.localized(player, "component-builder.append").format(text).asResult();
   }
 
   @Command(
@@ -117,7 +117,7 @@ public class ComponentBuilderCommands {
       Player player,
       @Required(name = "text", description = "The text to append") @Multiple String text) {
     this.getBuilder(player).append(text);
-    return BukkitLanguage.asResult(player, "component-builder.append", text);
+    return BukkitLine.localized(player, "component-builder.append").format(text).asResult();
   }
 
   @Command(
@@ -127,7 +127,7 @@ public class ComponentBuilderCommands {
   public Result color(
       Player player, @Required(name = "color", description = "The color to set") ChatColor color) {
     this.getBuilder(player).color(color);
-    return BukkitLanguage.asResult(player, "component-builder.color");
+    return BukkitLine.localized(player, "component-builder.color").asResult();
   }
 
   @Command(
@@ -140,7 +140,7 @@ public class ComponentBuilderCommands {
       @Multiple @Required(name = "value", description = "The value of the action for the event")
           String value) {
     this.getBuilder(player).event(new ClickEvent(action, value));
-    return BukkitLanguage.asResult(player, "component-builder.event");
+    return BukkitLine.localized(player, "component-builder.event").asResult();
   }
 
   @Command(
@@ -162,9 +162,9 @@ public class ComponentBuilderCommands {
         this.getBuilder(player)
             .event(WrappedHoverEvent.construct(action, new WrappedText(components)));
       }
-      return BukkitLanguage.asResult(player, "component-builder.event");
+      return BukkitLine.localized(player, "component-builder.event").asResult();
     }
-    return BukkitLanguage.asResult(player, "component-builder.import.no-file", file);
+    return BukkitLine.localized(player, "component-builder.import.no-file").format(file).asResult();
   }
 
   @Command(
@@ -173,7 +173,7 @@ public class ComponentBuilderCommands {
       permission = "starbox.component-builder")
   public Result obfuscate(Player player) {
     this.getBuilder(player).obfuscated(true);
-    return BukkitLanguage.asResult(player, "component-builder.modify");
+    return BukkitLine.localized(player, "component-builder.modify").asResult();
   }
 
   @Command(
@@ -182,7 +182,7 @@ public class ComponentBuilderCommands {
       permission = "starbox.component-builder")
   public Result strikethrough(Player player) {
     this.getBuilder(player).strikethrough(true);
-    return BukkitLanguage.asResult(player, "component-builder.modify");
+    return BukkitLine.localized(player, "component-builder.modify").asResult();
   }
 
   @Command(
@@ -191,7 +191,7 @@ public class ComponentBuilderCommands {
       permission = "starbox.component-builder")
   public Result italic(Player player) {
     this.getBuilder(player).italic(true);
-    return BukkitLanguage.asResult(player, "component-builder.modify");
+    return BukkitLine.localized(player, "component-builder.modify").asResult();
   }
 
   @Command(
@@ -200,7 +200,7 @@ public class ComponentBuilderCommands {
       permission = "starbox.component-builder")
   public Result bold(Player player) {
     this.getBuilder(player).bold(true);
-    return BukkitLanguage.asResult(player, "component-builder.modify");
+    return BukkitLine.localized(player, "component-builder.modify").asResult();
   }
 
   @Command(
@@ -209,7 +209,7 @@ public class ComponentBuilderCommands {
       permission = "starbox.component-builder")
   public Result underline(Player player) {
     this.getBuilder(player).underline(true);
-    return BukkitLanguage.asResult(player, "component-builder.modify");
+    return BukkitLine.localized(player, "component-builder.modify").asResult();
   }
 
   @Command(
@@ -227,9 +227,11 @@ public class ComponentBuilderCommands {
             .provide()
             .orElse(false);
     if (exported) {
-      return BukkitLanguage.asResult(player, "component-builder.export.success", file);
+      return BukkitLine.localized(player, "component-builder.export.success")
+          .format(file)
+          .asResult();
     } else {
-      return BukkitLanguage.asResult(player, "component-builder.export.not");
+      return BukkitLine.localized(player, "component-builder.export.not").asResult();
     }
   }
 
@@ -244,9 +246,11 @@ public class ComponentBuilderCommands {
         new StarboxFile(StarboxBukkitFiles.EXPORTS, name.endsWith(".json") ? name : name + ".json");
     if (file.exists()) {
       this.builders.put(player.getUniqueId(), this.importBuilder(file));
-      return BukkitLanguage.asResult(player, "component-builder.import.success");
+      return BukkitLine.localized(player, "component-builder.import.success").asResult();
     } else {
-      return BukkitLanguage.asResult(player, "component-builder.import.no-file", file);
+      return BukkitLine.localized(player, "component-builder.import.no-file")
+          .format(file)
+          .asResult();
     }
   }
 

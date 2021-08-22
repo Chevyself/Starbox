@@ -1,17 +1,16 @@
 package me.googas.starbox.modules.channels;
 
+import java.util.Locale;
+import java.util.Optional;
 import lombok.NonNull;
 import me.googas.commands.bukkit.utils.BukkitUtils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 
-/**
- * A channel that is used to send data to the console.
- */
+/** A channel that is used to send data to the console. */
 public class ConsoleChannel implements Channel {
 
-  @NonNull
-  private static final ConsoleChannel instance = new ConsoleChannel();
+  @NonNull private static final ConsoleChannel instance = new ConsoleChannel();
 
   private ConsoleChannel() {}
 
@@ -35,5 +34,10 @@ public class ConsoleChannel implements Channel {
   public @NonNull ConsoleChannel send(@NonNull String text) {
     Bukkit.getConsoleSender().sendMessage(text);
     return this;
+  }
+
+  @Override
+  public Optional<Locale> getLocale() {
+    return Optional.of(Locale.ENGLISH);
   }
 }

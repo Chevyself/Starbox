@@ -13,7 +13,7 @@ import me.googas.commands.bukkit.annotations.Command;
 import me.googas.commands.bukkit.result.Result;
 import me.googas.commands.bukkit.utils.BukkitUtils;
 import me.googas.io.StarboxFile;
-import me.googas.starbox.BukkitLanguage;
+import me.googas.starbox.BukkitLine;
 import me.googas.starbox.Starbox;
 import me.googas.starbox.StarboxBukkitFiles;
 import me.googas.starbox.utility.items.ItemBuilder;
@@ -35,7 +35,7 @@ public class ItemBuilderCommands {
   @Command(aliases = "build", description = "Build the item", permission = "starbox.item-builder")
   public Result build(Player player) {
     player.getInventory().addItem(this.getBuilder(player).build());
-    return BukkitLanguage.asResult(player, "item-builder.build");
+    return BukkitLine.localized(player, "item-builder.build").asResult();
   }
 
   @Command(
@@ -47,8 +47,9 @@ public class ItemBuilderCommands {
       @Required(name = "material", description = "The new material of the item")
           Material material) {
     this.getBuilder(player).setMaterial(material);
-    return BukkitLanguage.asResult(
-        player, "item-builder.material", material.toString().toLowerCase());
+    return BukkitLine.localized(player, "item-builder.material")
+        .format(material.toString().toLowerCase())
+        .asResult();
   }
 
   @Command(
@@ -59,7 +60,7 @@ public class ItemBuilderCommands {
       Player player,
       @Required(name = "amount", description = "The new amount of the item") int amount) {
     this.getBuilder(player).setAmount(amount);
-    return BukkitLanguage.asResult(player, "item-builder.amount", amount);
+    return BukkitLine.localized(player, "item-builder.amount").format(amount).asResult();
   }
 
   @Command(
@@ -70,7 +71,9 @@ public class ItemBuilderCommands {
       Player player,
       @Required(name = "name", description = "The new name of the item") @Multiple String name) {
     this.getBuilder(player).setName(name);
-    return BukkitLanguage.asResult(player, "item-builder.name", BukkitUtils.format(name));
+    return BukkitLine.localized(player, "item-builder.name")
+        .format(BukkitUtils.format(name))
+        .asResult();
   }
 
   @Command(
@@ -81,7 +84,9 @@ public class ItemBuilderCommands {
       Player player,
       @Required(name = "lore", description = "The new lore of the item") @Multiple String lore) {
     this.getBuilder(player).setLore(lore);
-    return BukkitLanguage.asResult(player, "item-builder.lore", BukkitUtils.format(lore));
+    return BukkitLine.localized(player, "item-builder.lore")
+        .format(BukkitUtils.format(lore))
+        .asResult();
   }
 
   @Command(
@@ -93,7 +98,7 @@ public class ItemBuilderCommands {
       @Required(name = "unbreakable", description = "Whether the item has to be unbreakable")
           boolean unbreakable) {
     this.getBuilder(player).setUnbreakable(unbreakable);
-    return BukkitLanguage.asResult(player, "item-builder.unbreakable", unbreakable);
+    return BukkitLine.localized(player, "item-builder.unbreakable").format(unbreakable).asResult();
   }
 
   @Command(
@@ -108,9 +113,9 @@ public class ItemBuilderCommands {
     if (metaBuilder instanceof SkullMetaBuilder) {
       ((SkullMetaBuilder) metaBuilder).setOwner(owner);
       String name = owner.getName() == null ? owner.getUniqueId().toString() : owner.getName();
-      return BukkitLanguage.asResult(player, "item-builder.owner", name);
+      return BukkitLine.localized(player, "item-builder.owner").format(name).asResult();
     }
-    return BukkitLanguage.asResult(player, "item-builder.not-skull");
+    return BukkitLine.localized(player, "item-builder.not-skull").asResult();
   }
 
   @Command(
@@ -124,9 +129,9 @@ public class ItemBuilderCommands {
     ItemMetaBuilder metaBuilder = builder.getMetaBuilder();
     if (metaBuilder instanceof SkullMetaBuilder) {
       ((SkullMetaBuilder) metaBuilder).setSkin(base64);
-      return BukkitLanguage.asResult(player, "item-builder.skin", base64);
+      return BukkitLine.localized(player, "item-builder.skin").format(base64).asResult();
     }
-    return BukkitLanguage.asResult(player, "item-builder.not-skull");
+    return BukkitLine.localized(player, "item-builder.not-skull").asResult();
   }
 
   @Command(
@@ -135,7 +140,7 @@ public class ItemBuilderCommands {
       permission = "starbox.item-builder")
   public Result reset(Player player) {
     this.builders.remove(player.getUniqueId());
-    return BukkitLanguage.asResult(player, "item-builder.reset");
+    return BukkitLine.localized(player, "item-builder.reset").asResult();
   }
 
   @Command(
@@ -152,9 +157,9 @@ public class ItemBuilderCommands {
             .provide()
             .orElse(false);
     if (exported) {
-      return BukkitLanguage.asResult(player, "item-builder.export.success", file);
+      return BukkitLine.localized(player, "item-builder.export.success").format(file).asResult();
     } else {
-      return BukkitLanguage.asResult(player, "item-builder.export.not");
+      return BukkitLine.localized(player, "item-builder.export.not").asResult();
     }
   }
 
@@ -180,12 +185,12 @@ public class ItemBuilderCommands {
                   });
       this.builders.put(player.getUniqueId(), builder);
       if (successful.get()) {
-        return BukkitLanguage.asResult(player, "item-builder.import.success", file);
+        return BukkitLine.localized(player, "item-builder.import.success").format(file).asResult();
       } else {
-        return BukkitLanguage.asResult(player, "item-builder.import.not", file);
+        return BukkitLine.localized(player, "item-builder.import.not").format(file).asResult();
       }
     }
-    return BukkitLanguage.asResult(player, "item-builder.import.no-file", file);
+    return BukkitLine.localized(player, "item-builder.import.no-file").format(file).asResult();
   }
 
   public static class Parent extends StarboxParentCommand {

@@ -10,10 +10,8 @@ import me.googas.commands.bukkit.CommandManager;
 import me.googas.commands.bukkit.StarboxBukkitCommand;
 import me.googas.commands.bukkit.context.CommandContext;
 import me.googas.commands.bukkit.result.Result;
-import me.googas.commands.bukkit.utils.BukkitUtils;
-import me.googas.starbox.BukkitLanguage;
 import me.googas.starbox.builders.MapBuilder;
-import org.bukkit.command.CommandSender;
+import me.googas.starbox.modules.channels.Channel;
 
 /** A simple extension of {@link StarboxBukkitCommand} to easily create parent commands. */
 public abstract class StarboxParentCommand extends StarboxBukkitCommand {
@@ -61,29 +59,27 @@ public abstract class StarboxParentCommand extends StarboxBukkitCommand {
 
   @Override
   public Result execute(@NonNull CommandContext context) {
-    CommandSender sender = context.getSender();
-    BukkitLanguage language = BukkitLanguage.getLanguage(sender);
+    Channel channel = Channel.of(context.getSender());
     List<StarboxBukkitCommand> children =
         this.getChildren().stream()
             .filter(
                 child ->
-                    child.getPermission() == null || sender.hasPermission(child.getPermission()))
+                    child.getPermission() == null
+                        || context.getSender().hasPermission(child.getPermission()))
             .collect(Collectors.toList());
     if (children.isEmpty()) {
-      BukkitUtils.send(sender, language.get("subcommands.empty-children"));
+      channel.localized("subcommands.empty-children");
     } else {
-      BukkitUtils.send(sender, language.get("subcommands.title"));
+      channel.localized("subcommands.title");
       children.forEach(
           child ->
-              BukkitUtils.send(
-                  sender,
-                  language.get(
-                      "subcommands.child",
-                      MapBuilder.of("parent", this.getName())
-                          .put("children", child.getName())
-                          .put("description", child.getDescription())
-                          .build())));
-      BukkitUtils.send(sender, language.get("subcommands.bottom"));
+              channel.localized(
+                  "subcommands.child",
+                  MapBuilder.of("parent", this.getName())
+                      .put("children", child.getName())
+                      .put("description", child.getDescription())
+                      .build()));
+      channel.localized("subcommands.bottom");
     }
     return null;
   }
