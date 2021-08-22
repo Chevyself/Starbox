@@ -98,8 +98,9 @@ public class LanguageModule implements Module {
         .map(
             language -> {
               Optional<String> raw = language.getRaw(key);
-              return language.getRaw(key).orElse(null);
+              return language.getRaw(key).orElse(key);
             })
+        .filter(raw -> !raw.equals(key))
         .findFirst()
         .orElse(key);
   }
