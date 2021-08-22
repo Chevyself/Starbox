@@ -28,7 +28,8 @@ public class StarboxPlugin extends JavaPlugin {
   public void onEnable() {
     Starbox.setInstance(this);
     modules.engage(
-        new UIModule(), new LanguageModule().register(this, BukkitYamlLanguage.of(this, "en")));
+        new UIModule(),
+        new LanguageModule().register(this, BukkitYamlLanguage.of(this, "language")));
     BukkitMessagesProvider messagesProvider = new BukkitMessagesProvider();
     ProvidersRegistry<CommandContext> registry =
         new BukkitProvidersRegistry(messagesProvider)

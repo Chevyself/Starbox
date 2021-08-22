@@ -66,7 +66,7 @@ public class BukkitYamlLanguage implements BukkitLanguage {
 
   /**
    * Get a language from a plugin. This will use the parameter language to search for the resource
-   * as: 'lang/(language).yml'
+   * as: '(language).yml'
    *
    * @param plugin the plugin to get the resource from
    * @param language the name of the language resource
@@ -74,7 +74,7 @@ public class BukkitYamlLanguage implements BukkitLanguage {
    */
   @NonNull
   public static BukkitYamlLanguage of(@NonNull Plugin plugin, @NonNull String language) {
-    InputStream resource = plugin.getResource("lang/" + language + ".yml");
+    InputStream resource = plugin.getResource(language + ".yml");
     if (resource != null) {
       return BukkitYamlLanguage.of(resource);
     } else {
