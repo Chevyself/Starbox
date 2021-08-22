@@ -1,6 +1,5 @@
 package me.googas.starbox;
 
-import java.util.Objects;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.commands.bukkit.CommandManager;
@@ -29,11 +28,7 @@ public class StarboxPlugin extends JavaPlugin {
   public void onEnable() {
     Starbox.setInstance(this);
     modules.engage(
-        new UIModule(),
-        new LanguageModule()
-            .register(
-                this,
-                BukkitYamlLanguage.of(Objects.requireNonNull(this.getResource("language.yml")))));
+        new UIModule(), new LanguageModule().register(this, BukkitYamlLanguage.of(this, "en")));
     BukkitMessagesProvider messagesProvider = new BukkitMessagesProvider();
     ProvidersRegistry<CommandContext> registry =
         new BukkitProvidersRegistry(messagesProvider)

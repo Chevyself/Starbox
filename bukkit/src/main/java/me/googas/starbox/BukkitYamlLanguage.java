@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -14,6 +16,7 @@ import me.googas.commands.bukkit.utils.BukkitUtils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 
 /** Represents a {@link BukkitLanguage} at a '.yml' file. */
 public class BukkitYamlLanguage implements BukkitLanguage {
@@ -59,6 +62,41 @@ public class BukkitYamlLanguage implements BukkitLanguage {
       Starbox.warning(e, () -> "Reader was not closed successfully");
     }
     return language;
+  }
+
+  /**
+   * Get a language from a plugin. This will use the parameter language to search for the resource
+   * as: 'lang/(language).yml'
+   *
+   * @param plugin the plugin to get the resource from
+   * @param language the name of the language resource
+   * @return the read yaml language
+   */
+  @NonNull
+  public static BukkitYamlLanguage of(@NonNull Plugin plugin, @NonNull String language) {
+    InputStream resource = plugin.getResource("lang/" + language + ".yml");
+    if (resource != null) {
+      return BukkitYamlLanguage.of(resource);
+    } else {
+      return new BukkitYamlLanguage(new Locale(language), new YamlConfiguration());
+    }
+  }
+
+  /**
+   * Get many languages from a plugin. This will use the parameter languages to search for the
+   * resources as: 'lang/(language).yml'
+   *
+   * @param plugin the plugin to get the resources from
+   * @param languages the name of the language resources
+   * @return the read yaml languages
+   */
+  @NonNull
+  public static List<BukkitYamlLanguage> of(@NonNull Plugin plugin, @NonNull String... languages) {
+    List<BukkitYamlLanguage> list = new ArrayList<>();
+    for (String language : languages) {
+      list.add(BukkitYamlLanguage.of(plugin, language));
+    }
+    return list;
   }
 
   @NonNull
