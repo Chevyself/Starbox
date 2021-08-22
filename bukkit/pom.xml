@@ -97,15 +97,11 @@
         <dependency>
             <groupId>me.googas.starbox-commands</groupId>
             <artifactId>bukkit</artifactId>
-            <version>441ad0ff5f</version>
+            <version>c958dacc2f</version>
             <exclusions>
                 <exclusion>
                     <groupId>me.googas.starbox</groupId>
                     <artifactId>core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.spigotmc</groupId>
-                    <artifactId>spigot-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
