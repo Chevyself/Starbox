@@ -3,6 +3,7 @@ package me.googas.starbox;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import lombok.Getter;
 import lombok.NonNull;
 import me.googas.commands.bukkit.result.Result;
 import me.googas.commands.bukkit.utils.BukkitUtils;
@@ -60,12 +61,13 @@ public interface BukkitLine extends Line {
   Result asResult();
 
   @NonNull
+  @Override
   BaseComponent[] build();
 
   /** This is a {@link BukkitLine} which uses a message obtained from {@link LanguageModule}. */
   class Localized implements BukkitLine {
 
-    @NonNull private String json;
+    @NonNull @Getter private String json;
 
     private Localized(@NonNull String json) {
       this.json = json;
