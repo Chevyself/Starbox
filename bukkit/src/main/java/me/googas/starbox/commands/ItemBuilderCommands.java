@@ -70,7 +70,7 @@ public class ItemBuilderCommands {
   public Result name(
       Player player,
       @Required(name = "name", description = "The new name of the item") @Multiple String name) {
-    this.getBuilder(player).setName(name);
+    this.getBuilder(player).withMeta(meta -> meta.setName(name));
     return BukkitLine.localized(player, "item-builder.name")
         .format(BukkitUtils.format(name))
         .asResult();
@@ -83,7 +83,7 @@ public class ItemBuilderCommands {
   public Result lore(
       Player player,
       @Required(name = "lore", description = "The new lore of the item") @Multiple String lore) {
-    this.getBuilder(player).setLore(lore);
+    this.getBuilder(player).withMeta(meta -> meta.setLore(lore));
     return BukkitLine.localized(player, "item-builder.lore")
         .format(BukkitUtils.format(lore))
         .asResult();
@@ -97,7 +97,7 @@ public class ItemBuilderCommands {
       Player player,
       @Required(name = "unbreakable", description = "Whether the item has to be unbreakable")
           boolean unbreakable) {
-    this.getBuilder(player).setUnbreakable(unbreakable);
+    this.getBuilder(player).withMeta(meta -> meta.setUnbreakable(unbreakable));
     return BukkitLine.localized(player, "item-builder.unbreakable").format(unbreakable).asResult();
   }
 
@@ -203,6 +203,11 @@ public class ItemBuilderCommands {
           Collections.singletonList("ib"),
           false,
           manager);
+    }
+
+    @Override
+    public String getPermission() {
+      return "starbox.item-builder";
     }
   }
 

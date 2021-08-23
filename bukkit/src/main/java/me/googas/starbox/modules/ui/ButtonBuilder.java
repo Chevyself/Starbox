@@ -1,11 +1,10 @@
 package me.googas.starbox.modules.ui;
 
+import java.util.function.Consumer;
 import lombok.NonNull;
-import me.googas.reflect.wrappers.attributes.WrappedAttributes;
 import me.googas.starbox.builders.Builder;
 import me.googas.starbox.modules.ui.buttons.StarboxButton;
 import me.googas.starbox.utility.items.ItemBuilder;
-import org.bukkit.Material;
 
 /** Builder for {@link Button}. Creates {@link StarboxButton}. */
 public class ButtonBuilder implements Builder<Button> {
@@ -47,70 +46,14 @@ public class ButtonBuilder implements Builder<Button> {
   }
 
   /**
-   * Set the name of the item.
+   * Use a {@link Consumer} to edit the {@link ItemBuilder}.
    *
-   * @param name the name of the item
-   * @return this same instance
-   */
-  public @NonNull ButtonBuilder setName(String name) {
-    item.setName(name);
-    return this;
-  }
-
-  /**
-   * Set the lore of the item.
-   *
-   * @param lore the lore of the item
-   * @return this same instance
-   */
-  public @NonNull ButtonBuilder setLore(String lore) {
-    item.setLore(lore);
-    return this;
-  }
-
-  /**
-   * Set whether the item is unbreakable.
-   *
-   * @param unbreakable the new boolean value
-   * @return this same instance
-   */
-  public @NonNull ButtonBuilder setUnbreakable(boolean unbreakable) {
-    item.setUnbreakable(unbreakable);
-    return this;
-  }
-
-  /**
-   * Set the attributes of the item.
-   *
-   * @param attributes the attributes
-   * @return this same instance
-   */
-  public @NonNull ButtonBuilder setAttributes(WrappedAttributes attributes) {
-    item.setAttributes(attributes);
-    return this;
-  }
-
-  /**
-   * Set the material of the item.
-   *
-   * @param material the new material of the item
+   * @param consumer the consumer to edit the builder
    * @return this same instance
    */
   @NonNull
-  public ButtonBuilder setMaterial(Material material) {
-    item.setMaterial(material);
-    return this;
-  }
-
-  /**
-   * Set the amount of the item.
-   *
-   * @param amount the new amount of the item
-   * @return this same instance
-   */
-  @NonNull
-  public ButtonBuilder setAmount(int amount) {
-    item.setAmount(amount);
+  public ButtonBuilder withItem(@NonNull Consumer<ItemBuilder> consumer) {
+    consumer.accept(this.item);
     return this;
   }
 

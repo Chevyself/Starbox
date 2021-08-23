@@ -265,6 +265,11 @@ public class ComponentBuilderCommands {
           false,
           manager);
     }
+
+    @Override
+    public String getPermission() {
+      return "starbox.component-builder";
+    }
   }
 
   @NonNull

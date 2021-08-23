@@ -7,6 +7,7 @@ import lombok.NonNull;
 import me.googas.starbox.modules.ui.Button;
 import me.googas.starbox.modules.ui.ButtonListener;
 import me.googas.starbox.modules.ui.types.PaginatedInventory;
+import me.googas.starbox.utility.items.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -36,8 +37,7 @@ public class StarboxButton implements Button {
   @NonNull
   public static Button back() {
     return Button.builder()
-        .setMaterial(Material.ARROW)
-        .setName("Back")
+        .withItem(item -> item.setMaterial(Material.ARROW).withMeta(meta -> meta.setName("Back")))
         .listen(
             event -> {
               InventoryHolder holder = event.getInventory().getHolder();
@@ -55,8 +55,7 @@ public class StarboxButton implements Button {
   @NonNull
   public static Button next() {
     return Button.builder()
-        .setMaterial(Material.ARROW)
-        .setName("Next")
+        .withItem(item -> item.setMaterial(Material.ARROW).withMeta(meta -> meta.setName("Next")))
         .listen(
             event -> {
               InventoryHolder holder = event.getInventory().getHolder();
@@ -73,7 +72,7 @@ public class StarboxButton implements Button {
    */
   @NonNull
   public static Button empty() {
-    return Button.builder().setMaterial(Material.AIR).build();
+    return Button.builder(new ItemBuilder(Material.AIR)).build();
   }
 
   /**

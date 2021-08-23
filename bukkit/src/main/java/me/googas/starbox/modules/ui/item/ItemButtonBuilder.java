@@ -53,7 +53,7 @@ public class ItemButtonBuilder implements Builder<ItemButton> {
    * @return this same instance
    */
   public @NonNull ItemButtonBuilder setName(String name) {
-    item.setName(name);
+    item.withMeta(meta -> meta.setName(name));
     return this;
   }
 
@@ -64,7 +64,7 @@ public class ItemButtonBuilder implements Builder<ItemButton> {
    * @return this same instance
    */
   public @NonNull ItemButtonBuilder setLore(String lore) {
-    item.setLore(lore);
+    item.withMeta(meta -> meta.setLore(lore));
     return this;
   }
 
@@ -75,7 +75,7 @@ public class ItemButtonBuilder implements Builder<ItemButton> {
    * @return this same instance
    */
   public @NonNull ItemButtonBuilder setUnbreakable(boolean unbreakable) {
-    item.setUnbreakable(unbreakable);
+    item.withMeta(meta -> meta.setUnbreakable(unbreakable));
     return this;
   }
 
@@ -86,7 +86,7 @@ public class ItemButtonBuilder implements Builder<ItemButton> {
    * @return this same instance
    */
   public @NonNull ItemButtonBuilder setAttributes(WrappedAttributes attributes) {
-    item.setAttributes(attributes);
+    item.withMeta(meta -> meta.setAttributes(attributes));
     return this;
   }
 

@@ -7,9 +7,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
 import java.lang.reflect.Type;
+import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.experimental.Delegate;
 import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.starbox.builders.Builder;
@@ -38,7 +38,6 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
   public static final WrappedMethod<?> SET_DURABILITY =
       ItemBuilder.ITEM_STACK.getMethod("setDurability", short.class);
 
-  @Delegate(excludes = IgnoredMethods.class)
   @NonNull
   @Getter
   @SerializedName("meta-builder")
@@ -92,6 +91,18 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
    */
   public ItemBuilder(int amount) {
     this(Material.GLASS, amount);
+  }
+
+  /**
+   * Use a {@link Consumer} to edit the {@link ItemMetaBuilder}.
+   *
+   * @param consumer the consumer to edit the builder
+   * @return this same instance
+   */
+  @NonNull
+  public ItemBuilder withMeta(@NonNull Consumer<ItemMetaBuilder> consumer) {
+    consumer.accept(this.metaBuilder);
+    return this;
   }
 
   /**
