@@ -1,7 +1,7 @@
 language: en
 # Results for /itemBuilder
 item-builder:
-  build: "&dThe item is now in your inventory"
+            build: "&dThe item is now in your inventory"
   material: "&dMaterial is now {0}"
   amount: "&dAmount is now {0}"
   name: "&7Name is now &r{0}"
@@ -11,6 +11,9 @@ item-builder:
   owner: "&7Owner is now &d{0}"
   skin: "&7Skin is now &r{0}"
   reset: "&dBuilder has been reset"
+  enchant:
+    done: "&7Enchanted &d{0} &7at &d{1}"
+    removed: "&7Removed &d{0}"
   export:
     success: "&7Builder has been exported to &d{0}"
     not: "&6Could not export builder"
@@ -34,6 +37,8 @@ component-builder:
   import:
     success: "&7Imported builder from &d{0}"
     no-file: "&6Could not find file &e{0}"
+
+
 
 subcommands:
   title: >

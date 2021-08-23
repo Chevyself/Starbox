@@ -102,6 +102,18 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
     return this;
   }
 
+  /**
+   * Removes an entry from this map by its key.
+   *
+   * @param key the key of the entry to remove
+   * @return this same instance
+   */
+  @NonNull
+  public MapBuilder<K, V> remove(@NonNull K key) {
+    this.map.remove(key);
+    return this;
+  }
+
   @NonNull
   @Override
   public Map<K, V> build() {

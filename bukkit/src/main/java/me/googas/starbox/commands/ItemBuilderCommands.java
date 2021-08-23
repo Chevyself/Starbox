@@ -21,6 +21,7 @@ import me.googas.starbox.utility.items.meta.ItemMetaBuilder;
 import me.googas.starbox.utility.items.meta.SkullMetaBuilder;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 
 /**
@@ -160,6 +161,27 @@ public class ItemBuilderCommands {
       return BukkitLine.localized(player, "item-builder.export.success").format(file).asResult();
     } else {
       return BukkitLine.localized(player, "item-builder.export.not").asResult();
+    }
+  }
+
+  @Command(
+      aliases = "enchant",
+      description = "Enchant the item",
+      permission = "starbox.item-builder")
+  public Result enchant(
+      Player player,
+      @Required(name = "enchantment", description = "The enchantment") Enchantment enchantment,
+      @Required(name = "value", description = "The value of the enchantment") int value) {
+    if (value > 0) {
+      this.getBuilder(player).withMeta(meta -> meta.getEnchantments().put(enchantment, value));
+      return BukkitLine.localized(player, "item-builder.enchant.done")
+          .format(enchantment, value)
+          .asResult();
+    } else {
+      this.getBuilder(player).withMeta(meta -> meta.getEnchantments().remove(enchantment));
+      return BukkitLine.localized(player, "item-builder.enchant.removed")
+          .format(enchantment)
+          .asResult();
     }
   }
 
