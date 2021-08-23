@@ -195,6 +195,41 @@ public class WrappedClass<O> extends LangWrapper<Class<O>> {
   }
 
   /**
+   * Get a method matching the name and parameter types.
+   *
+   * @param name the name to match the method with
+   * @param params the parameters to match the method with
+   * @return a {@link WrappedMethod} instance containing the method or empty if not found
+   */
+  @NonNull
+  public WrappedMethod<?> getDeclaredMethod(@NonNull String name, Class<?>... params) {
+    return this.getDeclaredMethod(null, name, params);
+  }
+
+  /**
+   * Get a method matching the name, parameter types and return type.
+   *
+   * @param returnType the return type to match the method with
+   * @param name the name to match the method with
+   * @param params the parameters to math the method with
+   * @param <T> the type of return
+   * @return a {@link WrappedMethod} instance containing the method or empty if not found
+   */
+  @NonNull
+  public <T> WrappedMethod<T> getDeclaredMethod(
+      Class<T> returnType, @NonNull String name, Class<?>... params) {
+    Method method = null;
+    if (this.hasDeclaredMethod(returnType, name, params)) {
+      try {
+        method = this.reference.getDeclaredMethod(name, params);
+      } catch (NoSuchMethodException e) {
+        throw new IllegalStateException("Method was not found even after check was true", e);
+      }
+    }
+    return WrappedMethod.of(method, returnType);
+  }
+
+  /**
    * Checks if a method with the given name and parameter types exists in the class.
    *
    * @param returnType the type that the method returns: null for void
@@ -205,14 +240,36 @@ public class WrappedClass<O> extends LangWrapper<Class<O>> {
   public boolean hasMethod(Class<?> returnType, @NonNull String name, Class<?>... params) {
     if (this.reference != null) {
       for (Method method : this.reference.getMethods()) {
-        if (method.getName().equals(name)) {
-          Class<?>[] paramTypes = method.getParameterTypes();
-          Class<?> methodReturnType = method.getReturnType();
-          if (ReflectUtil.compareParameters(paramTypes, params)
-              && (returnType == null || returnType.isAssignableFrom(method.getReturnType())))
-            return true;
-        }
+        if (this.compareMethods(returnType, name, method, params)) return true;
       }
+    }
+    return false;
+  }
+
+  /**
+   * Checks if a declared method with the given name and parameter types exists in the class.
+   *
+   * @param returnType the type that the method returns: null for void
+   * @param name the name of the method to find
+   * @param params the parameters of the method to find
+   * @return true if the method is found false otherwise
+   */
+  public boolean hasDeclaredMethod(Class<?> returnType, @NonNull String name, Class<?>... params) {
+    if (this.reference != null) {
+      for (Method method : this.reference.getDeclaredMethods()) {
+        if (this.compareMethods(returnType, name, method, params)) return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean compareMethods(
+      Class<?> returnType, @NonNull String name, Method method, Class<?>[] params) {
+    if (method.getName().equals(name)) {
+      Class<?>[] paramTypes = method.getParameterTypes();
+      Class<?> methodReturnType = method.getReturnType();
+      return ReflectUtil.compareParameters(paramTypes, params)
+          && (returnType == null || returnType.isAssignableFrom(method.getReturnType()));
     }
     return false;
   }

@@ -13,6 +13,7 @@ import me.googas.commands.bukkit.annotations.Command;
 import me.googas.commands.bukkit.result.Result;
 import me.googas.commands.bukkit.utils.BukkitUtils;
 import me.googas.io.StarboxFile;
+import me.googas.reflect.wrappers.inventory.WrappedEnchantment;
 import me.googas.starbox.BukkitLine;
 import me.googas.starbox.Starbox;
 import me.googas.starbox.StarboxBukkitFiles;
@@ -175,7 +176,7 @@ public class ItemBuilderCommands {
     if (value > 0) {
       this.getBuilder(player).withMeta(meta -> meta.getEnchantments().put(enchantment, value));
       return BukkitLine.localized(player, "item-builder.enchant.done")
-          .format(enchantment, value)
+          .format(WrappedEnchantment.of(enchantment).getName().toLowerCase(), value)
           .asResult();
     } else {
       this.getBuilder(player).withMeta(meta -> meta.getEnchantments().remove(enchantment));

@@ -1,7 +1,7 @@
 language: en
 # Results for /itemBuilder
 item-builder:
-            build: "&dThe item is now in your inventory"
+  build: "&dThe item is now in your inventory"
   material: "&dMaterial is now {0}"
   amount: "&dAmount is now {0}"
   name: "&7Name is now &r{0}"

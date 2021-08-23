@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.reflect.wrappers.book.WrappedBookMetaGeneration;
+import me.googas.reflect.wrappers.inventory.WrappedBookMetaGeneration;
 import me.googas.starbox.Strings;
 import me.googas.starbox.utility.Versions;
 import me.googas.starbox.utility.items.ItemBuilder;

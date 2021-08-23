@@ -12,6 +12,7 @@ import me.googas.starbox.commands.ItemBuilderCommands;
 import me.googas.starbox.commands.providers.BungeeChatColorProvider;
 import me.googas.starbox.commands.providers.ChannelProvider;
 import me.googas.starbox.commands.providers.ClickEventActionProvider;
+import me.googas.starbox.commands.providers.EnchantmentProvider;
 import me.googas.starbox.commands.providers.FormatRetentionProvider;
 import me.googas.starbox.commands.providers.HoverEventActionProvider;
 import me.googas.starbox.modules.ModuleRegistry;
@@ -37,6 +38,7 @@ public class StarboxPlugin extends JavaPlugin {
                 new BungeeChatColorProvider(),
                 new ChannelProvider(),
                 new ClickEventActionProvider(),
+                new EnchantmentProvider(),
                 new FormatRetentionProvider(),
                 new HoverEventActionProvider());
     CommandManager manager =

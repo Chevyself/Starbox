@@ -1,4 +1,4 @@
-package me.googas.reflect.wrappers.book;
+package me.googas.reflect.wrappers.inventory;
 
 import lombok.NonNull;
 import lombok.experimental.Delegate;
