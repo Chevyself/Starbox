@@ -154,20 +154,28 @@ public class PaginatedInventory implements UI {
    * Set the inventory to the previous page.
    *
    * <p>This will refresh the inventory for the viewers to the new page.
+   *
+   * @return this same instance
    */
-  public void previous() {
+  @NonNull
+  public PaginatedInventory previous() {
     this.previousPage();
     this.refresh();
+    return this;
   }
 
   /**
    * Set the inventory to the next page.
    *
    * <p>This will refresh the inventory for the viewers to the new page.
+   *
+   * @return this same instance
    */
-  public void next() {
+  @NonNull
+  public PaginatedInventory next() {
     this.nextPage();
     this.refresh();
+    return this;
   }
 
   /**
@@ -239,9 +247,12 @@ public class PaginatedInventory implements UI {
    * Add a button to the last empty spot.
    *
    * @param button the button to add
+   * @return this same instance
    */
-  public void add(@NonNull Button button) {
+  @NonNull
+  public PaginatedInventory add(@NonNull Button button) {
     this.set(this.lastEmptySlot(), button);
+    return this;
   }
 
   /**
@@ -249,8 +260,10 @@ public class PaginatedInventory implements UI {
    *
    * @param position the position to add the item in the toolbar
    * @param button the button to add in the toolbar
+   * @return this same instance
    */
-  public void setToolbar(int position, Button button) {
+  @NonNull
+  public PaginatedInventory setToolbar(int position, Button button) {
     if (position < 0 || position > 8)
       throw new IllegalArgumentException(
           position + " is out of bounds. Position must be between 0 and 8");
@@ -262,6 +275,7 @@ public class PaginatedInventory implements UI {
       this.toolbar.remove(position);
       if (this.inventory != null) this.inventory.setItem(position, new ItemStack(Material.AIR));
     }
+    return this;
   }
 
   /** Sets the buttons in the toolbar. */
@@ -289,13 +303,16 @@ public class PaginatedInventory implements UI {
    *
    * @param button the button to remove
    * @param updateSlots whether to make other buttons find a new spot
+   * @return this same instance
    */
-  public void remove(@NonNull Button button, boolean updateSlots) {
+  @NonNull
+  public PaginatedInventory remove(@NonNull Button button, boolean updateSlots) {
     int slot = this.getSlot(button);
     this.remove(slot);
     if (updateSlots) {
       this.updateSlots(slot);
     }
+    return this;
   }
 
   private void updateSlots(int last) {
