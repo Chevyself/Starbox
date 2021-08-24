@@ -97,7 +97,7 @@
         <dependency>
             <groupId>me.googas.starbox-commands</groupId>
             <artifactId>bukkit</artifactId>
-            <version>c958dacc2f</version>
+            <version>14fe816088</version>
             <exclusions>
                 <exclusion>
                     <groupId>me.googas.starbox</groupId>

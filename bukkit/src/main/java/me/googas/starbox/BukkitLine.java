@@ -6,7 +6,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.commands.bukkit.result.Result;
-import me.googas.commands.bukkit.utils.BukkitUtils;
+import me.googas.commands.bungee.utils.Components;
 import me.googas.starbox.builders.Line;
 import me.googas.starbox.modules.channels.Channel;
 import me.googas.starbox.modules.language.LanguageModule;
@@ -92,7 +92,7 @@ public interface BukkitLine extends Line {
 
     @Override
     public @NonNull BaseComponent[] build() {
-      return BukkitUtils.getComponent(BukkitUtils.format(json));
+      return Components.getComponent(json);
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.commands.bukkit.utils.BukkitUtils;
+import me.googas.commands.bungee.utils.Components;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -106,17 +106,16 @@ public class BukkitYamlLanguage implements BukkitLanguage {
 
   @NonNull
   public BaseComponent[] get(@NonNull String key) {
-    return BukkitUtils.getComponent(BukkitUtils.format(this.getRaw(key).orElse(key).trim()));
+    return Components.getComponent(Strings.format(this.getRaw(key).orElse(key).trim()));
   }
 
   @NonNull
   public BaseComponent[] get(@NonNull String key, @NonNull Map<String, String> map) {
-    return BukkitUtils.getComponent(BukkitUtils.format(this.getRaw(key).orElse(key), map).trim());
+    return Components.getComponent(Strings.format(this.getRaw(key).orElse(key), map).trim());
   }
 
   @NonNull
   public BaseComponent[] get(@NonNull String key, Object... objects) {
-    return BukkitUtils.getComponent(
-        BukkitUtils.format(this.getRaw(key).orElse(key), objects).trim());
+    return Components.getComponent(Strings.format(this.getRaw(key).orElse(key), objects).trim());
   }
 }
