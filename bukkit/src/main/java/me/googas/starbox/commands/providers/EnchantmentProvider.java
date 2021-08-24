@@ -15,7 +15,7 @@ public class EnchantmentProvider implements BukkitArgumentProvider<Enchantment> 
   @NonNull
   private static final List<String> suggestions =
       WrappedEnchantment.values().stream()
-          .map(WrappedEnchantment::getName)
+          .map(wrap -> wrap.getName().toLowerCase())
           .collect(Collectors.toList());
 
   @Override
