@@ -1,6 +1,5 @@
 package me.googas.starbox.compatibilities;
 
-
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
@@ -26,17 +25,15 @@ public class CompatibilityManager {
     this.compatibilities = compatibilities;
   }
 
-  /**
-   * Create the compatibility manager.
-   */
+  /** Create the compatibility manager. */
   public CompatibilityManager() {
     this(new HashSet<>());
   }
 
   /**
    * This method will check whether the compatibilities are loaded getting the plugin manager. This
-   * is where the name of the compatibility is required. If the compatibility is set to enable {@link Compatibility#setEnabled(boolean)}
-   * {@link Compatibility#onEnable()} will be executed
+   * is where the name of the compatibility is required. If the compatibility is set to enable
+   * {@link Compatibility#setEnabled(boolean)} {@link Compatibility#onEnable()} will be executed
    *
    * @see Compatibility#getName()
    * @return this same instance
@@ -48,7 +45,7 @@ public class CompatibilityManager {
         compatibility.onEnable();
       }
     }
-     return this;
+    return this;
   }
 
   /**

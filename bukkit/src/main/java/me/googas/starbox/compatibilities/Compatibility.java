@@ -18,9 +18,6 @@ import org.bukkit.plugin.Plugin;
  * <p>Implement this class in the plugin that you need. It is very important that in the class that
  * implements it you don't import anything related to the compatibility because if it is not loaded
  * an exception will be thrown when the class loader checks the imports.
- *
- * <p>You can reference on how compatibilities are created in - {@link
- * me.googas.starbox.compatibilities.papi.PAPICompatibility}
  */
 public interface Compatibility {
 

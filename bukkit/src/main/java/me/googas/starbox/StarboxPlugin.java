@@ -28,18 +28,22 @@ public class StarboxPlugin extends JavaPlugin {
 
   @NonNull @Getter private final ModuleRegistry modules = new ModuleRegistry(this);
   @NonNull @Getter private final CompatibilityManager compatibilities = new CompatibilityManager();
+  @NonNull private final MessagesProvider messages = new BukkitMessagesProvider();
+
   @NonNull
-  private final MessagesProvider messages = new BukkitMessagesProvider();
-  @NonNull
-  private final ProvidersRegistry<CommandContext> providers = new BukkitProvidersRegistry(messages).addProviders(new BungeeChatColorProvider(),
-          new ChannelProvider(),
-          new ClickEventActionProvider(),
-          new EnchantmentProvider(),
-          new FormatRetentionProvider(),
-          new HoverEventActionProvider());
+  private final ProvidersRegistry<CommandContext> providers =
+      new BukkitProvidersRegistry(messages)
+          .addProviders(
+              new BungeeChatColorProvider(),
+              new ChannelProvider(),
+              new ClickEventActionProvider(),
+              new EnchantmentProvider(),
+              new FormatRetentionProvider(),
+              new HoverEventActionProvider());
+
   @NonNull
   private final CommandManager manager =
-          new CommandManager(this, providers, messages).registerHelpFactory();
+      new CommandManager(this, providers, messages).registerHelpFactory();
 
   @Override
   public void onEnable() {
@@ -56,11 +60,14 @@ public class StarboxPlugin extends JavaPlugin {
     manager.registerAll(componentBuilder, itemBuilder);
     manager.registerPlugin();
     // Check compatibilities
-    compatibilities.check().getCompatibilities().stream().filter(Compatibility::isEnabled).forEach(compatibility -> {
-      this.modules.engage(compatibility.getModules(this));
-      this.manager.registerAll(compatibility.getCommands());
-      this.manager.getProvidersRegistry().addProviders(compatibility.getProviders());
-    });
+    compatibilities.check().getCompatibilities().stream()
+        .filter(Compatibility::isEnabled)
+        .forEach(
+            compatibility -> {
+              this.modules.engage(compatibility.getModules(this));
+              this.manager.registerAll(compatibility.getCommands());
+              this.manager.getProvidersRegistry().addProviders(compatibility.getProviders());
+            });
     super.onEnable();
   }
 
