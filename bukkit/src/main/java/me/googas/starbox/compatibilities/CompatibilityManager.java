@@ -1,7 +1,9 @@
 package me.googas.starbox.compatibilities;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
@@ -14,20 +16,55 @@ import org.bukkit.Bukkit;
  */
 public class CompatibilityManager {
 
-  @NonNull @Getter private final Set<Compatibility> compatibilities;
+  @NonNull @Getter private final List<Compatibility> compatibilities;
 
   /**
    * Create the compatibility manager.
    *
    * @param compatibilities the compatibilities available to check
    */
-  public CompatibilityManager(@NonNull Set<Compatibility> compatibilities) {
+  public CompatibilityManager(@NonNull List<Compatibility> compatibilities) {
     this.compatibilities = compatibilities;
   }
 
   /** Create the compatibility manager. */
   public CompatibilityManager() {
-    this(new HashSet<>());
+    this(new ArrayList<>());
+  }
+
+  /**
+   * Add a compatibility to the manager.
+   *
+   * @param compatibility the compatibility to add
+   * @return this same instance
+   */
+  @NonNull
+  public CompatibilityManager add(@NonNull Compatibility compatibility) {
+    this.compatibilities.add(compatibility);
+    return this;
+  }
+
+  /**
+   * Add many compatibilities to the manager.
+   *
+   * @param compatibilities the collection of compatibility to add
+   * @return this same instance
+   */
+  @NonNull
+  public CompatibilityManager addAll(@NonNull Collection<? extends Compatibility> compatibilities) {
+    this.compatibilities.addAll(compatibilities);
+    return this;
+  }
+
+  /**
+   * Add many compatibilities to the manager.
+   *
+   * @param compatibilities the array of compatibility to add
+   * @return this same instance
+   */
+  @NonNull
+  public CompatibilityManager addAll(@NonNull Compatibility... compatibilities) {
+    return this.addAll(Arrays.asList(compatibilities));
   }
 
   /**
