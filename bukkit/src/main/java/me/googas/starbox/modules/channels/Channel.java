@@ -41,7 +41,16 @@ public interface Channel {
    * @return the channel
    */
   static PlayerChannel of(@NonNull Player player) {
-    UUID uniqueId = player.getUniqueId();
+    return Channel.of(player.getUniqueId());
+  }
+
+  /**
+   * Get the channel of a {@link Player} based on its {@link UUID}.
+   *
+   * @param uniqueId the unique id of the player
+   * @return the channel of the player
+   */
+  static PlayerChannel of(@NonNull UUID uniqueId) {
     return new ArrayList<>(ConsoleChannel.players)
         .stream()
             .filter(channel -> channel.getUniqueId().equals(uniqueId))

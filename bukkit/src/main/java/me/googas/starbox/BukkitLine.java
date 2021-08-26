@@ -130,13 +130,10 @@ public interface BukkitLine extends Line {
     }
   }
 
-  /**
-   * Represents a plain text line.
-   */
+  /** Represents a plain text line. */
   class Plain implements BukkitLine {
 
-    @NonNull
-    private String text;
+    @NonNull private String text;
 
     private Plain(@NonNull String text) {
       this.text = text;
