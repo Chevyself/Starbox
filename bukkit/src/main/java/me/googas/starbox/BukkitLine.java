@@ -6,6 +6,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.commands.bukkit.result.Result;
+import me.googas.commands.bukkit.utils.BukkitUtils;
 import me.googas.commands.bungee.utils.Components;
 import me.googas.starbox.builders.Line;
 import me.googas.starbox.modules.channels.Channel;
@@ -51,6 +52,16 @@ public interface BukkitLine extends Line {
    */
   static Localized localized(@NonNull Channel channel, String key) {
     return BukkitLine.localized(channel.getLocale().orElse(Locale.ENGLISH), key);
+  }
+
+  /**
+   * Start a plain line.
+   *
+   * @param text the text of the line
+   * @return a plain line
+   */
+  static Plain of(@NonNull String text) {
+    return new BukkitLine.Plain(text);
   }
 
   /**
@@ -116,6 +127,52 @@ public interface BukkitLine extends Line {
     @Override
     public @NonNull Localized format(@NonNull Formatter formatter) {
       return (Localized) formatter.format(this);
+    }
+  }
+
+  /**
+   * Represents a plain text line.
+   */
+  class Plain implements BukkitLine {
+
+    @NonNull
+    private String text;
+
+    private Plain(@NonNull String text) {
+      this.text = text;
+    }
+
+    @Override
+    public @NonNull Result asResult() {
+      return new Result(this.build());
+    }
+
+    @Override
+    public @NonNull BaseComponent[] build() {
+      return Components.deserializePlain('&', text);
+    }
+
+    @Override
+    public @NonNull Optional<String> asText() {
+      return Optional.of(BukkitUtils.format(text));
+    }
+
+    @Override
+    public @NonNull Plain format(@NonNull Object... objects) {
+      this.text = String.format(text, objects);
+      return this;
+    }
+
+    @Override
+    public @NonNull Plain format(@NonNull Map<String, String> map) {
+      this.text = String.format(text, map);
+      return this;
+    }
+
+    @Override
+    public @NonNull Plain format(@NonNull Formatter formatter) {
+      formatter.format(this);
+      return this;
     }
   }
 }
