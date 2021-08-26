@@ -84,6 +84,24 @@ public class Materials {
     return material.name().endsWith("AXE");
   }
 
+  @NonNull
+  public static Material getFireworkRocket() {
+    if (Versions.BUKKIT > 12) {
+      return Material.FIREWORK_ROCKET;
+    } else {
+      return Objects.requireNonNull(Material.getMaterial("FIREWORK_ROCKET"));
+    }
+  }
+
+  @NonNull
+  public static Material getFireworkStar() {
+    if (Versions.BUKKIT > 12) {
+      return Material.FIREWORK_STAR;
+    } else {
+      return Objects.requireNonNull(Material.getMaterial("FIREWORK_CHARGE"));
+    }
+  }
+
   /**
    * Get the material that represents a skull.
    *

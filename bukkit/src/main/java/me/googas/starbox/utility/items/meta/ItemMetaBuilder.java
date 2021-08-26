@@ -158,7 +158,13 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
     } else if (Materials.isSkull(material)) {
       return other == null ? new SkullMetaBuilder() : new SkullMetaBuilder(other);
     } else if (material == Material.ENCHANTED_BOOK) {
-      return other == null ? new EnchantmentStorageMetaBuilder() : new EnchantmentStorageMetaBuilder(other);
+      return other == null
+          ? new EnchantmentStorageMetaBuilder()
+          : new EnchantmentStorageMetaBuilder(other);
+    } else if (material == Materials.getFireworkStar()) {
+      return other == null ? new FireworkEffectMetaBuilder() : new FireworkEffectMetaBuilder(other);
+    } else if (material == Materials.getFireworkRocket()) {
+      return other == null ? new FireworkMetaBuilder() : new FireworkEffectMetaBuilder(other);
     }
     return other == null ? new ItemMetaBuilder() : new ItemMetaBuilder(other);
   }
