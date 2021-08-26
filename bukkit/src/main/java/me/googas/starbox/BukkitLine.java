@@ -11,6 +11,7 @@ import me.googas.starbox.builders.Line;
 import me.googas.starbox.modules.channels.Channel;
 import me.googas.starbox.modules.language.LanguageModule;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 
 /** Implementation of {@link Line} to be used in 'Bukkit'. */
@@ -97,7 +98,7 @@ public interface BukkitLine extends Line {
 
     @Override
     public @NonNull Optional<String> asText() {
-      return Optional.empty();
+      return Optional.of(new TextComponent(this.build()).toLegacyText());
     }
 
     @Override
