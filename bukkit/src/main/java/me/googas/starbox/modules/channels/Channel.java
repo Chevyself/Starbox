@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.NonNull;
 import me.googas.starbox.BukkitLine;
+import me.googas.starbox.Starbox;
+import me.googas.starbox.compatibilities.viaversion.modules.channels.ProtocolChannelsModule;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -40,10 +42,25 @@ public interface Channel {
    */
   static PlayerChannel of(@NonNull Player player) {
     UUID uniqueId = player.getUniqueId();
-    return ConsoleChannel.players.stream()
-        .filter(channel -> channel.getUniqueId().equals(uniqueId))
-        .findFirst()
-        .orElseGet(() -> new PlayerChannel(uniqueId));
+    return new ArrayList<>(ConsoleChannel.players)
+        .stream()
+            .filter(channel -> channel.getUniqueId().equals(uniqueId))
+            .findFirst()
+            .orElseGet(
+                () -> {
+                  PlayerChannel channel;
+                  if (Starbox.getCompatibilities().isEnabled("ViaVersion")) {
+                    channel =
+                        Starbox.getModules()
+                            .get(ProtocolChannelsModule.class)
+                            .map(module -> module.getChannel(uniqueId))
+                            .orElseGet(() -> new PlayerChannel(uniqueId));
+                  } else {
+                    channel = new PlayerChannel(uniqueId);
+                  }
+                  Channel.players.add(channel);
+                  return channel;
+                });
   }
 
   /**
@@ -64,17 +81,41 @@ public interface Channel {
   @NonNull
   Channel send(@NonNull String text);
 
+  /**
+   * Send a localized {@link BukkitLine}.
+   *
+   * @param key the key to match the json/text
+   * @return this same instance
+   */
   @NonNull
   default Channel localized(@NonNull String key) {
     this.send(BukkitLine.localized(this, key).build());
     return this;
   }
 
+  /**
+   * Send a localized formatted {@link BukkitLine}.
+   *
+   * @see BukkitLine#format(Map)
+   * @param key the key to match the json/text
+   * @param map to format the line
+   * @return this same instance
+   */
+  @NonNull
   default Channel localized(@NonNull String key, @NonNull Map<String, String> map) {
     this.send(BukkitLine.localized(this, key).format(map).build());
     return this;
   }
 
+  /**
+   * Send a localized formatted {@link BukkitLine}.
+   *
+   * @see BukkitLine#format(Object...)
+   * @param key the key to match the json/text
+   * @param objects to format the line
+   * @return this same instance
+   */
+  @NonNull
   default Channel localized(@NonNull String key, @NonNull Object... objects) {
     this.send(BukkitLine.localized(this, key).format(objects).build());
     return this;

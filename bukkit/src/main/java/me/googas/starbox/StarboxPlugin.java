@@ -18,6 +18,7 @@ import me.googas.starbox.commands.providers.FormatRetentionProvider;
 import me.googas.starbox.commands.providers.HoverEventActionProvider;
 import me.googas.starbox.compatibilities.Compatibility;
 import me.googas.starbox.compatibilities.CompatibilityManager;
+import me.googas.starbox.compatibilities.viaversion.ViaVersionCompatibility;
 import me.googas.starbox.modules.ModuleRegistry;
 import me.googas.starbox.modules.language.LanguageModule;
 import me.googas.starbox.modules.ui.UIModule;
@@ -27,7 +28,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class StarboxPlugin extends JavaPlugin {
 
   @NonNull @Getter private final ModuleRegistry modules = new ModuleRegistry(this);
-  @NonNull @Getter private final CompatibilityManager compatibilities = new CompatibilityManager();
+
+  @NonNull @Getter
+  private final CompatibilityManager compatibilities =
+      new CompatibilityManager().add(new ViaVersionCompatibility());
+
   @NonNull private final MessagesProvider messages = new BukkitMessagesProvider();
 
   @NonNull

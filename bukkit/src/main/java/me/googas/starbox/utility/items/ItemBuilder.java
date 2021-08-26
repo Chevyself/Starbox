@@ -188,8 +188,7 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
             Material.valueOf(materialElement == null ? "glass" : materialElement.getAsString());
         int amount = amountElement == null ? 1 : amountElement.getAsInt();
         return new ItemBuilder(
-            context.deserialize(
-                object.get("meta-builder"), ItemMetaBuilder.getMeta(material).getClass()),
+            context.deserialize(object.get("meta"), ItemMetaBuilder.getMeta(material).getClass()),
             material,
             amount);
       }

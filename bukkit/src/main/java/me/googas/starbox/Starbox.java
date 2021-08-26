@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.NonNull;
+import me.googas.starbox.compatibilities.CompatibilityManager;
 import me.googas.starbox.modules.ModuleRegistry;
 
 /** Static access for {@link StarboxPlugin}. */
@@ -51,6 +52,15 @@ public class Starbox {
    */
   public static @NonNull ModuleRegistry getModules() {
     return Starbox.getInstance().getModules();
+  }
+
+  /**
+   * Get the compatibility manager.
+   *
+   * @return the compatibility manager
+   */
+  public static @NonNull CompatibilityManager getCompatibilities() {
+    return Starbox.getInstance().getCompatibilities();
   }
 
   /**

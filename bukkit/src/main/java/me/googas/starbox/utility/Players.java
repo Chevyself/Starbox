@@ -9,6 +9,8 @@ import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.reflect.wrappers.attributes.WrappedAttribute;
 import me.googas.reflect.wrappers.attributes.WrappedAttributeInstance;
+import me.googas.starbox.Starbox;
+import me.googas.starbox.compatibilities.viaversion.modules.channels.ProtocolChannelsModule;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.HumanEntity;
@@ -21,7 +23,10 @@ public class Players {
 
   @NonNull
   public static final WrappedClass<?> CRAFT_PLAYER =
-      WrappedClass.forName("org.bukkit.craftbukkit.entity.CraftPlayer");
+      WrappedClass.forName("org.bukkit.craftbukkit." + Versions.NMS + ".entity.CraftPlayer");
+
+  @NonNull
+  public static final WrappedMethod<?> GET_PROFILE = Players.CRAFT_PLAYER.getMethod("getProfile");
 
   @NonNull public static final WrappedClass<Player> PLAYER = WrappedClass.of(Player.class);
 
@@ -32,9 +37,6 @@ public class Players {
   @NonNull
   public static final WrappedClass<PlayerInventory> PLAYER_INVENTORY =
       WrappedClass.of(PlayerInventory.class);
-
-  @NonNull
-  public static final WrappedMethod<?> GET_PROFILE = Players.CRAFT_PLAYER.getMethod("getProfile");
 
   @APIVersion(since = 8)
   public static final WrappedMethod<String> SPIGOT_GET_LANG =
@@ -156,5 +158,16 @@ public class Players {
     return Bukkit.getOnlinePlayers().stream()
         .map(HumanEntity::getName)
         .collect(Collectors.toList());
+  }
+
+  @NonNull
+  public static Versions.Player getVersion(@NonNull Player player) {
+    if (Starbox.getCompatibilities().isEnabled("ViaVersion")) {
+      return Starbox.getModules()
+          .get(ProtocolChannelsModule.class)
+          .map(module -> module.getVersion(player))
+          .orElseGet(() -> Versions.getProtocol());
+    }
+    return Versions.getProtocol();
   }
 }
