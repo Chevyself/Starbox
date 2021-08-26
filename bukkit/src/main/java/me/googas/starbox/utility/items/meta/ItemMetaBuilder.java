@@ -39,7 +39,7 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
   private static final WrappedMethod<?> SPIGOT_SET_UNBREAKABLE =
       ItemMetaBuilder.ITEM_META_SPIGOT.getMethod("setUnbreakable", boolean.class);
 
-  @NonNull @Getter private final EnchantmentsBuilder enchantments;
+  @Getter private EnchantmentsBuilder enchantments;
   @Getter private String name;
   @Getter private String lore;
   @Getter private WrappedAttributes attributes;
@@ -55,7 +55,7 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
    * @param unbreakable whether the item must be unbreakable
    */
   protected ItemMetaBuilder(
-      @NonNull EnchantmentsBuilder enchantments,
+      EnchantmentsBuilder enchantments,
       String name,
       String lore,
       WrappedAttributes attributes,
@@ -92,7 +92,7 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
 
   /** Create the builder. */
   public ItemMetaBuilder() {
-    this(new EnchantmentsBuilder(), null, null, null, false);
+    this(null, null, null, null, false);
   }
 
   /**
@@ -191,6 +191,9 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
    */
   @NonNull
   public ItemMetaBuilder addEnchantment(@NonNull Enchantment enchantment, int level) {
+    if (this.enchantments == null) {
+      this.enchantments = new EnchantmentsBuilder();
+    }
     this.enchantments.put(enchantment, level);
     return this;
   }
@@ -213,9 +216,11 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
       } else {
         meta.setUnbreakable(this.unbreakable);
       }
-      this.enchantments
-          .build()
-          .forEach(((enchantment, integer) -> meta.addEnchant(enchantment, integer, true)));
+      if (this.enchantments != null) {
+        this.enchantments
+            .build()
+            .forEach(((enchantment, integer) -> meta.addEnchant(enchantment, integer, true)));
+      }
     }
     return meta;
   }

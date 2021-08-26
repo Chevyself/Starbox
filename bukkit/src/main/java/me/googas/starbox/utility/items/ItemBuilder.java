@@ -40,7 +40,9 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
 
   @NonNull
   @Getter
-  @SerializedName(value = "meta", alternate = {"meta-builder", "metaBuilder"})
+  @SerializedName(
+      value = "meta",
+      alternate = {"meta-builder", "metaBuilder"})
   private ItemMetaBuilder metaBuilder;
 
   @NonNull @Getter private Material material;
