@@ -6,7 +6,9 @@ import me.googas.adapters.OfflinePlayerAdapter;
 import me.googas.io.StarboxFile;
 import me.googas.io.context.Json;
 import me.googas.io.context.Txt;
+import me.googas.reflect.wrappers.chat.AbstractComponentBuilder;
 import me.googas.starbox.utility.items.ItemBuilder;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.OfflinePlayer;
 
 /** Static access for files used by the plugin. */
@@ -28,6 +30,7 @@ public class StarboxBukkitFiles {
                 .setPrettyPrinting()
                 .registerTypeHierarchyAdapter(OfflinePlayer.class, new OfflinePlayerAdapter())
                 .registerTypeAdapter(ItemBuilder.class, new ItemBuilder.Deserializer())
+                .registerTypeAdapter(BaseComponent.class, new AbstractComponentBuilder.Adapter())
                 .create());
   }
 }

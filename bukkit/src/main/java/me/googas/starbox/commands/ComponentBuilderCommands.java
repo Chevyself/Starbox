@@ -222,7 +222,7 @@ public class ComponentBuilderCommands {
     StarboxFile file =
         new StarboxFile(StarboxBukkitFiles.EXPORTS, name.endsWith(".json") ? name : name + ".json");
     boolean exported =
-        file.write(AbstractComponentBuilder.JSON, this.getBuilder(player).build())
+        file.write(StarboxBukkitFiles.Contexts.JSON, this.getBuilder(player).build())
             .handle(Starbox::severe)
             .provide()
             .orElse(false);
@@ -280,7 +280,7 @@ public class ComponentBuilderCommands {
   }
 
   private @NonNull Optional<BaseComponent[]> importComponents(@NonNull StarboxFile file) {
-    return file.read(AbstractComponentBuilder.JSON, BaseComponent[].class)
+    return file.read(StarboxBukkitFiles.Contexts.JSON, BaseComponent[].class)
         .handle(Starbox::severe)
         .provide();
   }
