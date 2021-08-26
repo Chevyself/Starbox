@@ -1,6 +1,8 @@
 package me.googas.starbox;
 
 import com.google.gson.GsonBuilder;
+import java.net.URL;
+import java.util.Objects;
 import lombok.NonNull;
 import me.googas.adapters.OfflinePlayerAdapter;
 import me.googas.io.StarboxFile;
@@ -36,5 +38,24 @@ public class StarboxBukkitFiles {
                 .registerTypeHierarchyAdapter(
                     BaseComponent.class, new AbstractComponentBuilder.Adapter())
                 .create());
+  }
+
+  /** Static access for resources. */
+  public static class Resources {
+
+    @NonNull private static final ClassLoader LOADER = StarboxBukkitFiles.class.getClassLoader();
+    @NonNull public static final URL COLORS = Resources.getResource("colors.json");
+
+    /**
+     * Get a resource by its name.
+     *
+     * @param name the name of the resource to get
+     * @return the resource
+     * @throws NullPointerException if the resource is not found
+     */
+    @NonNull
+    public static URL getResource(@NonNull String name) {
+      return Objects.requireNonNull(Resources.LOADER.getResource(name));
+    }
   }
 }

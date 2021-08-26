@@ -29,6 +29,7 @@ component-builder:
     success: "&dAppended spaces"
   append: "&7Appended &r{0}"
   color: "&dApplied color"
+  colors: "&dYou now have the color book"
   event: "&dApplied event"
   modify: "&dApplied modification"
   export:

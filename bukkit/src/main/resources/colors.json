@@ -1,0 +1,130 @@
+{
+  "meta": {
+    "pages": [
+      [
+        {
+          "text": ""
+        },
+        {
+          "color": "black",
+          "underlined": true,
+          "text": "Minecraft formatting",
+          "extra": []
+        },
+        {
+          "text": "\n\n0 "
+        },
+        {
+          "text": "1 ",
+          "color": "dark_blue"
+        },
+        {
+          "text": "2 ",
+          "color": "dark_green"
+        },
+        {
+          "text": "3 \n",
+          "color": "dark_aqua"
+        },
+        {
+          "text": "4 ",
+          "color": "dark_red"
+        },
+        {
+          "text": "5 ",
+          "color": "dark_purple"
+        },
+        {
+          "text": "6 ",
+          "color": "gold"
+        },
+        {
+          "text": "7 \n",
+          "color": "gray"
+        },
+        {
+          "text": "8 ",
+          "color": "dark_gray"
+        },
+        {
+          "text": "9 ",
+          "color": "blue"
+        },
+        {
+          "text": "a ",
+          "color": "green"
+        },
+        {
+          "text": "b \n",
+          "color": "aqua"
+        },
+        {
+          "text": "c ",
+          "color": "red"
+        },
+        {
+          "text": "d ",
+          "color": "light_purple"
+        },
+        {
+          "text": "e \n\n",
+          "color": "yellow"
+        },
+        {
+          "text": "k ",
+          "color": "reset"
+        },
+        {
+          "text": "Minecraft \n",
+          "obfuscated": true
+        },
+        {
+          "text": "l ",
+          "color": "reset"
+        },
+        {
+          "text": "Minecraft \n",
+          "bold": true
+        },
+        {
+          "text": "m ",
+          "color": "reset"
+        },
+        {
+          "text": "Minecraft \n",
+          "strikethrough": true
+        },
+        {
+          "text": "n ",
+          "color": "reset"
+        },
+        {
+          "text": "Minecraft \n",
+          "underlined": true
+        },
+        {
+          "text": "o ",
+          "color": "reset"
+        },
+        {
+          "text": "Minecraft \n",
+          "italic": true
+        },
+        {
+          "text": "r ",
+          "color": "reset"
+        },
+        {
+          "text": "Minecraft"
+        }
+      ]
+    ],
+    "enchantments": {
+      "map": {}
+    },
+    "name": "Colors",
+    "author": "Starbox"
+  },
+  "material": "WRITTEN_BOOK",
+  "amount": 1
+}

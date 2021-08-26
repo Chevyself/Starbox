@@ -23,12 +23,14 @@ import me.googas.starbox.BukkitLine;
 import me.googas.starbox.Starbox;
 import me.googas.starbox.StarboxBukkitFiles;
 import me.googas.starbox.utility.Versions;
+import me.googas.starbox.utility.items.ItemBuilder;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Commands to create {@link BaseComponent} using {@link ComponentBuilder}. Javadoc warnings are
@@ -45,10 +47,19 @@ public class ComponentBuilderCommands {
       ComponentBuilderCommands.HOVER_EVENT.getConstructor(
           HoverEvent.Action.class, BaseComponent[].class);
 
+  @NonNull
+  private static final ItemStack colorBook =
+      StarboxBukkitFiles.Contexts.JSON
+          .read(StarboxBukkitFiles.Resources.COLORS, ItemBuilder.class)
+          .handle(Starbox::severe)
+          .provide()
+          .orElseGet(ItemBuilder::new)
+          .build();
+
   @NonNull private final Map<UUID, AbstractComponentBuilder> builders = new HashMap<>();
 
   @Command(
-      aliases = "reset",
+      aliases = {"reset", "clear"},
       description = "Reset the builder",
       permission = "starbox.component-builder")
   public Result reset(Player player) {
@@ -128,6 +139,15 @@ public class ComponentBuilderCommands {
       Player player, @Required(name = "color", description = "The color to set") ChatColor color) {
     this.getBuilder(player).color(color);
     return BukkitLine.localized(player, "component-builder.color").asResult();
+  }
+
+  @Command(
+      aliases = "colors",
+      description = "Get the color book",
+      permission = "starbox.component-builder.colors")
+  public Result colors(Player player) {
+    player.getInventory().addItem(ComponentBuilderCommands.colorBook);
+    return BukkitLine.localized(player, "component-builder.colors").asResult();
   }
 
   @Command(
@@ -246,7 +266,9 @@ public class ComponentBuilderCommands {
         new StarboxFile(StarboxBukkitFiles.EXPORTS, name.endsWith(".json") ? name : name + ".json");
     if (file.exists()) {
       this.builders.put(player.getUniqueId(), this.importBuilder(file));
-      return BukkitLine.localized(player, "component-builder.import.success").asResult();
+      return BukkitLine.localized(player, "component-builder.import.success")
+          .format(file)
+          .asResult();
     } else {
       return BukkitLine.localized(player, "component-builder.import.no-file")
           .format(file)
