@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.reflect.APIVersion;
@@ -23,13 +22,17 @@ public class BannerMetaBuilder extends ItemMetaBuilder {
 
   @NonNull
   private static final WrappedClass<BannerMeta> BANNER_META = WrappedClass.of(BannerMeta.class);
-  @NonNull
-  private static final WrappedMethod<?> SET_BASE_COLOR = BannerMetaBuilder.BANNER_META.getMethod("setBaseColor", DyeColor.class);
 
-  @NonNull @Getter @APIVersion(since = 8, max = 11)
+  @NonNull
+  private static final WrappedMethod<?> SET_BASE_COLOR =
+      BannerMetaBuilder.BANNER_META.getMethod("setBaseColor", DyeColor.class);
+
+  @NonNull
+  @Getter
+  @APIVersion(since = 8, max = 11)
   private final List<Pattern> patterns = new ArrayList<>();
-  @NonNull @Getter
-  private DyeColor baseColor = DyeColor.WHITE;
+
+  @NonNull @Getter private DyeColor baseColor = DyeColor.WHITE;
 
   /**
    * Create the builder.
@@ -92,7 +95,6 @@ public class BannerMetaBuilder extends ItemMetaBuilder {
     this.baseColor = baseColor;
     return this;
   }
-
 
   /**
    * Create the builder.

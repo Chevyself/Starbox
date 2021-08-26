@@ -5,10 +5,14 @@ import java.util.Collection;
 import java.util.List;
 import lombok.Getter;
 import lombok.NonNull;
+import me.googas.commands.bungee.utils.Components;
+import me.googas.reflect.APIVersion;
 import me.googas.reflect.wrappers.inventory.WrappedBookMetaGeneration;
 import me.googas.starbox.Strings;
 import me.googas.starbox.utility.Versions;
 import me.googas.starbox.utility.items.ItemBuilder;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -16,9 +20,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 /** Builds {@link BookMeta}. */
 public class BookMetaBuilder extends ItemMetaBuilder {
 
-  @NonNull @Getter private List<String> pages = new ArrayList<>();
-  @NonNull @Getter private String author = "Unknown";
-
+  @NonNull @Getter private List<BaseComponent[]> pages = new ArrayList<>();
+  @Getter private String title = null;
+  @Getter private String author = null;
   @Getter private WrappedBookMetaGeneration wrappedGeneration = null;
 
   /**
@@ -45,6 +49,28 @@ public class BookMetaBuilder extends ItemMetaBuilder {
   }
 
   /**
+   * Add a page to the book.
+   *
+   * @param page the page to add.
+   * @return this same instance
+   */
+  public BookMetaBuilder add(@NonNull BaseComponent[] page) {
+    this.pages.add(page);
+    return this;
+  }
+
+  /**
+   * Add many page to the book.
+   *
+   * @param pages the collection of pages to add.
+   * @return this same instance
+   */
+  public BookMetaBuilder addAll(@NonNull Collection<? extends BaseComponent[]> pages) {
+    this.pages.addAll(pages);
+    return this;
+  }
+
+  /**
    * Add a page to the book. The current page will be divided if it exceeds the '798' character
    * limit (Taken from <a href="https://minecraft.fandom.com/wiki/Book_and_Quill">Wiki</a>)
    *
@@ -53,7 +79,7 @@ public class BookMetaBuilder extends ItemMetaBuilder {
    */
   @NonNull
   public BookMetaBuilder add(@NonNull String page) {
-    Strings.divide(page, 798).forEach(string -> this.pages.add(page));
+    Strings.divide(page, 798).forEach(string -> this.pages.add(Components.getComponent(page)));
     return this;
   }
 
@@ -84,6 +110,18 @@ public class BookMetaBuilder extends ItemMetaBuilder {
   }
 
   /**
+   * Set the title of the book.
+   *
+   * @param title the new title of the book
+   * @return this same instance
+   */
+  @NonNull
+  public BookMetaBuilder setTitle(String title) {
+    this.title = title;
+    return this;
+  }
+
+  /**
    * Set the author.
    *
    * @param author the author of the book
@@ -91,7 +129,7 @@ public class BookMetaBuilder extends ItemMetaBuilder {
    */
   @NonNull
   public BookMetaBuilder setAuthor(String author) {
-    this.author = author == null || author.isEmpty() ? "Unknown" : author;
+    this.author = author;
     return this;
   }
 
@@ -102,7 +140,7 @@ public class BookMetaBuilder extends ItemMetaBuilder {
    * @return this same instance
    */
   @NonNull
-  public BookMetaBuilder setPages(List<String> pages) {
+  public BookMetaBuilder setPages(List<BaseComponent[]> pages) {
     this.pages = pages;
     return this;
   }
@@ -114,6 +152,7 @@ public class BookMetaBuilder extends ItemMetaBuilder {
    * @return this same instance
    */
   @NonNull
+  @APIVersion(since = 9)
   public BookMetaBuilder setWrappedGeneration(WrappedBookMetaGeneration wrappedGeneration) {
     this.wrappedGeneration = wrappedGeneration;
     return this;
@@ -124,10 +163,15 @@ public class BookMetaBuilder extends ItemMetaBuilder {
     ItemMeta itemMeta = super.build(stack);
     if (itemMeta instanceof BookMeta) {
       BookMeta bookMeta = (BookMeta) itemMeta;
-      bookMeta.setAuthor(this.author);
-      bookMeta.setPages(this.pages);
+      if (title != null) bookMeta.setTitle(this.title);
+      if (author != null) bookMeta.setAuthor(this.author);
       if (Versions.BUKKIT >= 9 && wrappedGeneration != null) {
         bookMeta.setGeneration(wrappedGeneration.getGeneration());
+      }
+      if (Versions.BUKKIT > 11) {
+        bookMeta.spigot().setPages(this.pages);
+      } else {
+        this.pages.forEach(page -> bookMeta.addPage(ComponentSerializer.toString(page)));
       }
       return bookMeta;
     }
