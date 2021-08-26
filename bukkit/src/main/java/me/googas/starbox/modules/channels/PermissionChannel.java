@@ -1,7 +1,10 @@
 package me.googas.starbox.modules.channels;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.NonNull;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -12,7 +15,7 @@ import org.bukkit.entity.Player;
  * Represents a channel which may only send data to players with an specific permission, this does
  * also include the console.
  */
-public class PermissionChannel implements Channel {
+public class PermissionChannel implements ForwardingChannel.Multiple {
 
   @NonNull private final String permission;
 
@@ -25,23 +28,22 @@ public class PermissionChannel implements Channel {
     this.permission = permission;
   }
 
+  /**
+   * Filter all the players with the channel permission.
+   *
+   * @return the stream of filtered players
+   */
   @NonNull
-  private Stream<? extends Player> filter() {
+  public Stream<? extends Player> filter() {
     return Bukkit.getOnlinePlayers().stream()
         .filter(player -> player.hasPermission(this.permission));
   }
 
   @Override
-  public @NonNull PermissionChannel send(@NonNull BaseComponent... components) {
-    ConsoleChannel.getInstance().send(components);
-    this.filter().map(Channel::of).forEach(channel -> channel.send(components));
-    return this;
-  }
-
-  @Override
-  public @NonNull PermissionChannel send(@NonNull String text) {
-    this.filter().map(Channel::of).forEach(channel -> channel.send(text));
-    return this;
+  public @NonNull List<Channel> getChannels() {
+    List<Channel> channels = this.filter().map(Channel::of).collect(Collectors.toList());
+    channels.add(ConsoleChannel.getInstance());
+    return channels;
   }
 
   @Override
