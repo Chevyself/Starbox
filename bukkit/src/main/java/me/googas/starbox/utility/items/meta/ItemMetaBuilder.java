@@ -157,6 +157,8 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
       return other == null ? new BannerMetaBuilder() : new BannerMetaBuilder(other);
     } else if (Materials.isSkull(material)) {
       return other == null ? new SkullMetaBuilder() : new SkullMetaBuilder(other);
+    } else if (material == Material.ENCHANTED_BOOK) {
+      return other == null ? new EnchantmentStorageMetaBuilder() : new EnchantmentStorageMetaBuilder(other);
     }
     return other == null ? new ItemMetaBuilder() : new ItemMetaBuilder(other);
   }
@@ -171,6 +173,19 @@ public class ItemMetaBuilder implements SuppliedBuilder<ItemStack, ItemMeta> {
   @APIVersion(since = 12)
   public ItemMetaBuilder setAttributes(WrappedAttributes attributes) {
     this.attributes = attributes;
+    return this;
+  }
+
+  /**
+   * Add an enchantment to the item.
+   *
+   * @param enchantment the enchantment to add
+   * @param level the level of the enchantment
+   * @return this same instance
+   */
+  @NonNull
+  public ItemMetaBuilder addEnchantment(@NonNull Enchantment enchantment, int level) {
+    this.enchantments.put(enchantment, level);
     return this;
   }
 
