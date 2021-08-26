@@ -160,13 +160,19 @@ public class Players {
         .collect(Collectors.toList());
   }
 
+  /**
+   * Get the version in which a player is on.
+   *
+   * @param player the player to get its version
+   * @return the version in which the player is on
+   */
   @NonNull
   public static Versions.Player getVersion(@NonNull Player player) {
     if (Starbox.getCompatibilities().isEnabled("ViaVersion")) {
       return Starbox.getModules()
           .get(ProtocolChannelsModule.class)
           .map(module -> module.getVersion(player))
-          .orElseGet(() -> Versions.getProtocol());
+          .orElseGet(Versions::getProtocol);
     }
     return Versions.getProtocol();
   }
