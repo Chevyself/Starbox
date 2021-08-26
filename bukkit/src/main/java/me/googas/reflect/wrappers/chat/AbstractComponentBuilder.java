@@ -1,19 +1,17 @@
 package me.googas.reflect.wrappers.chat;
 
 import com.google.gson.Gson;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import lombok.NonNull;
 import me.googas.io.context.Json;
 import me.googas.reflect.APIVersion;
@@ -321,22 +319,20 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
     return arr;
   }
 
-  /**
-   * This adapter deserializes and serializes {@link BaseComponent} using bungees gson.
-   */
-    public static class Adapter
-        implements JsonDeserializer<BaseComponent>, JsonSerializer<BaseComponent> {
-      @Override
-      public JsonElement serialize(
-              BaseComponent src, Type typeOfSrc, JsonSerializationContext context) {
-        return AbstractComponentBuilder.JSON.getGson().toJsonTree(src, typeOfSrc);
-      }
-
-      @Override
-      public BaseComponent deserialize(
-          JsonElement json, Type typeOfT, JsonDeserializationContext context)
-          throws JsonParseException {
-        return AbstractComponentBuilder.JSON.getGson().fromJson(json, typeOfT);
-      }
+  /** This adapter deserializes and serializes {@link BaseComponent} using bungees gson. */
+  public static class Adapter
+      implements JsonDeserializer<BaseComponent>, JsonSerializer<BaseComponent> {
+    @Override
+    public JsonElement serialize(
+        BaseComponent src, Type typeOfSrc, JsonSerializationContext context) {
+      return AbstractComponentBuilder.JSON.getGson().toJsonTree(src, typeOfSrc);
     }
+
+    @Override
+    public BaseComponent deserialize(
+        JsonElement json, Type typeOfT, JsonDeserializationContext context)
+        throws JsonParseException {
+      return AbstractComponentBuilder.JSON.getGson().fromJson(json, typeOfT);
+    }
+  }
 }

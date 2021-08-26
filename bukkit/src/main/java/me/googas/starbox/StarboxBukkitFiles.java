@@ -7,6 +7,7 @@ import me.googas.io.StarboxFile;
 import me.googas.io.context.Json;
 import me.googas.io.context.Txt;
 import me.googas.reflect.wrappers.chat.AbstractComponentBuilder;
+import me.googas.reflect.wrappers.inventory.WrappedBookMetaGeneration;
 import me.googas.starbox.utility.items.ItemBuilder;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.OfflinePlayer;
@@ -29,8 +30,11 @@ public class StarboxBukkitFiles {
             new GsonBuilder()
                 .setPrettyPrinting()
                 .registerTypeHierarchyAdapter(OfflinePlayer.class, new OfflinePlayerAdapter())
+                .registerTypeAdapter(
+                    WrappedBookMetaGeneration.class, new WrappedBookMetaGeneration.Adapter())
                 .registerTypeAdapter(ItemBuilder.class, new ItemBuilder.Deserializer())
-                .registerTypeAdapter(BaseComponent.class, new AbstractComponentBuilder.Adapter())
+                .registerTypeHierarchyAdapter(
+                    BaseComponent.class, new AbstractComponentBuilder.Adapter())
                 .create());
   }
 }

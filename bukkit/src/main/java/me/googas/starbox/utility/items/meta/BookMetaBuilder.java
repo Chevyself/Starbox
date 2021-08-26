@@ -1,5 +1,6 @@
 package me.googas.starbox.utility.items.meta;
 
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -7,18 +8,42 @@ import lombok.Getter;
 import lombok.NonNull;
 import me.googas.commands.bungee.utils.Components;
 import me.googas.reflect.APIVersion;
+import me.googas.reflect.wrappers.WrappedClass;
+import me.googas.reflect.wrappers.WrappedField;
 import me.googas.reflect.wrappers.inventory.WrappedBookMetaGeneration;
+import me.googas.starbox.Starbox;
+import me.googas.starbox.StarboxBukkitFiles;
 import me.googas.starbox.Strings;
 import me.googas.starbox.utility.Versions;
 import me.googas.starbox.utility.items.ItemBuilder;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 /** Builds {@link BookMeta}. */
 public class BookMetaBuilder extends ItemMetaBuilder {
+
+  @NonNull
+  private static final WrappedClass<?> CRAFT_META_BOOK =
+      WrappedClass.forName("org.bukkit.craftbukkit." + Versions.NMS + ".inventory.CraftMetaBook");
+
+  @NonNull
+  private static final WrappedField<?> PAGES =
+      BookMetaBuilder.CRAFT_META_BOOK.getDeclaredField("pages");
+
+  @NonNull
+  private static final WrappedClass<?> CHAT_BASE_COMPONENT =
+      WrappedClass.forName("net.minecraft.server." + Versions.NMS + ".IChatBaseComponent");
+
+  @NonNull
+  private static final WrappedClass<?> CHAT_SERIALIZER =
+      WrappedClass.forName(
+          "net.minecraft.server." + Versions.NMS + ".IChatBaseComponent$ChatSerializer");
+
+  @NonNull
+  private static final WrappedField<Gson> GSON =
+      BookMetaBuilder.CHAT_SERIALIZER.getDeclaredField(Gson.class, "a");
 
   @NonNull @Getter private List<BaseComponent[]> pages = new ArrayList<>();
   @Getter private String title = null;
@@ -171,7 +196,18 @@ public class BookMetaBuilder extends ItemMetaBuilder {
       if (Versions.BUKKIT > 11) {
         bookMeta.spigot().setPages(this.pages);
       } else {
-        this.pages.forEach(page -> bookMeta.addPage(ComponentSerializer.toString(page)));
+        String json = StarboxBukkitFiles.Contexts.JSON.getGson().toJson(this.pages);
+        BookMetaBuilder.GSON
+            .get(null)
+            .handle(Starbox::severe)
+            .provide()
+            .map(gson -> gson.fromJson(json, BookMetaBuilder.PAGES.getField().getGenericType()))
+            .ifPresent(
+                chatComponent ->
+                    BookMetaBuilder.PAGES
+                        .set(bookMeta, chatComponent)
+                        .handle(Starbox::severe)
+                        .run());
       }
       return bookMeta;
     }
