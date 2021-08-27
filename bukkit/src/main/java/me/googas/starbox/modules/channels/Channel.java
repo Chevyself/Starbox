@@ -51,7 +51,7 @@ public interface Channel {
    * @return the channel of the player
    */
   static PlayerChannel of(@NonNull UUID uniqueId) {
-    return new ArrayList<>(ConsoleChannel.players)
+    return new ArrayList<>(Channel.players)
         .stream()
             .filter(channel -> channel.getUniqueId().equals(uniqueId))
             .findFirst()
@@ -129,6 +129,19 @@ public interface Channel {
     this.send(BukkitLine.localized(this, key).format(objects).build());
     return this;
   }
+
+  /**
+   * Send a title to this channel.
+   *
+   * @param title the title
+   * @param subtitle the subtitle
+   * @param fadeIn how long until the title appears in {@link me.googas.starbox.time.MinecraftUnit#TICK}
+   * @param stay how long until the title stays in {@link me.googas.starbox.time.MinecraftUnit#TICK}
+   * @param fadeOut how long until the title fades in {@link me.googas.starbox.time.MinecraftUnit#TICK}
+   * @return this same instance
+   */
+  @NonNull
+  Channel sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut);
 
   /**
    * Get the locale of the channel.

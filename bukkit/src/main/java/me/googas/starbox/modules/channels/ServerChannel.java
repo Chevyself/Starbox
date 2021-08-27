@@ -15,7 +15,7 @@ public class ServerChannel implements Channel {
   private ServerChannel() {}
 
   @Override
-  public @NonNull Channel send(@NonNull BaseComponent... components) {
+  public @NonNull ServerChannel send(@NonNull BaseComponent... components) {
     Bukkit.getOnlinePlayers().stream()
         .map(Channel::of)
         .forEach(channel -> channel.send(components));
@@ -24,9 +24,19 @@ public class ServerChannel implements Channel {
   }
 
   @Override
-  public @NonNull Channel send(@NonNull String text) {
+  public @NonNull ServerChannel send(@NonNull String text) {
     Bukkit.getOnlinePlayers().stream().map(Channel::of).forEach(channel -> channel.send(text));
     ConsoleChannel.getInstance().send(text);
+    return this;
+  }
+
+  @Override
+  public @NonNull ServerChannel sendTitle(
+      String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+    Bukkit.getOnlinePlayers().stream()
+        .map(Channel::of)
+        .forEach(channel -> channel.sendTitle(title, subtitle, fadeIn, stay, fadeOut));
+    ConsoleChannel.getInstance().sendTitle(title, subtitle, fadeIn, stay, fadeOut);
     return this;
   }
 

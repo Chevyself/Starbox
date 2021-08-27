@@ -16,7 +16,7 @@ import me.googas.commands.bukkit.utils.BukkitUtils;
 import me.googas.io.StarboxFile;
 import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedConstructor;
-import me.googas.reflect.wrappers.chat.AbstractComponentBuilder;
+import me.googas.reflect.wrappers.chat.Component;
 import me.googas.reflect.wrappers.chat.WrappedHoverEvent;
 import me.googas.reflect.wrappers.chat.WrappedText;
 import me.googas.starbox.BukkitLine;
@@ -56,7 +56,7 @@ public class ComponentBuilderCommands {
           .orElseGet(ItemBuilder::new)
           .build();
 
-  @NonNull private final Map<UUID, AbstractComponentBuilder> builders = new HashMap<>();
+  @NonNull private final Map<UUID, Component> builders = new HashMap<>();
 
   @Command(
       aliases = {"reset", "clear"},
@@ -89,7 +89,7 @@ public class ComponentBuilderCommands {
     if (spaces < 1) {
       return BukkitLine.localized(player, "component-builder.spaces.less-than-1").asResult();
     } else {
-      AbstractComponentBuilder builder = this.getBuilder(player);
+      Component builder = this.getBuilder(player);
       for (int i = 0; i < spaces; i++) {
         builder.append(" ");
       }
@@ -295,10 +295,8 @@ public class ComponentBuilderCommands {
   }
 
   @NonNull
-  private AbstractComponentBuilder importBuilder(@NonNull StarboxFile file) {
-    return this.importComponents(file)
-        .map(AbstractComponentBuilder::new)
-        .orElseGet(AbstractComponentBuilder::new);
+  private Component importBuilder(@NonNull StarboxFile file) {
+    return this.importComponents(file).map(Component::new).orElseGet(Component::new);
   }
 
   private @NonNull Optional<BaseComponent[]> importComponents(@NonNull StarboxFile file) {
@@ -308,8 +306,7 @@ public class ComponentBuilderCommands {
   }
 
   @NonNull
-  private AbstractComponentBuilder getBuilder(@NonNull Player player) {
-    return this.builders.computeIfAbsent(
-        player.getUniqueId(), uuid -> new AbstractComponentBuilder());
+  private Component getBuilder(@NonNull Player player) {
+    return this.builders.computeIfAbsent(player.getUniqueId(), uuid -> new Component());
   }
 }

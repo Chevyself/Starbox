@@ -5,7 +5,7 @@ import lombok.NonNull;
 import me.googas.reflect.APIVersion;
 import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedMethod;
-import me.googas.reflect.wrappers.profile.WrappedGameProfile;
+import me.googas.reflect.wrappers.entity.WrappedGameProfile;
 import me.googas.reflect.wrappers.properties.WrappedProperty;
 import me.googas.starbox.Starbox;
 import me.googas.starbox.utility.Versions;

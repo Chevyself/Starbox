@@ -84,6 +84,11 @@ public class Materials {
     return material.name().endsWith("AXE");
   }
 
+  /**
+   * Get the material for a firework rocket.
+   *
+   * @return the material
+   */
   @NonNull
   public static Material getFireworkRocket() {
     if (Versions.BUKKIT > 12) {
@@ -93,6 +98,11 @@ public class Materials {
     }
   }
 
+  /**
+   * Get the material for a firework star.
+   *
+   * @return the material
+   */
   @NonNull
   public static Material getFireworkStar() {
     if (Versions.BUKKIT > 12) {

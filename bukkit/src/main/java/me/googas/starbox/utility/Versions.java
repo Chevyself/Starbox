@@ -27,8 +27,8 @@ public class Versions {
 
   public static final int MIN_BUKKIT = 8;
   public static final int MAX_BUKKIT = 17;
+  public static final String NMS = Bukkit.getServer().getClass().getCanonicalName().split("\\.")[3];
   public static int BUKKIT = Versions.check();
-  public static String NMS = Bukkit.getServer().getClass().getCanonicalName().split("\\.")[3];
 
   /**
    * Check whats the bukkit version.

@@ -21,13 +21,6 @@ import org.bukkit.inventory.PlayerInventory;
 /** Utility for {@link Player}. */
 public class Players {
 
-  @NonNull
-  public static final WrappedClass<?> CRAFT_PLAYER =
-      WrappedClass.forName("org.bukkit.craftbukkit." + Versions.NMS + ".entity.CraftPlayer");
-
-  @NonNull
-  public static final WrappedMethod<?> GET_PROFILE = Players.CRAFT_PLAYER.getMethod("getProfile");
-
   @NonNull public static final WrappedClass<Player> PLAYER = WrappedClass.of(Player.class);
 
   @NonNull

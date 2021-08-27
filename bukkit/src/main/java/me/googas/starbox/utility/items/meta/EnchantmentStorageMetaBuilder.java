@@ -23,7 +23,7 @@ public class EnchantmentStorageMetaBuilder extends ItemMetaBuilder {
     super(builder);
   }
 
-  /** Create the builder */
+  /** Create the builder, */
   public EnchantmentStorageMetaBuilder() {}
 
   @Override

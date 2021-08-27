@@ -1,6 +1,5 @@
 package me.googas.starbox.utility.items.meta;
 
-import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -10,6 +9,7 @@ import me.googas.commands.bungee.utils.Components;
 import me.googas.reflect.APIVersion;
 import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedField;
+import me.googas.reflect.wrappers.chat.WrappedChatComponent;
 import me.googas.reflect.wrappers.inventory.WrappedBookMetaGeneration;
 import me.googas.starbox.Starbox;
 import me.googas.starbox.StarboxBukkitFiles;
@@ -31,19 +31,6 @@ public class BookMetaBuilder extends ItemMetaBuilder {
   @NonNull
   private static final WrappedField<?> PAGES =
       BookMetaBuilder.CRAFT_META_BOOK.getDeclaredField("pages");
-
-  @NonNull
-  private static final WrappedClass<?> CHAT_BASE_COMPONENT =
-      WrappedClass.forName("net.minecraft.server." + Versions.NMS + ".IChatBaseComponent");
-
-  @NonNull
-  private static final WrappedClass<?> CHAT_SERIALIZER =
-      WrappedClass.forName(
-          "net.minecraft.server." + Versions.NMS + ".IChatBaseComponent$ChatSerializer");
-
-  @NonNull
-  private static final WrappedField<Gson> GSON =
-      BookMetaBuilder.CHAT_SERIALIZER.getDeclaredField(Gson.class, "a");
 
   @NonNull @Getter private List<BaseComponent[]> pages = new ArrayList<>();
   @Getter private String title = null;
@@ -196,18 +183,14 @@ public class BookMetaBuilder extends ItemMetaBuilder {
       if (Versions.BUKKIT > 11) {
         bookMeta.spigot().setPages(this.pages);
       } else {
-        String json = StarboxBukkitFiles.Contexts.JSON.getGson().toJson(this.pages);
-        BookMetaBuilder.GSON
-            .get(null)
+        String json = StarboxBukkitFiles.Contexts.JSON.getGson().toJson(this.pages).trim();
+        BookMetaBuilder.PAGES
+            .set(
+                bookMeta,
+                WrappedChatComponent.Serializer.getGson()
+                    .fromJson(json, BookMetaBuilder.PAGES.getField().getGenericType()))
             .handle(Starbox::severe)
-            .provide()
-            .map(gson -> gson.fromJson(json, BookMetaBuilder.PAGES.getField().getGenericType()))
-            .ifPresent(
-                chatComponent ->
-                    BookMetaBuilder.PAGES
-                        .set(bookMeta, chatComponent)
-                        .handle(Starbox::severe)
-                        .run());
+            .run();
       }
       return bookMeta;
     }

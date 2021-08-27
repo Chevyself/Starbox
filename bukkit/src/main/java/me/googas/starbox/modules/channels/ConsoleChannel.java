@@ -37,6 +37,14 @@ public class ConsoleChannel implements Channel {
   }
 
   @Override
+  public @NonNull ConsoleChannel sendTitle(
+      String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+    if (title != null) this.send(title);
+    if (subtitle != null) this.send(subtitle);
+    return this;
+  }
+
+  @Override
   public Optional<Locale> getLocale() {
     return Optional.of(Locale.ENGLISH);
   }

@@ -5,7 +5,12 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.NonNull;
 import me.googas.commands.bukkit.utils.BukkitUtils;
+import me.googas.commands.bungee.utils.Components;
+import me.googas.reflect.packet.PacketType;
+import me.googas.reflect.wrappers.chat.WrappedChatComponent;
+import me.googas.reflect.wrappers.packet.WrappedTitleAction;
 import me.googas.starbox.BukkitLanguage;
+import me.googas.starbox.utility.Versions;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -55,6 +60,46 @@ public class PlayerChannel implements Channel {
   @NonNull
   public PlayerChannel send(@NonNull String text) {
     this.getPlayer().ifPresent(player -> player.sendMessage(text));
+    return this;
+  }
+
+  @Override
+  public @NonNull PlayerChannel sendTitle(
+      String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+    this.getPlayer()
+        .ifPresent(
+            player -> {
+              if (Versions.BUKKIT > 11) {
+                player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
+              } else {
+                PacketType type = PacketType.Play.ClientBound.TITLE;
+                if (title != null) {
+                  type.create()
+                      .setField(0, WrappedTitleAction.TITLE)
+                      .setField(1, WrappedChatComponent.of(Components.deserializePlain('&', title)))
+                          .setField(2, -1)
+                          .setField(3, -1)
+                          .setField(4, -1)
+                      .send(player);
+                }
+                if (subtitle != null) {
+                  type.create()
+                      .setField(0, WrappedTitleAction.SUBTITLE)
+                      .setField(
+                          1, WrappedChatComponent.of(Components.deserializePlain('&', subtitle)))
+                          .setField(2, -1)
+                          .setField(3, -1)
+                          .setField(4, -1)
+                      .send(player);
+                }
+                type.create()
+                    .setField(0, WrappedTitleAction.TIMES)
+                    .setField(2, fadeIn)
+                    .setField(3, stay)
+                    .setField(4, fadeOut)
+                    .send(player);
+              }
+            });
     return this;
   }
 

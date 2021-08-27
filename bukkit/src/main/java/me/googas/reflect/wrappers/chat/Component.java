@@ -28,7 +28,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 
 /** This helps to build {@link BaseComponent} in every 'Bukkit' version. */
-public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
+public class Component implements Builder<BaseComponent[]> {
 
   @NonNull
   private static final WrappedClass<ComponentSerializer> COMPONENT_SERIALIZER =
@@ -36,12 +36,12 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
 
   @NonNull
   private static final WrappedField<Gson> GSON_FIELD =
-      AbstractComponentBuilder.COMPONENT_SERIALIZER.getDeclaredField(Gson.class, "gson");
+      Component.COMPONENT_SERIALIZER.getDeclaredField(Gson.class, "gson");
 
   @NonNull
   private static final Json JSON =
       new Json(
-          AbstractComponentBuilder.GSON_FIELD
+          Component.GSON_FIELD
               .get(null)
               .handle(Starbox::severe)
               .provide()
@@ -56,7 +56,7 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
    *
    * @param components some initial components
    */
-  public AbstractComponentBuilder(@NonNull Collection<BaseComponent> components) {
+  public Component(@NonNull Collection<BaseComponent> components) {
     this.components = new ArrayList<>(components);
     this.resetCursor();
   }
@@ -66,12 +66,12 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
    *
    * @param components some initial components
    */
-  public AbstractComponentBuilder(@NonNull BaseComponent... components) {
+  public Component(@NonNull BaseComponent... components) {
     this(Arrays.asList(components));
   }
 
   /** Create the builder. */
-  public AbstractComponentBuilder() {
+  public Component() {
     this(new ArrayList<>());
   }
 
@@ -83,7 +83,7 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
    * @return this same instance
    */
   @NonNull
-  public AbstractComponentBuilder append(
+  public Component append(
       @NonNull BaseComponent component, @NonNull ComponentBuilder.FormatRetention retention) {
     BaseComponent previous = components.isEmpty() ? null : components.get(components.size() - 1);
     if (previous == null) {
@@ -132,12 +132,12 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
    * @return this same instance
    */
   @NonNull
-  public AbstractComponentBuilder event(@NonNull WrappedHoverEvent wrapper) {
+  public Component event(@NonNull WrappedHoverEvent wrapper) {
     this.getCurrent().setHoverEvent(wrapper.getEvent());
     return this;
   }
 
-  private AbstractComponentBuilder resetCursor() {
+  private Component resetCursor() {
     this.cursor = components.isEmpty() ? -1 : components.size() - 1;
     return this;
   }
@@ -149,7 +149,7 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
    * @return this same instance
    */
   @NonNull
-  public AbstractComponentBuilder color(@NonNull ChatColor color) {
+  public Component color(@NonNull ChatColor color) {
     this.getCurrent().setColor(color);
     return this;
   }
@@ -161,7 +161,7 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
    * @return this same instance
    */
   @NonNull
-  public AbstractComponentBuilder event(@NonNull ClickEvent event) {
+  public Component event(@NonNull ClickEvent event) {
     this.getCurrent().setClickEvent(event);
     return this;
   }
@@ -173,7 +173,7 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
    * @return this same instance
    */
   @NonNull
-  public AbstractComponentBuilder append(@NonNull String text) {
+  public Component append(@NonNull String text) {
     return this.append(text, ComponentBuilder.FormatRetention.ALL);
   }
 
@@ -186,7 +186,7 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
    * @return this same instance
    */
   @NonNull
-  public AbstractComponentBuilder append(
+  public Component append(
       @NonNull String text, @NonNull ComponentBuilder.FormatRetention retention) {
     return this.append(new TextComponent(text), retention);
   }
@@ -199,7 +199,7 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
    * @return this same instance
    */
   @NonNull
-  public AbstractComponentBuilder appendAll(
+  public Component appendAll(
       @NonNull ComponentBuilder.FormatRetention retention, Collection<BaseComponent> components) {
     components.forEach(component -> this.append(component, retention));
     return this;
@@ -213,7 +213,7 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
    * @return this same instance
    */
   @NonNull
-  public AbstractComponentBuilder appendAll(
+  public Component appendAll(
       @NonNull ComponentBuilder.FormatRetention retention, @NonNull BaseComponent... components) {
     return this.appendAll(retention, Arrays.asList(components));
   }
@@ -225,7 +225,7 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
    * @return this same instance
    */
   @NonNull
-  public AbstractComponentBuilder obfuscated(boolean obfuscated) {
+  public Component obfuscated(boolean obfuscated) {
     this.getCurrent().setObfuscated(obfuscated);
     return this;
   }
@@ -237,7 +237,7 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
    * @return this same instance
    */
   @NonNull
-  public AbstractComponentBuilder strikethrough(boolean strikethrough) {
+  public Component strikethrough(boolean strikethrough) {
     this.getCurrent().setStrikethrough(strikethrough);
     return this;
   }
@@ -249,7 +249,7 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
    * @return this same instance
    */
   @NonNull
-  public AbstractComponentBuilder italic(boolean italic) {
+  public Component italic(boolean italic) {
     this.getCurrent().setItalic(italic);
     return this;
   }
@@ -261,7 +261,7 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
    * @return this same instance
    */
   @NonNull
-  public AbstractComponentBuilder bold(boolean bold) {
+  public Component bold(boolean bold) {
     this.getCurrent().setBold(bold);
     return this;
   }
@@ -273,7 +273,7 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
    * @return this same instance
    */
   @NonNull
-  public AbstractComponentBuilder underline(boolean underline) {
+  public Component underline(boolean underline) {
     this.getCurrent().setUnderlined(underline);
     return this;
   }
@@ -285,14 +285,14 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
    */
   @NonNull
   @APIVersion(since = 12)
-  public AbstractComponentBuilder reset() {
+  public Component reset() {
     this.retain(ComponentBuilder.FormatRetention.NONE);
     return this;
   }
 
   @NonNull
   @APIVersion(since = 12)
-  private AbstractComponentBuilder retain(@NonNull ComponentBuilder.FormatRetention retention) {
+  private Component retain(@NonNull ComponentBuilder.FormatRetention retention) {
     this.getCurrent().retain(retention);
     return this;
   }
@@ -325,14 +325,14 @@ public class AbstractComponentBuilder implements Builder<BaseComponent[]> {
     @Override
     public JsonElement serialize(
         BaseComponent src, Type typeOfSrc, JsonSerializationContext context) {
-      return AbstractComponentBuilder.JSON.getGson().toJsonTree(src, typeOfSrc);
+      return Component.JSON.getGson().toJsonTree(src, typeOfSrc);
     }
 
     @Override
     public BaseComponent deserialize(
         JsonElement json, Type typeOfT, JsonDeserializationContext context)
         throws JsonParseException {
-      return AbstractComponentBuilder.JSON.getGson().fromJson(json, typeOfT);
+      return Component.JSON.getGson().fromJson(json, typeOfT);
     }
   }
 }

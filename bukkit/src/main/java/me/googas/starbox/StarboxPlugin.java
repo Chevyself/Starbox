@@ -10,6 +10,7 @@ import me.googas.commands.bukkit.providers.registry.BukkitProvidersRegistry;
 import me.googas.commands.providers.registry.ProvidersRegistry;
 import me.googas.starbox.commands.ComponentBuilderCommands;
 import me.googas.starbox.commands.ItemBuilderCommands;
+import me.googas.starbox.commands.TitleCommands;
 import me.googas.starbox.commands.providers.BungeeChatColorProvider;
 import me.googas.starbox.commands.providers.ChannelProvider;
 import me.googas.starbox.commands.providers.ClickEventActionProvider;
@@ -63,6 +64,7 @@ public class StarboxPlugin extends JavaPlugin {
     componentBuilder.getChildren().addAll(manager.parseCommands(new ComponentBuilderCommands()));
     itemBuilder.getChildren().addAll(manager.parseCommands(new ItemBuilderCommands()));
     manager.registerAll(componentBuilder, itemBuilder);
+    manager.parseAndRegister(new TitleCommands());
     manager.registerPlugin();
     // Check compatibilities
     compatibilities.check().getCompatibilities().stream()

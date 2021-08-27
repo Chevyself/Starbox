@@ -1,4 +1,4 @@
-package me.googas.reflect.wrappers.profile;
+package me.googas.reflect.wrappers.entity;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -9,8 +9,6 @@ import me.googas.reflect.wrappers.WrappedConstructor;
 import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.reflect.wrappers.properties.WrappedPropertyMap;
 import me.googas.starbox.Starbox;
-import me.googas.starbox.utility.Players;
-import org.bukkit.entity.Player;
 
 /** Wraps the 'com.mojang.authlib.GameProfile' class. */
 public class WrappedGameProfile extends StarboxWrapper<Object> {
@@ -40,7 +38,7 @@ public class WrappedGameProfile extends StarboxWrapper<Object> {
    *
    * @param reference the referenced GameProfile.
    */
-  public WrappedGameProfile(@NonNull Object reference) {
+  WrappedGameProfile(@NonNull Object reference) {
     super(reference);
     if (!reference.getClass().equals(WrappedGameProfile.GAME_PROFILE.getClazz())) {
       throw new IllegalArgumentException("Expected a GameProfile received a " + reference);
@@ -62,21 +60,6 @@ public class WrappedGameProfile extends StarboxWrapper<Object> {
             .handle(Starbox::severe)
             .provide()
             .orElseThrow(() -> new IllegalStateException("GameProfile could not be created")));
-  }
-
-  /**
-   * Get the wrapped game profile of a player.
-   *
-   * @param player the player to get the profile from
-   * @return the wrapped game profile
-   */
-  public static WrappedGameProfile of(@NonNull Player player) {
-    return new WrappedGameProfile(
-        Players.GET_PROFILE
-            .prepare(player)
-            .handle(Starbox::severe)
-            .provide()
-            .orElseThrow(IllegalStateException::new));
   }
 
   /**
