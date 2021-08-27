@@ -25,7 +25,8 @@ public class ProtocolPlayerChannel extends PlayerChannel {
   }
 
   @Override
-  public @NonNull ProtocolPlayerChannel sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+  public @NonNull ProtocolPlayerChannel sendTitle(
+      String title, String subtitle, int fadeIn, int stay, int fadeOut) {
     if (this.version.getBukkit() < 8) {
       if (title != null) this.send(title);
       if (title != null) this.send(subtitle);

@@ -7,9 +7,7 @@ import me.googas.reflect.wrappers.WrappedField;
 import me.googas.starbox.Starbox;
 import me.googas.starbox.utility.Versions;
 
-/**
- * Wraps the 'EntityPlayer' nms class.
- */
+/** Wraps the 'EntityPlayer' nms class. */
 public class WrappedEntityPlayer extends StarboxWrapper<Object> {
 
   @NonNull

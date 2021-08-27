@@ -77,9 +77,9 @@ public class PlayerChannel implements Channel {
                   type.create()
                       .setField(0, WrappedTitleAction.TITLE)
                       .setField(1, WrappedChatComponent.of(Components.deserializePlain('&', title)))
-                          .setField(2, -1)
-                          .setField(3, -1)
-                          .setField(4, -1)
+                      .setField(2, -1)
+                      .setField(3, -1)
+                      .setField(4, -1)
                       .send(player);
                 }
                 if (subtitle != null) {
@@ -87,9 +87,9 @@ public class PlayerChannel implements Channel {
                       .setField(0, WrappedTitleAction.SUBTITLE)
                       .setField(
                           1, WrappedChatComponent.of(Components.deserializePlain('&', subtitle)))
-                          .setField(2, -1)
-                          .setField(3, -1)
-                          .setField(4, -1)
+                      .setField(2, -1)
+                      .setField(3, -1)
+                      .setField(4, -1)
                       .send(player);
                 }
                 type.create()

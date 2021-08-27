@@ -39,9 +39,7 @@ public class WrappedAttributes implements Builder<Multimap<Attribute, AttributeM
     this.map = map;
   }
 
-  /**
-   * Create the attributes.
-   */
+  /** Create the attributes. */
   public WrappedAttributes() {
     this(new HashMap<>());
   }
@@ -54,9 +52,7 @@ public class WrappedAttributes implements Builder<Multimap<Attribute, AttributeM
     return multimap;
   }
 
-  /**
-   * Json adapter for {@link WrappedAttribute} to register in {@link com.google.gson.Gson}.
-   */
+  /** Json adapter for {@link WrappedAttribute} to register in {@link com.google.gson.Gson}. */
   public static class Adapter
       implements JsonDeserializer<WrappedAttributes>, JsonSerializer<WrappedAttributes> {
 

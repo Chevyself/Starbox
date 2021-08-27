@@ -12,9 +12,7 @@ import me.googas.starbox.Starbox;
 import me.googas.starbox.utility.Versions;
 import org.bukkit.entity.Player;
 
-/**
- * Represents a Packet which can be send to a player or may be send by a player.
- */
+/** Represents a Packet which can be send to a player or may be send by a player. */
 public class Packet extends StarboxWrapper<Object> {
 
   @NonNull

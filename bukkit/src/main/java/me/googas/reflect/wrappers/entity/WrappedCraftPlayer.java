@@ -8,9 +8,7 @@ import me.googas.starbox.Starbox;
 import me.googas.starbox.utility.Versions;
 import org.bukkit.entity.Player;
 
-/**
- * Wraps the 'CraftPlayer' nms class.
- */
+/** Wraps the 'CraftPlayer' nms class. */
 public class WrappedCraftPlayer extends StarboxWrapper<Object> {
 
   @NonNull

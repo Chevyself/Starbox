@@ -1,15 +1,13 @@
 package me.googas.reflect.wrappers.packet;
 
 import lombok.NonNull;
-import me.googas.reflect.packet.PacketType;
 import me.googas.reflect.packet.PacketDataWrapper;
+import me.googas.reflect.packet.PacketType;
 import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.starbox.Starbox;
 
-/**
- * Wraps 'EnumTitleAction' to be used in the {@link PacketType.Play.ClientBound#TITLE}.
- */
+/** Wraps 'EnumTitleAction' to be used in the {@link PacketType.Play.ClientBound#TITLE}. */
 public enum WrappedTitleAction implements PacketDataWrapper {
   TITLE,
   SUBTITLE,

@@ -8,9 +8,7 @@ import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.starbox.Starbox;
 import me.googas.starbox.utility.Versions;
 
-/**
- * Wraps the 'PlayerConnection' nms class.
- */
+/** Wraps the 'PlayerConnection' nms class. */
 public class WrappedPlayerConnection extends StarboxWrapper<Object> {
 
   @NonNull
@@ -19,7 +17,7 @@ public class WrappedPlayerConnection extends StarboxWrapper<Object> {
 
   @NonNull
   private static final WrappedMethod<?> SEND_PACKET =
-          WrappedPlayerConnection.ENTITY_PLAYER.getMethod("sendPacket", Packet.PACKET_CLASS.getClazz());
+      WrappedPlayerConnection.ENTITY_PLAYER.getMethod("sendPacket", Packet.PACKET_CLASS.getClazz());
 
   /**
    * Create the wrapper.

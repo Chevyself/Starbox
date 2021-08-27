@@ -12,9 +12,7 @@ import me.googas.starbox.StarboxBukkitFiles;
 import me.googas.starbox.utility.Versions;
 import net.md_5.bungee.api.chat.BaseComponent;
 
-/**
- * Wraps the 'IChatBaseComponent' nms class.
- */
+/** Wraps the 'IChatBaseComponent' nms class. */
 public class WrappedChatComponent extends StarboxWrapper<Object> implements PacketDataWrapper {
 
   @NonNull
@@ -61,9 +59,7 @@ public class WrappedChatComponent extends StarboxWrapper<Object> implements Pack
     return this.reference;
   }
 
-  /**
-   * Wrapper for the 'IChatBaseComponent$ChatSerializer'.
-   */
+  /** Wrapper for the 'IChatBaseComponent$ChatSerializer'. */
   public static class Serializer {
 
     @NonNull

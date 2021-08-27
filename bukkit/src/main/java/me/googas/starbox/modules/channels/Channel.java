@@ -135,9 +135,11 @@ public interface Channel {
    *
    * @param title the title
    * @param subtitle the subtitle
-   * @param fadeIn how long until the title appears in {@link me.googas.starbox.time.MinecraftUnit#TICK}
+   * @param fadeIn how long until the title appears in {@link
+   *     me.googas.starbox.time.MinecraftUnit#TICK}
    * @param stay how long until the title stays in {@link me.googas.starbox.time.MinecraftUnit#TICK}
-   * @param fadeOut how long until the title fades in {@link me.googas.starbox.time.MinecraftUnit#TICK}
+   * @param fadeOut how long until the title fades in {@link
+   *     me.googas.starbox.time.MinecraftUnit#TICK}
    * @return this same instance
    */
   @NonNull
