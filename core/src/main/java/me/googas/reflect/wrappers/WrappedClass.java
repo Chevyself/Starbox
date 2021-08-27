@@ -4,7 +4,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -308,6 +307,22 @@ public class WrappedClass<O> extends LangWrapper<Class<O>> {
     return false;
   }
 
+  private static List<WrappedField<?>> wrap(@NonNull Field... fields) {
+    List<WrappedField<?>> wrappers = new ArrayList<>(fields.length);
+    for (Field field : fields) {
+      wrappers.add(WrappedField.of(field));
+    }
+    return wrappers;
+  }
+
+  private static List<WrappedMethod<?>> wrap(@NonNull Method... methods) {
+    List<WrappedMethod<?>> wrappers = new ArrayList<>(methods.length);
+    for (Method method : methods) {
+      wrappers.add(WrappedMethod.of(method));
+    }
+    return wrappers;
+  }
+
   /**
    * Checks if a constructor with the given parameter types exists in the class.
    *
@@ -318,7 +333,9 @@ public class WrappedClass<O> extends LangWrapper<Class<O>> {
     if (this.reference != null) {
       for (Constructor<?> constructor : this.reference.getConstructors()) {
         Class<?>[] paramTypes = constructor.getParameterTypes();
-        return ReflectUtil.compareParameters(paramTypes, params);
+        if (ReflectUtil.compareParameters(paramTypes, params)) {
+          return true;
+        }
       }
     }
     return false;
@@ -330,11 +347,8 @@ public class WrappedClass<O> extends LangWrapper<Class<O>> {
    * @return the list of methods
    */
   @NonNull
-  public List<Method> getMethods() {
-    if (this.reference != null) {
-      return new ArrayList<>(Arrays.asList(this.reference.getMethods()));
-    }
-    return new ArrayList<>();
+  public List<WrappedMethod<?>> getMethods() {
+    return reference == null ? new ArrayList<>() : WrappedClass.wrap(this.reference.getMethods());
   }
 
   /**
@@ -343,11 +357,10 @@ public class WrappedClass<O> extends LangWrapper<Class<O>> {
    * @return the list of fields
    */
   @NonNull
-  public List<Field> getFields() {
-    if (this.reference != null) {
-      return new ArrayList<>(Arrays.asList(this.reference.getFields()));
-    }
-    return new ArrayList<>();
+  public List<WrappedField<?>> getFields() {
+    return this.reference == null
+        ? new ArrayList<>()
+        : WrappedClass.wrap(this.reference.getFields());
   }
 
   /**
@@ -356,11 +369,10 @@ public class WrappedClass<O> extends LangWrapper<Class<O>> {
    * @return the list of fields
    */
   @NonNull
-  public List<Field> getDeclaredFields() {
-    if (this.reference != null) {
-      return new ArrayList<>(Arrays.asList(this.reference.getDeclaredFields()));
-    }
-    return new ArrayList<>();
+  public List<WrappedField<?>> getDeclaredFields() {
+    return this.reference == null
+        ? new ArrayList<>()
+        : WrappedClass.wrap(this.reference.getDeclaredFields());
   }
 
   /**

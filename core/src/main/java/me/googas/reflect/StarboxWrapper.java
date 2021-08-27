@@ -11,7 +11,7 @@ import lombok.NonNull;
  */
 public class StarboxWrapper<T> implements Wrapper<T> {
 
-  private T reference;
+  protected T reference;
 
   /**
    * Create the wrapper.
