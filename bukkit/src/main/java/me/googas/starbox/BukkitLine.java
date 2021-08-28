@@ -1,8 +1,10 @@
 package me.googas.starbox;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.commands.bukkit.result.Result;
@@ -10,6 +12,7 @@ import me.googas.commands.bukkit.utils.BukkitUtils;
 import me.googas.commands.bungee.utils.Components;
 import me.googas.starbox.builders.Line;
 import me.googas.starbox.modules.channels.Channel;
+import me.googas.starbox.modules.channels.ForwardingChannel;
 import me.googas.starbox.modules.language.LanguageModule;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -52,6 +55,13 @@ public interface BukkitLine extends Line {
    */
   static Localized localized(@NonNull Channel channel, String key) {
     return BukkitLine.localized(channel.getLocale().orElse(Locale.ENGLISH), key);
+  }
+
+  static List<Localized> localized(
+      @NonNull ForwardingChannel.Multiple forwardingChannel, @NonNull String key) {
+    return forwardingChannel.getChannels().stream()
+        .map(channel -> BukkitLine.localized(channel, key))
+        .collect(Collectors.toList());
   }
 
   /**
