@@ -94,7 +94,7 @@ public class Materials {
     if (Versions.BUKKIT > 12) {
       return Material.FIREWORK_ROCKET;
     } else {
-      return Objects.requireNonNull(Material.getMaterial("FIREWORK_ROCKET"));
+      return Objects.requireNonNull(Material.getMaterial("FIREWORK"));
     }
   }
 
