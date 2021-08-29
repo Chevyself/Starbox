@@ -41,6 +41,11 @@ public class ServerChannel implements Channel {
   }
 
   @Override
+  public @NonNull ServerChannel setTabList(String header, String bottom) {
+    return this;
+  }
+
+  @Override
   public Optional<Locale> getLocale() {
     return Optional.empty();
   }

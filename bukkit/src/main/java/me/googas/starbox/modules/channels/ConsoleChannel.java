@@ -45,6 +45,11 @@ public class ConsoleChannel implements Channel {
   }
 
   @Override
+  public @NonNull ConsoleChannel setTabList(String header, String bottom) {
+    return this;
+  }
+
+  @Override
   public Optional<Locale> getLocale() {
     return Optional.of(Locale.ENGLISH);
   }

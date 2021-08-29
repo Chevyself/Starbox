@@ -4,6 +4,7 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import me.googas.starbox.modules.channels.Channel;
 import me.googas.starbox.modules.channels.PlayerChannel;
 import me.googas.starbox.utility.Versions;
 
@@ -34,5 +35,13 @@ public class ProtocolPlayerChannel extends PlayerChannel {
     } else {
       return (ProtocolPlayerChannel) super.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
     }
+  }
+
+  @Override
+  public @NonNull Channel setTabList(String header, String bottom) {
+    if (this.version.getBukkit() >= 8) {
+      return super.setTabList(header, bottom);
+    }
+    return this;
   }
 }

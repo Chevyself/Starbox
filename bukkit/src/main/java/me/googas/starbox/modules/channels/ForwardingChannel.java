@@ -39,9 +39,16 @@ public interface ForwardingChannel extends Channel {
 
   @Override
   @NonNull
-  default Channel sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+  default ForwardingChannel sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
     this.getForward()
         .ifPresent(channel -> channel.sendTitle(title, subtitle, fadeIn, stay, fadeOut));
+    return this;
+  }
+
+  @Override
+  @NonNull
+  default ForwardingChannel setTabList(String header, String bottom) {
+    this.getForward().ifPresent(channel -> channel.setTabList(header, bottom));
     return this;
   }
 
@@ -101,6 +108,13 @@ public interface ForwardingChannel extends Channel {
     default Multiple sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
       this.getChannels()
           .forEach(channel -> channel.sendTitle(title, subtitle, fadeIn, stay, fadeOut));
+      return this;
+    }
+
+    @Override
+    @NonNull
+    default Multiple setTabList(String header, String bottom) {
+      this.getChannels().forEach(channel -> channel.setTabList(header, bottom));
       return this;
     }
   }

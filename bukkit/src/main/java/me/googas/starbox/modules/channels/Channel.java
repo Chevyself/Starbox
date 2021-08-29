@@ -146,6 +146,16 @@ public interface Channel {
   Channel sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut);
 
   /**
+   * Set the header and bottom of the tab-list.
+   *
+   * @param header the header text to set
+   * @param bottom the bottom text to set
+   * @return this same instance
+   */
+  @NonNull
+  Channel setTabList(String header, String bottom);
+
+  /**
    * Get the locale of the channel.
    *
    * @return the locale
