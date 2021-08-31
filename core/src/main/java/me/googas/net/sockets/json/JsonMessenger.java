@@ -94,7 +94,8 @@ public interface JsonMessenger extends Messenger, Runnable {
           if (optional.isPresent()) {
             try {
               JsonReceptor receptor = optional.get();
-              response = new Response<>(request.getId(), receptor.execute(request, this.getGson()));
+              response =
+                  new Response<>(request.getId(), receptor.execute(this, request, this.getGson()));
               response.setError(false);
             } catch (JsonExternalCommunicationException e) {
               response = new Response<>(request.getId(), new Error(e.getMessage()));

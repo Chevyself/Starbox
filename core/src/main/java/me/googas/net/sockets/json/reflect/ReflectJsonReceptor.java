@@ -87,7 +87,8 @@ public class ReflectJsonReceptor implements JsonReceptor {
   }
 
   @NonNull
-  private Object[] getParameters(@NonNull ReceivedJsonRequest request, @NonNull Gson gson)
+  private Object[] getParameters(
+      @NonNull JsonMessenger messenger, @NonNull ReceivedJsonRequest request, @NonNull Gson gson)
       throws JsonExternalCommunicationException {
     if (this.getParameters().isEmpty()) {
       return new Object[0];
@@ -96,8 +97,8 @@ public class ReflectJsonReceptor implements JsonReceptor {
 
       for (int i = 0; i < this.getParameters().size(); i++) {
         JsonReceptorParameter<?> parameter = this.getParameters().get(i);
-        if (JsonMessenger.class == parameter.getClazz()) {
-          objects[i] = this;
+        if (parameter.getClazz().isAssignableFrom(JsonMessenger.class)) {
+          objects[i] = messenger;
         } else if (request.getParameters().containsKey(parameter.getName())) {
           try {
             objects[i] =
@@ -121,10 +122,11 @@ public class ReflectJsonReceptor implements JsonReceptor {
   }
 
   @Override
-  public Object execute(@NonNull ReceivedJsonRequest request, @NonNull Gson gson)
+  public Object execute(
+      JsonMessenger messenger, @NonNull ReceivedJsonRequest request, @NonNull Gson gson)
       throws JsonExternalCommunicationException, JsonInternalCommunicationException {
     try {
-      return this.method.invoke(this.object, this.getParameters(request, gson));
+      return this.method.invoke(this.object, this.getParameters(messenger, request, gson));
     } catch (IllegalAccessException e) {
       throw new JsonInternalCommunicationException(e);
     } catch (InvocationTargetException e) {

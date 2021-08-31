@@ -17,6 +17,7 @@ public interface JsonReceptor {
   /**
    * Executes the receptor.
    *
+   * @param messenger the messenger that is executing the receptor
    * @param request the request awaiting for the response
    * @param gson the gson of the {@link JsonMessenger} to the serialization/deserialization of
    *     messages
@@ -26,7 +27,7 @@ public interface JsonReceptor {
    * @throws JsonInternalCommunicationException if the receptor could not be executed due to a fail
    *     in this messenger
    */
-  Object execute(@NonNull ReceivedJsonRequest request, @NonNull Gson gson)
+  Object execute(JsonMessenger messenger, @NonNull ReceivedJsonRequest request, @NonNull Gson gson)
       throws JsonExternalCommunicationException, JsonInternalCommunicationException;
 
   /**
