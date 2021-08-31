@@ -62,7 +62,7 @@ public class StarboxPlugin extends JavaPlugin {
     ItemBuilderCommands.Parent itemBuilder = new ItemBuilderCommands.Parent(manager);
     componentBuilder.getChildren().addAll(manager.parseCommands(new ComponentBuilderCommands()));
     itemBuilder.getChildren().addAll(manager.parseCommands(new ItemBuilderCommands()));
-    manager.registerPlugin();
+    manager.registerAll(componentBuilder, itemBuilder).registerPlugin();
     // Check compatibilities
     compatibilities.check().getCompatibilities().stream()
         .filter(Compatibility::isEnabled)
