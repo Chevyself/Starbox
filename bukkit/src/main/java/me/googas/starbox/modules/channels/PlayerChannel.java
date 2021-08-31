@@ -105,16 +105,27 @@ public class PlayerChannel implements Channel {
 
   @Override
   public @NonNull Channel setTabList(String header, String bottom) {
-    this.getPlayer().ifPresent(player -> {
-      if (Versions.BUKKIT < 13) {
-        PacketType.Play.ClientBound.HEADER_FOOTER.create()
-                .setField(2, header == null ? null : WrappedChatComponent.of(Components.deserializePlain('&', header)))
-                .setField(3, bottom == null ? null : WrappedChatComponent.of(Components.deserializePlain('&', bottom)))
-                .send(player);
-      } else {
-        player.setPlayerListHeaderFooter(header, bottom);
-      }
-    });
+    this.getPlayer()
+        .ifPresent(
+            player -> {
+              if (Versions.BUKKIT < 13) {
+                PacketType.Play.ClientBound.HEADER_FOOTER
+                    .create()
+                    .setField(
+                        2,
+                        header == null
+                            ? null
+                            : WrappedChatComponent.of(Components.deserializePlain('&', header)))
+                    .setField(
+                        3,
+                        bottom == null
+                            ? null
+                            : WrappedChatComponent.of(Components.deserializePlain('&', bottom)))
+                    .send(player);
+              } else {
+                player.setPlayerListHeaderFooter(header, bottom);
+              }
+            });
     return this;
   }
 

@@ -58,12 +58,11 @@ public class PacketType {
       @NonNull
       @APIVersion(since = 8, max = 11)
       public static final PacketType TITLE = new PacketType("PacketPlayOutTitle");
-      /**
-       * Sends a header and a footer to the player.
-       */
+      /** Sends a header and a footer to the player. */
       @NonNull
       @APIVersion(since = 8, max = 12)
-      public static final PacketType HEADER_FOOTER = new PacketType("PacketPlayOutPlayerListHeaderFooter");
+      public static final PacketType HEADER_FOOTER =
+          new PacketType("PacketPlayOutPlayerListHeaderFooter");
     }
   }
 }

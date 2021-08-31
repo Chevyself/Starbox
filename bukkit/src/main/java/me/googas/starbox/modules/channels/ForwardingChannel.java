@@ -39,7 +39,8 @@ public interface ForwardingChannel extends Channel {
 
   @Override
   @NonNull
-  default ForwardingChannel sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+  default ForwardingChannel sendTitle(
+      String title, String subtitle, int fadeIn, int stay, int fadeOut) {
     this.getForward()
         .ifPresent(channel -> channel.sendTitle(title, subtitle, fadeIn, stay, fadeOut));
     return this;
