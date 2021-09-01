@@ -91,8 +91,13 @@ public interface BukkitLine extends Line {
    * @return the parsed line
    */
   static BukkitLine parse(Locale locale, @NonNull String string) {
-    if (string.startsWith("localized:") && locale != null) {
-      return BukkitLine.localized(locale, string.substring(10));
+    if (string.startsWith("localized:") || string.startsWith("$") && locale != null) {
+      if (string.startsWith("localized:")) {
+        string = string.substring(10);
+      } else if (string.startsWith("$")) {
+        string = string.substring(1);
+      }
+      return BukkitLine.localized(locale, string);
     } else {
       return BukkitLine.of(string);
     }
