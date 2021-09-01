@@ -1,4 +1,11 @@
 language: en
+# Invalids
+invalid:
+  hover-action: "%localized:error% no action could be matched with &4&o{0}"
+  click-event: "%localized:error% no event could be matched with &4&o{0}"
+  color: "%localized:error% no color could be matched with &4&o{0}"
+  enchantment: "%localized:error% no enchantment could be matched with &4&o{0}"
+  format-retention: "%localized:error% no format retention could be matched with &4&o{0}"
 # Results for /itemBuilder
 item-builder:
   build: "&dThe item is now in your inventory"

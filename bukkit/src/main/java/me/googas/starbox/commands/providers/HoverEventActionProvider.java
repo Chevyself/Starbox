@@ -6,6 +6,7 @@ import lombok.NonNull;
 import me.googas.commands.bukkit.context.CommandContext;
 import me.googas.commands.bukkit.providers.type.BukkitArgumentProvider;
 import me.googas.commands.exceptions.ArgumentProviderException;
+import me.googas.starbox.BukkitLine;
 import net.md_5.bungee.api.chat.HoverEvent;
 
 /** Provides {@link HoverEvent.Action} to the {@link me.googas.commands.bukkit.CommandManager}. */
@@ -30,7 +31,10 @@ public class HoverEventActionProvider implements BukkitArgumentProvider<HoverEve
     try {
       return HoverEvent.Action.valueOf(string.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new ArgumentProviderException("&c" + string + " did not match any action");
+      throw BukkitLine.localized(context.getSender(), "invalid.hover-action")
+          .format(string)
+          .formatSample()
+          .asProviderException();
     }
   }
 

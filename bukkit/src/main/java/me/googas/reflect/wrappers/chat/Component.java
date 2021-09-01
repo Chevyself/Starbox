@@ -118,7 +118,7 @@ public class Component implements Builder<BaseComponent[]> {
           component.setHoverEvent(null);
           break;
       }
-      component.setExtra(extra);
+      if (extra != null) component.setExtra(extra);
     }
     this.components.add(component);
     this.resetCursor();

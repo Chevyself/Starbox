@@ -10,6 +10,7 @@ import lombok.NonNull;
 import me.googas.commands.bukkit.result.Result;
 import me.googas.commands.bukkit.utils.BukkitUtils;
 import me.googas.commands.bungee.utils.Components;
+import me.googas.commands.exceptions.ArgumentProviderException;
 import me.googas.starbox.builders.Line;
 import me.googas.starbox.modules.channels.Channel;
 import me.googas.starbox.modules.channels.ForwardingChannel;
@@ -121,7 +122,7 @@ public interface BukkitLine extends Line {
   /**
    * Get the raw text of the line. This is the line without being formatted.
    *
-   * Ex: {@link Localized} the raw text is its json
+   * <p>Ex: {@link Localized} the raw text is its json
    *
    * @return the raw text
    */
@@ -136,8 +137,18 @@ public interface BukkitLine extends Line {
    */
   @NonNull
   default BukkitLine formatSample() {
-    Starbox.getModules().get(LanguageModule.class).ifPresent(module -> this.format(module.getSampleFormatter()));
+    Starbox.getModules()
+        .get(LanguageModule.class)
+        .ifPresent(module -> this.format(module.getSampleFormatter()));
     return this;
+  }
+
+  @NonNull
+  default ArgumentProviderException asProviderException() {
+    if (this.asText().isPresent()) {
+      return new ArgumentProviderException(this.asText().get());
+    }
+    return new ArgumentProviderException();
   }
 
   /** This is a {@link BukkitLine} which uses a message obtained from {@link LanguageModule}. */
@@ -148,21 +159,18 @@ public interface BukkitLine extends Line {
 
     private Localized(@NonNull Locale locale, @NonNull String json) {
       this.locale = locale;
-      this.json = jso
-s;
+      this.json = json;
     }
 
     @Override
     public @NonNull String getRaw() {
-      return thrn thi
-n;
+      return json;
     }
 
     @NonNull
     public Localized setRaw(@NonNull String json) {
       this.json = json;
-      retuis.jso
-n;
+      return this;
     }
 
     @Override
@@ -227,8 +235,7 @@ n;
       return this.text;
     }
 
-    @
-Override
+    @Override
     public @NonNull Plain setRaw(@NonNull String raw) {
       this.text = raw;
       return this;

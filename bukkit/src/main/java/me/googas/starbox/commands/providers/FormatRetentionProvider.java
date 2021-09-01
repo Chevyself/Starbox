@@ -6,6 +6,7 @@ import lombok.NonNull;
 import me.googas.commands.bukkit.context.CommandContext;
 import me.googas.commands.bukkit.providers.type.BukkitArgumentProvider;
 import me.googas.commands.exceptions.ArgumentProviderException;
+import me.googas.starbox.BukkitLine;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 
 /**
@@ -34,7 +35,10 @@ public class FormatRetentionProvider
     try {
       return ComponentBuilder.FormatRetention.valueOf(string.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new ArgumentProviderException("&c" + string + " did not match any format");
+      throw BukkitLine.localized(context.getSender(), "invalid.format-retention")
+          .format(string)
+          .formatSample()
+          .asProviderException();
     }
   }
 

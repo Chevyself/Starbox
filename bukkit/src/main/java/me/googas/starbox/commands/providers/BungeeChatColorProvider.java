@@ -9,6 +9,7 @@ import me.googas.commands.exceptions.ArgumentProviderException;
 import me.googas.reflect.APIVersion;
 import me.googas.reflect.wrappers.WrappedClass;
 import me.googas.reflect.wrappers.WrappedMethod;
+import me.googas.starbox.BukkitLine;
 import me.googas.starbox.utility.Versions;
 import net.md_5.bungee.api.ChatColor;
 
@@ -60,7 +61,10 @@ public class BungeeChatColorProvider implements BukkitArgumentProvider<ChatColor
         return ChatColor.of(string);
       }
     } catch (IllegalArgumentException e) {
-      throw new ArgumentProviderException("&c" + string + " did not match any color");
+      throw BukkitLine.localized(context.getSender(), "invalid.color")
+          .format(string)
+          .formatSample()
+          .asProviderException();
     }
   }
 

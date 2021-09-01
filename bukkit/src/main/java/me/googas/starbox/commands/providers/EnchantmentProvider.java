@@ -7,6 +7,7 @@ import me.googas.commands.bukkit.context.CommandContext;
 import me.googas.commands.bukkit.providers.type.BukkitArgumentProvider;
 import me.googas.commands.exceptions.ArgumentProviderException;
 import me.googas.reflect.wrappers.inventory.WrappedEnchantment;
+import me.googas.starbox.BukkitLine;
 import org.bukkit.enchantments.Enchantment;
 
 /** Provides {@link Enchantment} to the {@link me.googas.commands.bukkit.CommandManager}. */
@@ -29,7 +30,10 @@ public class EnchantmentProvider implements BukkitArgumentProvider<Enchantment> 
     try {
       return WrappedEnchantment.valueOf(string).getEnchantment();
     } catch (IllegalArgumentException e) {
-      throw new ArgumentProviderException("&cCould not match enchantment with " + string);
+      throw BukkitLine.localized(context.getSender(), "invalid.enchantment")
+          .format(string)
+          .formatSample()
+          .asProviderException();
     }
   }
 

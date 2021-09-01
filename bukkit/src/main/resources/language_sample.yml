@@ -1,4 +1,5 @@
 language: sample
+error: "&e&o⚠&c&o "
 subcommands:
   title: >
     [
