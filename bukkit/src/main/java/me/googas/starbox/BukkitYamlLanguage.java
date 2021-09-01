@@ -23,10 +23,13 @@ public class BukkitYamlLanguage implements BukkitLanguage {
 
   @NonNull @Getter private final Locale locale;
   @NonNull private final ConfigurationSection section;
+  private final boolean sample;
 
-  private BukkitYamlLanguage(@NonNull Locale locale, @NonNull ConfigurationSection section) {
+  private BukkitYamlLanguage(
+      @NonNull Locale locale, @NonNull ConfigurationSection section, boolean sample) {
     this.locale = locale;
     this.section = section;
+    this.sample = sample;
   }
 
   /**
@@ -38,11 +41,10 @@ public class BukkitYamlLanguage implements BukkitLanguage {
   @NonNull
   public static BukkitYamlLanguage of(@NonNull Reader reader) {
     YamlConfiguration configuration = YamlConfiguration.loadConfiguration(reader);
-    return new BukkitYamlLanguage(
-        new Locale(
-            Objects.requireNonNull(
-                configuration.getString("language"), "There's no 'language' field")),
-        configuration);
+    String language =
+        Objects.requireNonNull(configuration.getString("language"), "There's no 'language' field");
+    boolean sample = language.equalsIgnoreCase("sample");
+    return new BukkitYamlLanguage(new Locale(sample ? "en" : language), configuration, sample);
   }
 
   /**
@@ -78,7 +80,8 @@ public class BukkitYamlLanguage implements BukkitLanguage {
     if (resource != null) {
       return BukkitYamlLanguage.of(resource);
     } else {
-      return new BukkitYamlLanguage(new Locale(language), new YamlConfiguration());
+      plugin.getLogger().severe("Could not resolve resource " + language + ".yml");
+      return new BukkitYamlLanguage(new Locale(language), new YamlConfiguration(), false);
     }
   }
 
@@ -117,5 +120,10 @@ public class BukkitYamlLanguage implements BukkitLanguage {
   @NonNull
   public BaseComponent[] get(@NonNull String key, Object... objects) {
     return Components.getComponent(Strings.format(this.getRaw(key).orElse(key), objects).trim());
+  }
+
+  @Override
+  public boolean isSample() {
+    return this.sample;
   }
 }

@@ -98,7 +98,7 @@ public interface Channel {
    */
   @NonNull
   default Channel localized(@NonNull String key) {
-    this.send(BukkitLine.localized(this, key).build());
+    this.send(BukkitLine.localized(this, key).formatSample().build());
     return this;
   }
 
@@ -112,7 +112,7 @@ public interface Channel {
    */
   @NonNull
   default Channel localized(@NonNull String key, @NonNull Map<String, String> map) {
-    this.send(BukkitLine.localized(this, key).format(map).build());
+    this.send(BukkitLine.localized(this, key).format(map).formatSample().build());
     return this;
   }
 
@@ -126,7 +126,7 @@ public interface Channel {
    */
   @NonNull
   default Channel localized(@NonNull String key, @NonNull Object... objects) {
-    this.send(BukkitLine.localized(this, key).format(objects).build());
+    this.send(BukkitLine.localized(this, key).format(objects).formatSample().build());
     return this;
   }
 

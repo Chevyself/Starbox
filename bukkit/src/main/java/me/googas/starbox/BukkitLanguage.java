@@ -32,14 +32,19 @@ public interface BukkitLanguage extends Language {
   Optional<String> getRaw(@NonNull String key);
 
   @Override
-  @NonNull
-  BaseComponent[] get(@NonNull String key);
+  BaseComponent @NonNull [] get(@NonNull String key);
+
+  @Override
+  BaseComponent @NonNull [] get(@NonNull String key, @NonNull Map<String, String> map);
 
   @Override
   @NonNull
-  BaseComponent[] get(@NonNull String key, @NonNull Map<String, String> map);
+  BaseComponent @NonNull [] get(@NonNull String key, Object... objects);
 
-  @Override
-  @NonNull
-  BaseComponent[] get(@NonNull String key, Object... objects);
+  /**
+   * Whether the language represents a sample language.
+   *
+   * @return true if the language contains sample keys
+   */
+  boolean isSample();
 }

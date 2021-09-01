@@ -38,49 +38,9 @@ component-builder:
   import:
     success: "&7Imported builder from &d{0}"
     no-file: "&6Could not find file &e{0}"
-
-
-
 subcommands:
-  title: >
-    [
-      {
-        "color": "dark_gray",
-        "text": "----------- "
-      },
-      {
-        "color": "light_purple",
-        "text": "Subcommands"
-      },
-      {
-        "color": "dark_gray",
-        "text": " ----------------------"
-      }
-    ]
-  child: >
-    [
-      {
-        "color": "gray",
-        "clickEvent": {
-          "action": "suggest_command",
-          "value": "/%parent% %children%"
-        },
-        "hoverEvent": {
-          "action": "show_text",
-          "value": [
-            {
-              "color": "light_purple",
-              "text": "Select command"
-            }
-          ]
-        },
-        "text": "/%parent% %children%: "
-      },
-      {
-        "text": "%description%"
-      }
-    ]
-  empty-children: >
-    [{"color":"gold","text":"There's no sub-commands or you might not be allowed to use them"}]
-  bottom: >
-    [{"color":"gold","text":"You must use a sub-command"}]
+  empty-children: "&6There's no sub-commands or you might not be allowed to use them"
+  bottom: "&6You must use a sub-command"
+  sample:
+    title: "Subcommands"
+    select: "Select command"

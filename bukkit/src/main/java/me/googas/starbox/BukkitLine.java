@@ -31,7 +31,7 @@ public interface BukkitLine extends Line {
   @NonNull
   static Localized localized(@NonNull Locale locale, @NonNull String key) {
     return new Localized(
-        Starbox.getModules().require(LanguageModule.class).getRaw(locale, key).trim());
+        locale, Starbox.getModules().require(LanguageModule.class).getRaw(locale, key).trim());
   }
 
   /**
@@ -57,6 +57,13 @@ public interface BukkitLine extends Line {
     return BukkitLine.localized(channel.getLocale().orElse(Locale.ENGLISH), key);
   }
 
+  /**
+   * Get the localized lines for a forwarding channel.
+   *
+   * @param forwardingChannel the forwarding channel to get the lines
+   * @param key the key to get the json/text message
+   * @return a {@link List} containing the lines
+   */
   static List<Localized> localized(
       @NonNull ForwardingChannel.Multiple forwardingChannel, @NonNull String key) {
     return forwardingChannel.getChannels().stream()
@@ -75,6 +82,22 @@ public interface BukkitLine extends Line {
   }
 
   /**
+   * Parse a line from a string. If the string starts with 'localized:' a {@link Localized} will be
+   * returned else a {@link Plain} will be provided
+   *
+   * @param locale the locale parsing the line
+   * @param string the string to parse
+   * @return the parsed line
+   */
+  static BukkitLine parse(Locale locale, @NonNull String string) {
+    if (string.startsWith("localized:") && locale != null) {
+      return BukkitLine.localized(locale, string.substring(10));
+    } else {
+      return BukkitLine.of(string);
+    }
+  }
+
+  /**
    * Build the line as a {@link Result} for commands.
    *
    * @return the line built as a result
@@ -82,29 +105,64 @@ public interface BukkitLine extends Line {
   @NonNull
   Result asResult();
 
-  @NonNull
   @Override
-  BaseComponent[] build();
+  BaseComponent @NonNull [] build();
+
+  /**
+   * Set the raw text of the line.
+   *
+   * @see #getRaw()
+   * @param raw the new raw text
+   * @return this same instance
+   */
+  @NonNull
+  Line setRaw(@NonNull String raw);
+
+  /**
+   * Get the raw text of the line. This is the line without being formatted.
+   *
+   * Ex: {@link Localized} the raw text is its json
+   *
+   * @return the raw text
+   */
+  @NonNull
+  String getRaw();
+
+  /**
+   * This must be used if the line is a sample line to format it. This line will be formatted using
+   * {@link me.googas.starbox.modules.language.SampleFormatter}
+   *
+   * @return this same instance
+   */
+  @NonNull
+  default BukkitLine formatSample() {
+    Starbox.getModules().get(LanguageModule.class).ifPresent(module -> this.format(module.getSampleFormatter()));
+    return this;
+  }
 
   /** This is a {@link BukkitLine} which uses a message obtained from {@link LanguageModule}. */
   class Localized implements BukkitLine {
 
-    @NonNull @Getter private String json;
+    @NonNull @Getter private final Locale locale;
+    @NonNull private String json;
 
-    private Localized(@NonNull String json) {
-      this.json = json;
+    private Localized(@NonNull Locale locale, @NonNull String json) {
+      this.locale = locale;
+      this.json = jso
+s;
     }
 
-    /**
-     * Set the message json to build the components.
-     *
-     * @param json the text to be set, it does not have to be json
-     * @return this same instance
-     */
+    @Override
+    public @NonNull String getRaw() {
+      return thrn thi
+n;
+    }
+
     @NonNull
-    public Localized setJson(@NonNull String json) {
+    public Localized setRaw(@NonNull String json) {
       this.json = json;
-      return this;
+      retuis.jso
+n;
     }
 
     @Override
@@ -162,6 +220,18 @@ public interface BukkitLine extends Line {
     @Override
     public @NonNull Optional<String> asText() {
       return Optional.of(BukkitUtils.format(text));
+    }
+
+    @Override
+    public @NonNull String getRaw() {
+      return this.text;
+    }
+
+    @
+Override
+    public @NonNull Plain setRaw(@NonNull String raw) {
+      this.text = raw;
+      return this;
     }
 
     @Override

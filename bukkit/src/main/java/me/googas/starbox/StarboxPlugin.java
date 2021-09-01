@@ -56,7 +56,8 @@ public class StarboxPlugin extends JavaPlugin {
     // Engage modules
     modules.engage(
         new UIModule(),
-        new LanguageModule().register(this, BukkitYamlLanguage.of(this, "language")));
+        new LanguageModule()
+            .registerAll(this, BukkitYamlLanguage.of(this, "language", "language_sample")));
     // Command registration
     ComponentBuilderCommands.Parent componentBuilder = new ComponentBuilderCommands.Parent(manager);
     ItemBuilderCommands.Parent itemBuilder = new ItemBuilderCommands.Parent(manager);

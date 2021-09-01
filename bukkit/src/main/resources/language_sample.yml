@@ -1,0 +1,40 @@
+language: sample
+subcommands:
+  title: >
+    [
+      {
+        "color": "dark_gray",
+        "text": "----------- "
+      },
+      {
+        "color": "light_purple",
+        "text": "%localized:subcommands.sample.title%"
+      },
+      {
+        "color": "dark_gray",
+        "text": " ----------------------"
+      }
+    ]
+  child: >
+    [
+      {
+        "color": "gray",
+        "clickEvent": {
+          "action": "suggest_command",
+          "value": "/%parent% %children%"
+        },
+        "hoverEvent": {
+          "action": "show_text",
+          "value": [
+            {
+              "color": "light_purple",
+              "text": "%localized:subcommands.sample.select%"
+            }
+          ]
+        },
+        "text": "/%parent% %children%: "
+      },
+      {
+        "text": "%description%"
+      }
+    ]

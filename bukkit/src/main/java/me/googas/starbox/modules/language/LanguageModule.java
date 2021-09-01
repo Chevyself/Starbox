@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import lombok.NonNull;
 import me.googas.starbox.BukkitLanguage;
 import me.googas.starbox.modules.Module;
@@ -21,6 +22,7 @@ import org.bukkit.plugin.Plugin;
  */
 public class LanguageModule implements Module {
 
+  @NonNull @Getter private final SampleFormatter sampleFormatter = new SampleFormatter();
   @NonNull private final Map<Plugin, List<BukkitLanguage>> languages = new HashMap<>();
 
   /**
@@ -43,7 +45,7 @@ public class LanguageModule implements Module {
    * @return this same instance
    */
   public LanguageModule registerAll(
-      @NonNull Plugin plugin, @NonNull Collection<BukkitLanguage> languages) {
+      @NonNull Plugin plugin, @NonNull Collection<? extends BukkitLanguage> languages) {
     this.languages.computeIfAbsent(plugin, pluginKey -> new ArrayList<>()).addAll(languages);
     return this;
   }
@@ -76,10 +78,11 @@ public class LanguageModule implements Module {
                     list.stream()
                         .filter(
                             language ->
-                                language
-                                    .getLocale()
-                                    .getLanguage()
-                                    .equalsIgnoreCase(locale.getLanguage()))
+                                language.isSample()
+                                    || language
+                                        .getLocale()
+                                        .getLanguage()
+                                        .equalsIgnoreCase(locale.getLanguage()))
                         .collect(Collectors.toList())));
     return matching;
   }
