@@ -9,7 +9,7 @@ subcommands:
       },
       {
         "color": "light_purple",
-        "text": "%localized:subcommands.sample.title%"
+        "text": "$subcommands.sample.title"
       },
       {
         "color": "dark_gray",
@@ -29,7 +29,7 @@ subcommands:
           "value": [
             {
               "color": "light_purple",
-              "text": "%localized:subcommands.sample.select%"
+              "text": "$subcommands.sample.select"
             }
           ]
         },

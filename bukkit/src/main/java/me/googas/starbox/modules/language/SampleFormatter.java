@@ -9,27 +9,23 @@ import me.googas.starbox.builders.Line;
 /** Formatter for sample lines. */
 public class SampleFormatter implements Line.Formatter {
 
-  @NonNull private static final Pattern PATTERN = Pattern.compile("%.*?%");
+  @NonNull private static final Pattern PATTERN = Pattern.compile("(?<!\\w)\\$\\w+");
 
   SampleFormatter() {}
 
   @Override
   public @NonNull Line format(@NonNull Line line) {
-    if (line instanceof BukkitLine) {
+    if (line instanceof BukkitLine.Localized) {
       String raw = ((BukkitLine) line).getRaw();
       Matcher matcher = SampleFormatter.PATTERN.matcher(raw);
       while (matcher.find()) {
-        String key = matcher.group().replace("%", "");
+        String key = matcher.group().replace("!", "");
         BukkitLine bukkitLine =
-            BukkitLine.parse(
-                line instanceof BukkitLine.Localized
-                    ? ((BukkitLine.Localized) line).getLocale()
-                    : null,
-                key);
-        raw = raw.replace("%" + key + "%", bukkitLine.getRaw());
+            BukkitLine.localized(((BukkitLine.Localized) line).getLocale(), key);
+        raw = raw.replace("$" + key, bukkitLine.getRaw());
       }
       return ((BukkitLine) line).setRaw(raw);
     }
-    throw new IllegalStateException(line + " is not a BukkitLine");
+    return line;
   }
 }
