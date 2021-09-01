@@ -1,11 +1,11 @@
 language: en
 # Invalids
 invalid:
-  hover-action: "$error no action could be matched with &4&o{0}"
-  click-event: "$error no event could be matched with &4&o{0}"
-  color: "$error no color could be matched with &4&o{0}"
-  enchantment: "$error no enchantment could be matched with &4&o{0}"
-  format-retention: "$error no format retention could be matched with &4&o{0}"
+  hover-action: "$error No action could be matched with &4&o{0}"
+  click-event: "$error No event could be matched with &4&o{0}"
+  color: "$error No color could be matched with &4&o{0}"
+  enchantment: "$error No enchantment could be matched with &4&o{0}"
+  format-retention: "$error No format retention could be matched with &4&o{0}"
 # Results for /itemBuilder
 item-builder:
   build: "&dThe item is now in your inventory"

@@ -9,7 +9,7 @@ import me.googas.starbox.builders.Line;
 /** Formatter for sample lines. */
 public class SampleFormatter implements Line.Formatter {
 
-  @NonNull private static final Pattern PATTERN = Pattern.compile("(?<!\\w)\\$\\w+");
+  @NonNull private static final Pattern PATTERN = Pattern.compile("(?<!\\w)\\$\\w([^\\s]+)");
 
   SampleFormatter() {}
 
