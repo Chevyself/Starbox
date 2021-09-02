@@ -19,7 +19,7 @@ public class SampleFormatter implements Line.Formatter {
       String raw = ((BukkitLine) line).getRaw();
       Matcher matcher = SampleFormatter.PATTERN.matcher(raw);
       while (matcher.find()) {
-        String key = matcher.group().substring(1);
+        String key = matcher.group().substring(1).replace("\"", "");
         BukkitLine bukkitLine =
             BukkitLine.localized(((BukkitLine.Localized) line).getLocale(), key);
         raw = raw.replace("$" + key, bukkitLine.getRaw());
