@@ -12,7 +12,7 @@ import me.googas.commands.bukkit.context.CommandContext;
 import me.googas.commands.providers.type.StarboxContextualProvider;
 import me.googas.starbox.Starbox;
 import me.googas.starbox.compatibilities.Compatibility;
-import me.googas.starbox.compatibilities.viaversion.modules.channels.ProtocolChannelsModule;
+import me.googas.starbox.compatibilities.viaversion.channels.ProtocolChannelsModule;
 import me.googas.starbox.modules.Module;
 import org.bukkit.plugin.Plugin;
 

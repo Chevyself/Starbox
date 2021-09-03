@@ -10,7 +10,7 @@ import lombok.NonNull;
 import me.googas.reflect.wrappers.chat.WrappedSoundCategory;
 import me.googas.starbox.BukkitLine;
 import me.googas.starbox.Starbox;
-import me.googas.starbox.compatibilities.viaversion.modules.channels.ProtocolChannelsModule;
+import me.googas.starbox.compatibilities.viaversion.channels.ProtocolChannelsModule;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Location;
 import org.bukkit.Sound;

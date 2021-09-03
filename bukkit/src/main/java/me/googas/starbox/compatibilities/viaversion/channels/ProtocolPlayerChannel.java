@@ -1,4 +1,4 @@
-package me.googas.starbox.compatibilities.viaversion.modules.channels;
+package me.googas.starbox.compatibilities.viaversion.channels;
 
 import java.util.UUID;
 import lombok.Getter;

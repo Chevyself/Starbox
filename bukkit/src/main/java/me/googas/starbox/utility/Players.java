@@ -10,7 +10,7 @@ import me.googas.reflect.wrappers.WrappedMethod;
 import me.googas.reflect.wrappers.attributes.WrappedAttribute;
 import me.googas.reflect.wrappers.attributes.WrappedAttributeInstance;
 import me.googas.starbox.Starbox;
-import me.googas.starbox.compatibilities.viaversion.modules.channels.ProtocolChannelsModule;
+import me.googas.starbox.compatibilities.viaversion.channels.ProtocolChannelsModule;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.HumanEntity;
