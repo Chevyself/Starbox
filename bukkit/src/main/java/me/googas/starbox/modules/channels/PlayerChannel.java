@@ -8,11 +8,14 @@ import me.googas.commands.bukkit.utils.BukkitUtils;
 import me.googas.commands.bungee.utils.Components;
 import me.googas.reflect.packet.PacketType;
 import me.googas.reflect.wrappers.chat.WrappedChatComponent;
+import me.googas.reflect.wrappers.chat.WrappedSoundCategory;
 import me.googas.reflect.wrappers.packet.WrappedTitleAction;
 import me.googas.starbox.BukkitLanguage;
 import me.googas.starbox.utility.Versions;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 /** A channel that is used to send data to a player. */
@@ -126,6 +129,32 @@ public class PlayerChannel implements Channel {
                 player.setPlayerListHeaderFooter(header, bottom);
               }
             });
+    return this;
+  }
+
+  @Override
+  public @NonNull Channel playSound(
+      @NonNull Location location,
+      @NonNull Sound sound,
+      @NonNull WrappedSoundCategory category,
+      float volume,
+      float pitch) {
+    this.getPlayer()
+        .ifPresent(
+            player -> {
+              if (Versions.BUKKIT < 11 || !category.get().isPresent()) {
+                player.playSound(location, sound, volume, pitch);
+              } else {
+                player.playSound(location, sound, category.get().get(), volume, pitch);
+              }
+            });
+    return this;
+  }
+
+  @Override
+  public @NonNull Channel playSound(
+      @NonNull Location location, @NonNull Sound sound, float volume, float pitch) {
+    this.getPlayer().ifPresent(player -> player.playSound(location, sound, volume, pitch));
     return this;
   }
 

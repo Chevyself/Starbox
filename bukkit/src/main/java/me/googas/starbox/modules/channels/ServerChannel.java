@@ -4,8 +4,12 @@ import java.util.Locale;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
+import me.googas.reflect.wrappers.chat.WrappedSoundCategory;
+import me.googas.starbox.utility.Versions;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 
 /** This channel send a message to all the server including the console. */
 public class ServerChannel implements Channel {
@@ -42,6 +46,32 @@ public class ServerChannel implements Channel {
 
   @Override
   public @NonNull ServerChannel setTabList(String header, String bottom) {
+    return this;
+  }
+
+  @Override
+  public @NonNull Channel playSound(
+      @NonNull Location location,
+      @NonNull Sound sound,
+      @NonNull WrappedSoundCategory category,
+      float volume,
+      float pitch) {
+    Bukkit.getWorlds()
+        .forEach(
+            world -> {
+              if (Versions.BUKKIT < 11 || !category.get().isPresent()) {
+                world.playSound(location, sound, volume, pitch);
+              } else {
+                world.playSound(location, sound, category.get().get(), volume, pitch);
+              }
+            });
+    return this;
+  }
+
+  @Override
+  public @NonNull Channel playSound(
+      @NonNull Location location, @NonNull Sound sound, float volume, float pitch) {
+    Bukkit.getWorlds().forEach(world -> world.playSound(location, sound, volume, pitch));
     return this;
   }
 

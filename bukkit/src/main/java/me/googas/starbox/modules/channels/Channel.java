@@ -7,10 +7,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.NonNull;
+import me.googas.reflect.wrappers.chat.WrappedSoundCategory;
 import me.googas.starbox.BukkitLine;
 import me.googas.starbox.Starbox;
 import me.googas.starbox.compatibilities.viaversion.modules.channels.ProtocolChannelsModule;
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -97,6 +100,7 @@ public interface Channel {
    * @return this same instance
    */
   @NonNull
+  @Deprecated
   default Channel localized(@NonNull String key) {
     this.send(BukkitLine.localized(this, key).formatSample().build());
     return this;
@@ -111,6 +115,7 @@ public interface Channel {
    * @return this same instance
    */
   @NonNull
+  @Deprecated
   default Channel localized(@NonNull String key, @NonNull Map<String, String> map) {
     this.send(BukkitLine.localized(this, key).format(map).formatSample().build());
     return this;
@@ -125,9 +130,15 @@ public interface Channel {
    * @return this same instance
    */
   @NonNull
+  @Deprecated
   default Channel localized(@NonNull String key, @NonNull Object... objects) {
     this.send(BukkitLine.localized(this, key).format(objects).formatSample().build());
     return this;
+  }
+
+  @NonNull
+  default Channel send(@NonNull BukkitLine line) {
+    return this.send(line.build());
   }
 
   /**
@@ -154,6 +165,36 @@ public interface Channel {
    */
   @NonNull
   Channel setTabList(String header, String bottom);
+
+  /**
+   * Play sound to a channel.
+   *
+   * @param location the location in which the sound will play
+   * @param sound the sound to play
+   * @param category the category in which the sound will play
+   * @param volume the volume of the sound
+   * @param pitch the pitch of the sound
+   * @return this same instance
+   */
+  @NonNull
+  Channel playSound(
+      @NonNull Location location,
+      @NonNull Sound sound,
+      @NonNull WrappedSoundCategory category,
+      float volume,
+      float pitch);
+
+  /**
+   * Play sound to a channel.
+   *
+   * @param location the location in which the sound will play
+   * @param sound the sound to play
+   * @param volume the volume of the sound
+   * @param pitch the pitch of the sound
+   * @return this same instance
+   */
+  @NonNull
+  Channel playSound(@NonNull Location location, @NonNull Sound sound, float volume, float pitch);
 
   /**
    * Get the locale of the channel.

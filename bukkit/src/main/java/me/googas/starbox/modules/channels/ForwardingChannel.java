@@ -5,7 +5,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import lombok.NonNull;
+import me.googas.reflect.wrappers.chat.WrappedSoundCategory;
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 
 /** A forwarding channel is a channel which wraps another channel to send data. */
 public interface ForwardingChannel extends Channel {
@@ -50,6 +53,27 @@ public interface ForwardingChannel extends Channel {
   @NonNull
   default ForwardingChannel setTabList(String header, String bottom) {
     this.getForward().ifPresent(channel -> channel.setTabList(header, bottom));
+    return this;
+  }
+
+  @Override
+  @NonNull
+  default ForwardingChannel playSound(
+      @NonNull Location location,
+      @NonNull Sound sound,
+      @NonNull WrappedSoundCategory category,
+      float volume,
+      float pitch) {
+    this.getForward()
+        .ifPresent(channel -> channel.playSound(location, sound, category, volume, pitch));
+    return this;
+  }
+
+  @Override
+  @NonNull
+  default ForwardingChannel playSound(
+      @NonNull Location location, @NonNull Sound sound, float volume, float pitch) {
+    this.getForward().ifPresent(channel -> channel.playSound(location, sound, volume, pitch));
     return this;
   }
 
@@ -102,6 +126,27 @@ public interface ForwardingChannel extends Channel {
     @Override
     default Optional<Locale> getLocale() {
       return Optional.empty();
+    }
+
+    @Override
+    @NonNull
+    default Channel playSound(
+        @NonNull Location location,
+        @NonNull Sound sound,
+        @NonNull WrappedSoundCategory category,
+        float volume,
+        float pitch) {
+      this.getChannels()
+          .forEach(channel -> channel.playSound(location, sound, category, volume, pitch));
+      return this;
+    }
+
+    @Override
+    @NonNull
+    default Channel playSound(
+        @NonNull Location location, @NonNull Sound sound, float volume, float pitch) {
+      this.getChannels().forEach(channel -> channel.playSound(location, sound, volume, pitch));
+      return this;
     }
 
     @Override

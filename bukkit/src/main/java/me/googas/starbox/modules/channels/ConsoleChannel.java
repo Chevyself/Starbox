@@ -4,8 +4,11 @@ import java.util.Locale;
 import java.util.Optional;
 import lombok.NonNull;
 import me.googas.commands.bukkit.utils.BukkitUtils;
+import me.googas.reflect.wrappers.chat.WrappedSoundCategory;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 
 /** A channel that is used to send data to the console. */
 public class ConsoleChannel implements Channel {
@@ -46,6 +49,22 @@ public class ConsoleChannel implements Channel {
 
   @Override
   public @NonNull ConsoleChannel setTabList(String header, String bottom) {
+    return this;
+  }
+
+  @Override
+  public @NonNull Channel playSound(
+      @NonNull Location location,
+      @NonNull Sound sound,
+      @NonNull WrappedSoundCategory category,
+      float volume,
+      float pitch) {
+    return this;
+  }
+
+  @Override
+  public @NonNull Channel playSound(
+      @NonNull Location location, @NonNull Sound sound, float volume, float pitch) {
     return this;
   }
 
