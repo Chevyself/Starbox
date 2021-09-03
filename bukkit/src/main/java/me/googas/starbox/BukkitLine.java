@@ -1,5 +1,8 @@
 package me.googas.starbox;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -73,6 +76,16 @@ public interface BukkitLine extends Line {
   }
 
   /**
+   * Get a localized reference from a key.
+   *
+   * @param key the key of the localized message
+   * @return ta new {@link LocalizedReference} instance
+   */
+  static LocalizedReference localized(@NonNull String key) {
+    return new LocalizedReference(key);
+  }
+
+  /**
    * Start a plain line.
    *
    * @param text the text of the line
@@ -90,6 +103,7 @@ public interface BukkitLine extends Line {
    * @param string the string to parse
    * @return the parsed line
    */
+  @Deprecated
   static BukkitLine parse(Locale locale, @NonNull String string) {
     if (string.startsWith("localized:") || string.startsWith("$") && locale != null) {
       if (string.startsWith("localized:")) {
@@ -101,6 +115,26 @@ public interface BukkitLine extends Line {
     } else {
       return BukkitLine.of(string);
     }
+  }
+
+  /**
+   * Parse a line from a string. If the string starts with 'localized:' a {@link LocalizedReference}
+   * will be returned else a {@link Plain} will be provided
+   *
+   * @param string the string to parse
+   * @return the parsed line
+   */
+  @NonNull
+  static BukkitLine parse(@NonNull String string) {
+    if (string.startsWith("localized:") || string.startsWith("$")) {
+      if (string.startsWith("localized:")) {
+        string = string.substring(10);
+      } else if (string.startsWith("$")) {
+        string = string.substring(1);
+      }
+      return BukkitLine.localized(string);
+    }
+    return BukkitLine.of(string);
   }
 
   /**
@@ -148,6 +182,11 @@ public interface BukkitLine extends Line {
     return this;
   }
 
+  /**
+   * Get this line as a {@link ArgumentProviderException}.
+   *
+   * @return the new {@link ArgumentProviderException}
+   */
   @NonNull
   default ArgumentProviderException asProviderException() {
     if (this.asText().isPresent()) {
@@ -184,7 +223,7 @@ public interface BukkitLine extends Line {
     }
 
     @Override
-    public @NonNull BaseComponent[] build() {
+    public BaseComponent @NonNull [] build() {
       return Components.getComponent(json);
     }
 
@@ -226,7 +265,7 @@ public interface BukkitLine extends Line {
     }
 
     @Override
-    public @NonNull BaseComponent[] build() {
+    public BaseComponent @NonNull [] build() {
       return Components.deserializePlain('&', text);
     }
 
@@ -261,6 +300,112 @@ public interface BukkitLine extends Line {
     @Override
     public @NonNull Plain format(@NonNull Formatter formatter) {
       formatter.format(this);
+      return this;
+    }
+  }
+
+  /** A {@link BukkitLine} that references a language key to be built into {@link Localized}. */
+  class LocalizedReference implements BukkitLine {
+
+    /** Objects formatters. */
+    @NonNull private final List<Object> objects = new ArrayList<>();
+    /** Placeholders formatters. */
+    @NonNull private final Map<String, String> placeholders = new HashMap<>();
+    /** Formatters. */
+    @NonNull private final List<Formatter> formatters = new ArrayList<>();
+    @NonNull private String key;
+
+    private LocalizedReference(@NonNull String key) {
+      this.key = key;
+    }
+
+    /**
+     * Get the {@link Localized} that this references to.
+     *
+     * @param locale the locale to get the raw mesage
+     * @return the {@link Localized}
+     */
+    public @NonNull Localized asLocalized(@NonNull Locale locale) {
+      Localized localized = BukkitLine.localized(locale, this.key);
+      if (!objects.isEmpty()) localized.format(objects.toArray());
+      if (!placeholders.isEmpty()) localized.format(placeholders);
+      if (!formatters.isEmpty()) localized.format(formatters);
+      return localized;
+    }
+
+    /**
+     * Get the {@link Localized} that this references to.
+     *
+     * @param sender the sender to get the locale from
+     * @return the {@link Localized}
+     */
+    public @NonNull Localized asLocalized(@NonNull CommandSender sender) {
+      return this.asLocalized(BukkitLanguage.getLocale(sender));
+    }
+
+    /**
+     * Get the {@link Localized} that this references to.
+     *
+     * @param channel the channel to get the locale from
+     * @return the {@link Localized}
+     */
+    public @NonNull Localized asLocalized(@NonNull Channel channel) {
+      return this.asLocalized(channel.getLocale().orElse(Locale.ENGLISH));
+    }
+
+    /**
+     * Raw use of {@link Localized}. This will warn the {@link java.util.logging.Logger} when used
+     *
+     * @return the {@link Localized}
+     */
+    public @NonNull Localized asLocalized() {
+      return this.asLocalized(Locale.ENGLISH);
+    }
+
+    @Override
+    public @NonNull Result asResult() {
+      Starbox.getLogger().warning("Raw use of LocalizedReference#asResult");
+      return this.asLocalized().asResult();
+    }
+
+    @Override
+    public BaseComponent @NonNull [] build() {
+      Starbox.getLogger().warning("Raw use of LocalizedReference#build");
+      return this.asLocalized().build();
+    }
+
+    @Override
+    public @NonNull Optional<String> asText() {
+      Starbox.getLogger().warning("Raw use of LocalizedReference#asText");
+      return this.asLocalized().asText();
+    }
+
+    @Override
+    public @NonNull LocalizedReference format(@NonNull Object... objects) {
+      this.objects.addAll(Arrays.asList(objects));
+      return this;
+    }
+
+    @Override
+    public @NonNull LocalizedReference format(@NonNull Map<String, String> map) {
+      this.placeholders.putAll(map);
+      return this;
+    }
+
+    @Override
+    public @NonNull LocalizedReference format(@NonNull Formatter formatter) {
+      this.formatters.add(formatter);
+      return this;
+    }
+
+    @Override
+    public @NonNull String getRaw() {
+      return this.key;
+    }
+
+    @Override
+    public @NonNull LocalizedReference setRaw(@NonNull String raw) {
+      this.key = raw;
       return this;
     }
   }
