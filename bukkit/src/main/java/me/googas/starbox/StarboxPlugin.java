@@ -21,6 +21,8 @@ import me.googas.starbox.compatibilities.CompatibilityManager;
 import me.googas.starbox.compatibilities.viaversion.ViaVersionCompatibility;
 import me.googas.starbox.modules.ModuleRegistry;
 import me.googas.starbox.modules.language.LanguageModule;
+import me.googas.starbox.modules.placeholders.Placeholder;
+import me.googas.starbox.modules.placeholders.PlaceholderModule;
 import me.googas.starbox.modules.ui.UIModule;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -57,7 +59,8 @@ public class StarboxPlugin extends JavaPlugin {
     modules.engage(
         new UIModule(),
         new LanguageModule()
-            .registerAll(this, BukkitYamlLanguage.of(this, "language", "language_sample")));
+            .registerAll(this, BukkitYamlLanguage.of(this, "language", "language_sample")),
+        new PlaceholderModule().register(this, new Placeholder.Name()));
     // Command registration
     ComponentBuilderCommands.Parent componentBuilder = new ComponentBuilderCommands.Parent(manager);
     ItemBuilderCommands.Parent itemBuilder = new ItemBuilderCommands.Parent(manager);

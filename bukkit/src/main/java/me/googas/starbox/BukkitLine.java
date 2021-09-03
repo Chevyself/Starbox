@@ -17,10 +17,14 @@ import me.googas.commands.exceptions.ArgumentProviderException;
 import me.googas.starbox.builders.Line;
 import me.googas.starbox.modules.channels.Channel;
 import me.googas.starbox.modules.channels.ForwardingChannel;
+import me.googas.starbox.modules.channels.PlayerChannel;
 import me.googas.starbox.modules.language.LanguageModule;
+import me.googas.starbox.modules.placeholders.PlaceholderModule;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /** Implementation of {@link Line} to be used in 'Bukkit'. */
 public interface BukkitLine extends Line {
@@ -105,7 +109,8 @@ public interface BukkitLine extends Line {
    */
   @Deprecated
   static BukkitLine parse(Locale locale, @NonNull String string) {
-    if (string.startsWith("localized:") || string.startsWith("$") && locale != null) {
+    if (!string.contains(" ")
+        && (string.startsWith("localized:") || string.startsWith("$") && locale != null)) {
       if (string.startsWith("localized:")) {
         string = string.substring(10);
       } else if (string.startsWith("$")) {
@@ -147,6 +152,71 @@ public interface BukkitLine extends Line {
 
   @Override
   BaseComponent @NonNull [] build();
+
+  /**
+   * Build this line with placeholders. The placeholders will be built using {@link PlaceholderModule}
+   *
+   * @param player the player to build the placeholders
+   * @return the built {@link BaseComponent}
+   */
+  @NonNull
+  default BaseComponent[] buildWithPlaceholders(@NonNull OfflinePlayer player) {
+    Starbox.getModules()
+        .get(PlaceholderModule.class)
+        .ifPresent(module -> this.setRaw(module.build(player, this.getRaw())));
+    return this.build();
+  }
+
+  /**
+   * Build this line with placeholders as {@link String}. The placeholders will be built using {@link PlaceholderModule}
+   *
+   * @param player the player to build the placeholders
+   * @return the built {@link String}
+   */
+  @NonNull
+  default Optional<String> asTextWithPlaceholders(@NonNull OfflinePlayer player) {
+    Starbox.getModules()
+        .get(PlaceholderModule.class)
+        .ifPresent(module -> this.setRaw(module.build(player, this.getRaw())));
+    return this.asText();
+  }
+
+  /**
+   * Send this line to a {@link Channel}.
+   *
+   * @see #sendWithPlaceholders(Channel)
+   * @param channel the channel to send this line to
+   * @param placeholders whether to build this line with placeholders
+   */
+  default void send(@NonNull Channel channel, boolean placeholders) {
+    if (channel instanceof PlayerChannel && placeholders) {
+      channel.send(this.buildWithPlaceholders(((PlayerChannel) channel).getOffline()));
+    } else {
+      this.send(channel);
+    }
+  }
+
+  /**
+   * Send this line to a {@link Channel}.
+   *
+   * @param channel the channel to send this line to
+   */
+  default void send(@NonNull Channel channel) {
+    channel.send(this.build());
+  }
+
+  /**
+   * Send this line with placeholders.
+   *
+   * @param channel the channel to send this line to
+   */
+  default void sendWithPlaceholders(@NonNull Channel channel) {
+    if (channel instanceof PlayerChannel) {
+      this.send(channel, true);
+    } else {
+      this.send(channel);
+    }
+  }
 
   /**
    * Set the raw text of the line.
@@ -313,6 +383,7 @@ public interface BukkitLine extends Line {
     @NonNull private final Map<String, String> placeholders = new HashMap<>();
     /** Formatters. */
     @NonNull private final List<Formatter> formatters = new ArrayList<>();
+
     @NonNull private String key;
 
     private LocalizedReference(@NonNull String key) {
@@ -400,13 +471,30 @@ public interface BukkitLine extends Line {
 
     @Override
     public @NonNull String getRaw() {
-      return this.key;
+      Starbox.getLogger().warning("Raw use of LocalizedReference#getRaw");
+      return this.asLocalized().getRaw();
     }
 
     @Override
     public @NonNull LocalizedReference setRaw(@NonNull String raw) {
       this.key = raw;
       return this;
+    }
+
+    @Override
+    public BaseComponent[] buildWithPlaceholders(@NonNull OfflinePlayer player) {
+      Player onlinePlayer = player.getPlayer();
+      return this.asLocalized(
+              onlinePlayer == null ? Locale.ENGLISH : BukkitLanguage.getLocale(onlinePlayer))
+          .buildWithPlaceholders(player);
+    }
+
+    @Override
+    public @NonNull Optional<String> asTextWithPlaceholders(@NonNull OfflinePlayer player) {
+      Player onlinePlayer = player.getPlayer();
+      return this.asLocalized(
+              onlinePlayer == null ? Locale.ENGLISH : BukkitLanguage.getLocale(onlinePlayer))
+          .asTextWithPlaceholders(player);
     }
   }
 }

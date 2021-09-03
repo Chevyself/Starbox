@@ -66,9 +66,9 @@ public interface Channel {
                         Starbox.getModules()
                             .get(ProtocolChannelsModule.class)
                             .map(module -> module.getChannel(uniqueId))
-                            .orElseGet(() -> new PlayerChannel(uniqueId));
+                            .orElseGet(() -> () -> uniqueId);
                   } else {
-                    channel = new PlayerChannel(uniqueId);
+                    channel = () -> uniqueId;
                   }
                   Channel.players.add(channel);
                   return channel;
@@ -136,6 +136,12 @@ public interface Channel {
     return this;
   }
 
+  /**
+   * Send a line to this channel.
+   *
+   * @param line the line to send
+   * @return this same instance
+   */
   @NonNull
   default Channel send(@NonNull BukkitLine line) {
     return this.send(line.build());

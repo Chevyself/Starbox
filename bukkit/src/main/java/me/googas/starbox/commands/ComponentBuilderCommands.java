@@ -33,7 +33,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Commands to create {@link BaseComponent} using {@link ComponentBuilder}. Javadoc warnings are
+ * Commands to create {@link BaseComponent} using {@link ComponentBuilder}. Javadoc's warnings are
  * suppressed as commands already have a description and usage.
  */
 @SuppressWarnings("JavaDoc")

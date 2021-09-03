@@ -354,7 +354,7 @@ public class PaginatedInventory implements UI {
   }
 
   @Override
-  public PaginatedInventory set(int position, @NonNull Button button) {
+  public @NonNull PaginatedInventory set(int position, @NonNull Button button) {
     this.buttons.put(position, button);
     if (this.getPage(position) != this.page) return this;
     int realPosition = position - (this.page * this.buttonSize());
@@ -368,7 +368,7 @@ public class PaginatedInventory implements UI {
   }
 
   @Override
-  public PaginatedInventory remove(int position) {
+  public @NonNull PaginatedInventory remove(int position) {
     this.buttons.remove(position);
     if (this.getPage(position) == this.page) {
       int realPosition = position - (this.page * this.buttonSize());

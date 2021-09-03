@@ -15,22 +15,12 @@ import me.googas.starbox.utility.Versions;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 /** A channel that is used to send data to a player. */
-public class PlayerChannel implements Channel {
-
-  @NonNull private final UUID uuid;
-
-  /**
-   * Start the channel.
-   *
-   * @param uuid the unique id of the player
-   */
-  protected PlayerChannel(@NonNull UUID uuid) {
-    this.uuid = uuid;
-  }
+public interface PlayerChannel extends Channel {
 
   /**
    * Get the unique id of the player.
@@ -38,9 +28,7 @@ public class PlayerChannel implements Channel {
    * @return the unique id
    */
   @NonNull
-  public UUID getUniqueId() {
-    return uuid;
-  }
+  UUID getUniqueId();
 
   /**
    * Get the player.
@@ -48,26 +36,36 @@ public class PlayerChannel implements Channel {
    * @return a {@link Optional} holding the nullable player
    */
   @NonNull
-  public Optional<Player> getPlayer() {
-    return Optional.ofNullable(Bukkit.getPlayer(uuid));
+  default Optional<Player> getPlayer() {
+    return Optional.ofNullable(this.getOffline().getPlayer());
+  }
+
+  /**
+   * Get the offline players.
+   *
+   * @return the offline player
+   */
+  @NonNull
+  default OfflinePlayer getOffline() {
+    return Bukkit.getOfflinePlayer(this.getUniqueId());
   }
 
   @Override
   @NonNull
-  public PlayerChannel send(@NonNull BaseComponent... components) {
+  default PlayerChannel send(@NonNull BaseComponent... components) {
     this.getPlayer().ifPresent(player -> BukkitUtils.send(player, components));
     return this;
   }
 
   @Override
   @NonNull
-  public PlayerChannel send(@NonNull String text) {
+  default PlayerChannel send(@NonNull String text) {
     this.getPlayer().ifPresent(player -> player.sendMessage(text));
     return this;
   }
 
   @Override
-  public @NonNull PlayerChannel sendTitle(
+  default @NonNull PlayerChannel sendTitle(
       String title, String subtitle, int fadeIn, int stay, int fadeOut) {
     this.getPlayer()
         .ifPresent(
@@ -107,7 +105,7 @@ public class PlayerChannel implements Channel {
   }
 
   @Override
-  public @NonNull Channel setTabList(String header, String bottom) {
+  default @NonNull Channel setTabList(String header, String bottom) {
     this.getPlayer()
         .ifPresent(
             player -> {
@@ -133,7 +131,7 @@ public class PlayerChannel implements Channel {
   }
 
   @Override
-  public @NonNull Channel playSound(
+  default @NonNull Channel playSound(
       @NonNull Location location,
       @NonNull Sound sound,
       @NonNull WrappedSoundCategory category,
@@ -152,14 +150,14 @@ public class PlayerChannel implements Channel {
   }
 
   @Override
-  public @NonNull Channel playSound(
+  default @NonNull Channel playSound(
       @NonNull Location location, @NonNull Sound sound, float volume, float pitch) {
     this.getPlayer().ifPresent(player -> player.playSound(location, sound, volume, pitch));
     return this;
   }
 
   @Override
-  public Optional<Locale> getLocale() {
+  default Optional<Locale> getLocale() {
     return this.getPlayer().map(BukkitLanguage::getLocale);
   }
 }

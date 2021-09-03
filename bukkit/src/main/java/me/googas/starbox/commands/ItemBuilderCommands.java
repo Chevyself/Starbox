@@ -26,7 +26,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 
 /**
- * Commands to create items using {@link ItemBuilder}. Javadoc warnings are suppressed as commands
+ * Commands to create items using {@link ItemBuilder}. Javadoc's warnings are suppressed as commands
  * already have a description and usage.
  */
 @SuppressWarnings("JavaDoc")

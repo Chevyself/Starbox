@@ -80,7 +80,7 @@ public class CustomInventory implements UI {
   }
 
   @Override
-  public CustomInventory set(int position, @NonNull Button button) {
+  public @NonNull CustomInventory set(int position, @NonNull Button button) {
     if (position > this.inventory.getSize()) {
       throw new IllegalArgumentException("Position cannot be greater than the inventory size");
     } else {

@@ -24,4 +24,21 @@ public interface Placeholder {
    */
   @NonNull
   String build(OfflinePlayer player);
+
+  /**
+   * Placeholder for the player's name.
+   */
+  class Name implements Placeholder {
+
+    @Override
+    public @NonNull String getName() {
+      return "name";
+    }
+
+    @Override
+    public @NonNull String build(OfflinePlayer player) {
+      String name = player.getName();
+      return name == null ? player.getUniqueId().toString() : name;
+    }
+  }
 }
