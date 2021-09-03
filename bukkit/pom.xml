@@ -79,9 +79,15 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <!-- Compatibilities repositories -->
+        <!-- ViaVersion -->
         <repository>
             <id>viaversion-repo</id>
             <url>https://repo.viaversion.com</url>
+        </repository>
+        <!-- PAPI -->
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
     </repositories>
 
@@ -124,6 +130,13 @@
             <!-- This is deprecated but we will be using it until support is fully dropped -->
             <artifactId>viaversion</artifactId>
             <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- PAPI -->
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.10.10</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
