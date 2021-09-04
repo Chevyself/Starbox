@@ -1,7 +1,9 @@
 package me.googas.starbox.modules.placeholders;
 
 import lombok.NonNull;
+import me.googas.reflect.wrappers.entity.WrappedCraftPlayer;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 /**
  * Must be implemented by placeholders. A placeholder in a raw string is shown inside percentages:
@@ -25,9 +27,7 @@ public interface Placeholder {
   @NonNull
   String build(OfflinePlayer player);
 
-  /**
-   * Placeholder for the player's name.
-   */
+  /** Placeholder for the player's name. */
   class Name implements Placeholder {
 
     @Override
@@ -39,6 +39,23 @@ public interface Placeholder {
     public @NonNull String build(OfflinePlayer player) {
       String name = player.getName();
       return name == null ? player.getUniqueId().toString() : name;
+    }
+  }
+
+  /** Placeholder for the player's ping. */
+  class Ping implements Placeholder {
+
+    @Override
+    public @NonNull String getName() {
+      return "ping";
+    }
+
+    @Override
+    public @NonNull String build(OfflinePlayer player) {
+      Player online = player.getPlayer();
+      return online == null
+          ? "0"
+          : String.valueOf(WrappedCraftPlayer.of(online).getHandle().ping());
     }
   }
 }

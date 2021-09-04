@@ -18,6 +18,10 @@ public class WrappedEntityPlayer extends StarboxWrapper<Object> {
   private static final WrappedField<?> PLAYER_CONNECTION =
       WrappedEntityPlayer.ENTITY_PLAYER.getDeclaredField("playerConnection");
 
+  @NonNull
+  private static final WrappedField<Integer> PING =
+      WrappedEntityPlayer.ENTITY_PLAYER.getDeclaredField(int.class, "ping");
+
   /**
    * Create the wrapper.
    *
@@ -41,5 +45,9 @@ public class WrappedEntityPlayer extends StarboxWrapper<Object> {
             .handle(Starbox::severe)
             .provide()
             .orElseThrow(() -> new NullPointerException("Could not get PlayerConnection")));
+  }
+
+  public int ping() {
+    return WrappedEntityPlayer.PING.get(reference).handle(Starbox::severe).provide().orElse(0);
   }
 }
