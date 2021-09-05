@@ -5,9 +5,7 @@ import lombok.NonNull;
 import me.googas.starbox.BukkitLine;
 import org.bukkit.entity.Player;
 
-/**
- * Represents a {@link org.bukkit.scoreboard.Scoreboard}.
- */
+/** Represents a {@link org.bukkit.scoreboard.Scoreboard}. */
 public interface Board {
 
   /**

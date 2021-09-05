@@ -17,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Delegate;
@@ -143,23 +142,6 @@ public class StarboxFile {
   }
 
   /**
-   * Reads the file using the given {@link FileContext} and if the read object is null return the
-   * default object
-   *
-   * @see #read(FileContext, Class)
-   * @param context the context to read the file with
-   * @param clazz the clazz of the object that the {@link FileContext} must return upon read
-   * @param def the default object in case the read object is null
-   * @param <T> the type of the object to return
-   * @return the object from the file or the default object if null
-   */
-  @NonNull
-  @Deprecated
-  public <T> T readOr(@NonNull FileContext<?> context, @NonNull Class<T> clazz, T def) {
-    return this.read(context, clazz).provide().orElse(def);
-  }
-
-  /**
    * Reads the file using the given {@link FileContext} and if the read object is null it will copy
    * the {@link URL} resource and read it to give the object.
    *
@@ -187,19 +169,35 @@ public class StarboxFile {
   }
 
   /**
-   * Read the file using the given {@link FileContext} and if the read object is null a default
-   * object will be given by the {@link Supplier}
+   * Reads the file using the given {@link FileContext} and if the read object is null it will copy
+   * the {@link URL} resource and read it to give the object. This will also write the resource into
+   * the file
    *
-   * @param context the context to read the file with
+   * @param context the context to read the file and the resource stream with
    * @param clazz the clazz of the object that the {@link FileContext} must return upon read
-   * @param supplier the default object in case the read object is null
+   * @param resource the resource to copy to the file and read if the file could not be read
    * @param <T> the type of the object to return
-   * @return the object from the file or the default supplied if null
+   * @return the object from the file or the resource if the file could not be read if neither of
+   *     those could be read null
    */
-  @Deprecated
-  public <T> T readOrGet(
-      @NonNull FileContext<?> context, @NonNull Class<T> clazz, @NonNull Supplier<T> supplier) {
-    return this.read(context, clazz).provide().orElseGet(supplier);
+  @NonNull
+  public <T> T readOrWrite(
+      @NonNull FileContext<?> context, @NonNull Class<T> clazz, @NonNull URL resource) {
+    return this.read(context, clazz)
+        .provide()
+        .orElseGet(
+            () -> {
+              T t =
+                  context
+                      .read(resource, clazz)
+                      .provide()
+                      .orElseThrow(
+                          () ->
+                              new IllegalStateException(
+                                  "Could not provide a non-null object from resource"));
+              this.write(context, t);
+              return t;
+            });
   }
 
   /**
@@ -214,21 +212,6 @@ public class StarboxFile {
   @NonNull
   public <O> HandledExpression<O> read(@NonNull FileContext<O> context) {
     return context.read(this);
-  }
-
-  /**
-   * Reads the file using the given {@link FileContext} providing its default type. If the object is
-   * null the default parameter will be given
-   *
-   * @param <O> the type of object that the context returns
-   * @param context the context to read the file with
-   * @param def the default object to provide if the read from the file is null
-   * @return the object from the file or the default object if the object read from the file is null
-   */
-  @NonNull
-  @Deprecated
-  public <O> O readOr(@NonNull FileContext<O> context, @NonNull O def) {
-    return context.read(this).provide().orElse(def);
   }
 
   /**
@@ -253,20 +236,6 @@ public class StarboxFile {
                         () ->
                             new IllegalStateException(
                                 "Could not provide a non-null object from resource")));
-  }
-
-  /**
-   * Reads the file using the given {@link FileContext} providing its default type. If the object
-   * will be returned using the {@link Supplier}
-   *
-   * @param <O> the type of object that the context returns
-   * @param context the context to read the file with
-   * @param supplier the supplier to provide the object from
-   * @return the object from the file or the default object from the supplier
-   */
-  @Deprecated
-  public <O> O readOrGet(@NonNull FileContext<O> context, @NonNull Supplier<O> supplier) {
-    return context.read(this).provide().orElseGet(supplier);
   }
 
   /**
@@ -406,18 +375,6 @@ public class StarboxFile {
   }
 
   /**
-   * Get a {@link FileWriter} of the file
-   *
-   * @return the {@link FileWriter} for the file
-   * @throws IOException in case the file does not exist
-   */
-  @NonNull
-  @Deprecated
-  public FileWriter getWriter() throws IOException {
-    return new FileWriter(this.file);
-  }
-
-  /**
    * Deletes this file and if it is a directory it will delete everything inside of it.
    *
    * @return whether the file or directory has been deleted
@@ -437,18 +394,6 @@ public class StarboxFile {
       deleted = true;
     }
     return deleted;
-  }
-
-  /**
-   * Get a {@link FileReader} of the file
-   *
-   * @return the {@link FileReader} for the file
-   * @throws FileNotFoundException in case that the file does not exist
-   */
-  @NonNull
-  @Deprecated
-  public FileReader getReader() throws FileNotFoundException {
-    return new FileReader(this.file);
   }
 
   /**
