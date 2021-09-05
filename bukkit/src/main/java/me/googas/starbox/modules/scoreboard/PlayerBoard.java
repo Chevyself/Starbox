@@ -134,6 +134,16 @@ public class PlayerBoard implements Board {
   }
 
   /**
+   * Apply this scoreboard to the player.
+   *
+   * @return this same instance
+   */
+  public PlayerBoard apply() {
+    this.getPlayer().ifPresent(player -> player.setScoreboard(this.scoreboard));
+    return this;
+  }
+
+  /**
    * Adds a new line to the scoreboard.
    *
    * @param line the line to be added

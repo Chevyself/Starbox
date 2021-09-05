@@ -3,7 +3,9 @@ package me.googas.starbox.modules.scoreboard;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import lombok.NonNull;
 import me.googas.starbox.BukkitLine;
 import org.bukkit.entity.Player;
@@ -71,16 +73,40 @@ public class MultiBoard implements Board {
    *
    * @param player the player to add
    * @return this same instance
-   * @throws IllegalStateException if the player is already in the board
    */
   @NonNull
   public MultiBoard add(@NonNull Player player) {
-    if (this.scoreboards.stream()
-        .anyMatch(scoreboard -> scoreboard.getUniqueId().equals(player.getUniqueId()))) {
-      throw new IllegalStateException("Player is already in board");
+    Optional<PlayerBoard> optional = this.getBoard(player);
+    if (optional.isPresent()) {
+      optional.get().apply();
+    } else {
+      this.scoreboards.add(Board.create(player, this.layout).initialize(this.title));
     }
-    this.scoreboards.add(Board.create(player, this.layout).initialize(this.title));
     return this;
+  }
+
+  /**
+   * Get the board of a player.
+   *
+   * @param player the player to get the board from
+   * @return a {@link Optional} holding the nullable board
+   */
+  @NonNull
+  public Optional<PlayerBoard> getBoard(@NonNull Player player) {
+    return this.getBoard(player.getUniqueId());
+  }
+
+  /**
+   * Get the board of a player using its {@link UUID}.
+   *
+   * @param uniqueId the unique id of the player to get the board from
+   * @return a {@link Optional} holding the nullable board
+   */
+  @NonNull
+  public Optional<PlayerBoard> getBoard(@NonNull UUID uniqueId) {
+    return this.scoreboards.stream()
+        .filter(board -> board.getUniqueId().equals(uniqueId))
+        .findFirst();
   }
 
   /**
