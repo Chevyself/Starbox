@@ -187,10 +187,10 @@ public class ItemBuilder implements Builder<ItemStack>, SuppliedBuilder<ButtonLi
         Material material =
             Material.valueOf(materialElement == null ? "glass" : materialElement.getAsString());
         int amount = amountElement == null ? 1 : amountElement.getAsInt();
+        ItemMetaBuilder meta = ItemMetaBuilder.getMeta(material);
+        ItemMetaBuilder deserializedMeta = context.deserialize(object.get("meta"), meta.getClass());
         return new ItemBuilder(
-            context.deserialize(object.get("meta"), ItemMetaBuilder.getMeta(material).getClass()),
-            material,
-            amount);
+            deserializedMeta == null ? meta : deserializedMeta, material, amount);
       }
       throw new JsonParseException("Expected an object");
     }
