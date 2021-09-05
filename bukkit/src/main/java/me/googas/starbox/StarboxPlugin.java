@@ -10,6 +10,8 @@ import me.googas.commands.bukkit.providers.registry.BukkitProvidersRegistry;
 import me.googas.commands.providers.registry.ProvidersRegistry;
 import me.googas.starbox.commands.ComponentBuilderCommands;
 import me.googas.starbox.commands.ItemBuilderCommands;
+import me.googas.starbox.commands.ScoreboardCommands;
+import me.googas.starbox.commands.providers.BukkitLineProvider;
 import me.googas.starbox.commands.providers.BungeeChatColorProvider;
 import me.googas.starbox.commands.providers.ChannelProvider;
 import me.googas.starbox.commands.providers.ClickEventActionProvider;
@@ -18,6 +20,7 @@ import me.googas.starbox.commands.providers.FormatRetentionProvider;
 import me.googas.starbox.commands.providers.HoverEventActionProvider;
 import me.googas.starbox.compatibilities.Compatibility;
 import me.googas.starbox.compatibilities.CompatibilityManager;
+import me.googas.starbox.compatibilities.placeholderapi.PapiCompatibility;
 import me.googas.starbox.compatibilities.viaversion.ViaVersionCompatibility;
 import me.googas.starbox.modules.ModuleRegistry;
 import me.googas.starbox.modules.language.LanguageModule;
@@ -33,7 +36,7 @@ public class StarboxPlugin extends JavaPlugin {
 
   @NonNull @Getter
   private final CompatibilityManager compatibilities =
-      new CompatibilityManager().add(new ViaVersionCompatibility());
+      new CompatibilityManager().addAll(new PapiCompatibility(), new ViaVersionCompatibility());
 
   @NonNull private final MessagesProvider messages = new BukkitMessagesProvider();
 
@@ -41,6 +44,7 @@ public class StarboxPlugin extends JavaPlugin {
   private final ProvidersRegistry<CommandContext> providers =
       new BukkitProvidersRegistry(messages)
           .addProviders(
+              new BukkitLineProvider(),
               new BungeeChatColorProvider(),
               new ChannelProvider(),
               new ClickEventActionProvider(),
@@ -60,13 +64,17 @@ public class StarboxPlugin extends JavaPlugin {
         new UIModule(),
         new LanguageModule()
             .registerAll(this, BukkitYamlLanguage.of(this, "language", "language_sample")),
-        new PlaceholderModule().register(this, new Placeholder.Name()));
+        new PlaceholderModule().registerAll(this, new Placeholder.Name(), new Placeholder.Ping()));
     // Command registration
+    // Parents
     ComponentBuilderCommands.Parent componentBuilder = new ComponentBuilderCommands.Parent(manager);
     ItemBuilderCommands.Parent itemBuilder = new ItemBuilderCommands.Parent(manager);
+    ScoreboardCommands.Parent scoreboard = new ScoreboardCommands.Parent(manager);
+    // Children
     componentBuilder.getChildren().addAll(manager.parseCommands(new ComponentBuilderCommands()));
     itemBuilder.getChildren().addAll(manager.parseCommands(new ItemBuilderCommands()));
-    manager.registerAll(componentBuilder, itemBuilder).registerPlugin();
+    scoreboard.getChildren().addAll((manager.parseCommands(new ScoreboardCommands().start(this))));
+    manager.registerAll(componentBuilder, itemBuilder, scoreboard).registerPlugin();
     // Check compatibilities
     compatibilities.check().getCompatibilities().stream()
         .filter(Compatibility::isEnabled)

@@ -99,6 +99,9 @@ public interface BukkitLine extends Line {
     return new BukkitLine.Plain(text);
   }
 
+  @NonNull
+  BukkitLine copy();
+
   /**
    * Parse a line from a string. If the string starts with 'localized:' a {@link Localized} will be
    * returned else a {@link Plain} will be provided
@@ -154,31 +157,35 @@ public interface BukkitLine extends Line {
   BaseComponent @NonNull [] build();
 
   /**
-   * Build this line with placeholders. The placeholders will be built using {@link PlaceholderModule}
+   * Build this line with placeholders. The placeholders will be built using {@link
+   * PlaceholderModule}
    *
    * @param player the player to build the placeholders
    * @return the built {@link BaseComponent}
    */
   @NonNull
   default BaseComponent[] buildWithPlaceholders(@NonNull OfflinePlayer player) {
+    BukkitLine copy = this.copy();
     Starbox.getModules()
         .get(PlaceholderModule.class)
-        .ifPresent(module -> this.setRaw(module.build(player, this.getRaw())));
-    return this.build();
+        .ifPresent(module -> copy.setRaw(module.build(player, copy.getRaw())));
+    return copy.build();
   }
 
   /**
-   * Build this line with placeholders as {@link String}. The placeholders will be built using {@link PlaceholderModule}
+   * Build this line with placeholders as {@link String}. The placeholders will be built using
+   * {@link PlaceholderModule}
    *
    * @param player the player to build the placeholders
    * @return the built {@link String}
    */
   @NonNull
   default Optional<String> asTextWithPlaceholders(@NonNull OfflinePlayer player) {
+    BukkitLine copy = this.copy();
     Starbox.getModules()
         .get(PlaceholderModule.class)
-        .ifPresent(module -> this.setRaw(module.build(player, this.getRaw())));
-    return this.asText();
+        .ifPresent(module -> copy.setRaw(module.build(player, copy.getRaw())));
+    return copy.asText();
   }
 
   /**
@@ -288,6 +295,11 @@ public interface BukkitLine extends Line {
     }
 
     @Override
+    public @NonNull Localized copy() {
+      return new Localized(locale, json);
+    }
+
+    @Override
     public @NonNull Result asResult() {
       return new Result(this.build());
     }
@@ -327,6 +339,11 @@ public interface BukkitLine extends Line {
 
     private Plain(@NonNull String text) {
       this.text = text;
+    }
+
+    @Override
+    public @NonNull Plain copy() {
+      return new Plain(text);
     }
 
     @Override
@@ -378,15 +395,26 @@ public interface BukkitLine extends Line {
   class LocalizedReference implements BukkitLine {
 
     /** Objects formatters. */
-    @NonNull private final List<Object> objects = new ArrayList<>();
+    @NonNull private final List<Object> objects;
     /** Placeholders formatters. */
-    @NonNull private final Map<String, String> placeholders = new HashMap<>();
+    @NonNull private final Map<String, String> placeholders;
     /** Formatters. */
-    @NonNull private final List<Formatter> formatters = new ArrayList<>();
+    @NonNull private final List<Formatter> formatters;
 
     @NonNull private String key;
 
     private LocalizedReference(@NonNull String key) {
+      this(new ArrayList<>(), new HashMap<>(), new ArrayList<>(), key);
+    }
+
+    private LocalizedReference(
+        @NonNull List<Object> objects,
+        @NonNull Map<String, String> placeholders,
+        @NonNull List<Formatter> formatters,
+        String key) {
+      this.objects = objects;
+      this.placeholders = placeholders;
+      this.formatters = formatters;
       this.key = key;
     }
 
@@ -431,6 +459,15 @@ public interface BukkitLine extends Line {
      */
     public @NonNull Localized asLocalized() {
       return this.asLocalized(Locale.ENGLISH);
+    }
+
+    @Override
+    public @NonNull LocalizedReference copy() {
+      return new LocalizedReference(
+          new ArrayList<>(this.objects),
+          new HashMap<>(this.placeholders),
+          new ArrayList<>(this.formatters),
+          this.key);
     }
 
     @Override

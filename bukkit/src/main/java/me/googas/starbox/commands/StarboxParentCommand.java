@@ -70,9 +70,9 @@ public abstract class StarboxParentCommand extends StarboxBukkitCommand {
                     child.getPermission() == null || sender.hasPermission(child.getPermission()))
             .collect(Collectors.toList());
     if (children.isEmpty()) {
-      BukkitLine.localized("subcommands.empty-children").send(channel);
+      BukkitLine.localized("subcommands.empty-children").asLocalized().send(channel);
     } else {
-      BukkitLine.localized("subcommands.title").formatSample().send(channel);
+      BukkitLine.localized("subcommands.title").asLocalized().formatSample().send(channel);
       children.forEach(
           child -> {
             BukkitLine.localized("subcommands.child")
@@ -81,9 +81,11 @@ public abstract class StarboxParentCommand extends StarboxBukkitCommand {
                         .put("children", child.getName())
                         .put("description", child.getDescription())
                         .build())
+                .asLocalized()
+                .formatSample()
                 .send(channel);
           });
-      BukkitLine.localized("subcommands.bottom").send(channel);
+      BukkitLine.localized("subcommands.bottom").asLocalized().send(channel);
     }
     return null;
   }

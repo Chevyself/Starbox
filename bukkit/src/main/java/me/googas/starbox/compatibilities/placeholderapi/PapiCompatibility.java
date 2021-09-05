@@ -35,6 +35,6 @@ public class PapiCompatibility implements Compatibility {
 
   @Override
   public @NonNull String getName() {
-    return "PAPI";
+    return "PlaceholderAPI";
   }
 }

@@ -8,7 +8,7 @@ import lombok.NonNull;
 import me.googas.starbox.BukkitLine;
 import org.bukkit.OfflinePlayer;
 
-/** Represents a line in a {@link PlayerScoreboard}. */
+/** Represents a line in a {@link PlayerBoard}. */
 public class ScoreboardLine {
 
   @NonNull @Getter private final BukkitLine child;

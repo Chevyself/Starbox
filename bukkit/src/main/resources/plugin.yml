@@ -3,3 +3,4 @@ name: Starbox
 version: ${project.version}-${git.commit.id.describe-short}
 softdepend:
   - ViaVersion
+  - PlaceholderAPI

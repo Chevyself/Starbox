@@ -27,6 +27,12 @@ public class PAPIPlaceholderModule implements Module {
   }
 
   @Override
+  public void onEnable() {
+    new StarboxPlaceholderExpansion().register();
+    Module.super.onEnable();
+  }
+
+  @Override
   public @NonNull String getName() {
     return "papi-placeholders";
   }

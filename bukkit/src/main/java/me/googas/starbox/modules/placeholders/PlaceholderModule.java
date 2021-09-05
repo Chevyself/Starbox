@@ -1,5 +1,6 @@
 package me.googas.starbox.modules.placeholders;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,6 +47,18 @@ public class PlaceholderModule implements Module {
       @NonNull Plugin plugin, @NonNull Collection<? extends Placeholder> placeholders) {
     this.map.computeIfAbsent(plugin, pluginKey -> new HashSet<>()).addAll(placeholders);
     return this;
+  }
+
+  /**
+   * Register many {@link Placeholder}.
+   *
+   * @param plugin the plugin that is registering the placeholders
+   * @param placeholders the placeholders that are being registered
+   * @return this same instance
+   */
+  @NonNull
+  public PlaceholderModule registerAll(@NonNull Plugin plugin, Placeholder... placeholders) {
+    return this.registerAll(plugin, Arrays.asList(placeholders));
   }
 
   /**
