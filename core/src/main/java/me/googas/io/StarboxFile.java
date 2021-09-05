@@ -195,7 +195,7 @@ public class StarboxFile {
                           () ->
                               new IllegalStateException(
                                   "Could not provide a non-null object from resource"));
-              this.write(context, t);
+              this.write(context, t).run();
               return t;
             });
   }
