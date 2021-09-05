@@ -23,6 +23,6 @@ public class HhMmSsFormatter implements TimeFormatter {
     long secs = (millis / 1000) % 60;
     long minutes = (millis / (1000 * 60)) % 60;
     long hours = millis / (1000 * 60 * 60);
-    return String.format("%d:%02d:%02d", hours, minutes, secs);
+    return String.format("%02d:%02d:%02d", hours, minutes, secs);
   }
 }
