@@ -6,6 +6,7 @@ import java.util.Optional;
 import lombok.NonNull;
 import me.googas.starbox.utility.Players;
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -25,6 +26,17 @@ public interface BukkitLanguage extends Language {
     } else {
       return Locale.ENGLISH;
     }
+  }
+
+  /**
+   * Get the locale from a {@link OfflinePlayer}.
+   *
+   * @param player the player to get the locale from
+   * @return the locale
+   */
+  static Locale getOfflineLocale(@NonNull OfflinePlayer player) {
+    Player online = player.getPlayer();
+    return online != null ? BukkitLanguage.getLocale(online) : Locale.ENGLISH;
   }
 
   @Override

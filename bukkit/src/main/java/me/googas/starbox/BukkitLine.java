@@ -99,8 +99,25 @@ public interface BukkitLine extends Line {
     return new BukkitLine.Plain(text);
   }
 
+  /**
+   * Parse a line from a string. If the string starts with 'localized:' a {@link LocalizedReference}
+   * will be returned else a {@link Plain} will be provided
+   *
+   * @param string the string to parse
+   * @return the parsed line
+   */
   @NonNull
-  BukkitLine copy();
+  static BukkitLine parse(@NonNull String string) {
+    if (!string.contains(" ") && (string.startsWith("localized:") || string.startsWith("$"))) {
+      if (string.startsWith("localized:")) {
+        string = string.substring(10);
+      } else if (string.startsWith("$")) {
+        string = string.substring(1);
+      }
+      return BukkitLine.localized(string);
+    }
+    return BukkitLine.of(string);
+  }
 
   /**
    * Parse a line from a string. If the string starts with 'localized:' a {@link Localized} will be
@@ -126,24 +143,12 @@ public interface BukkitLine extends Line {
   }
 
   /**
-   * Parse a line from a string. If the string starts with 'localized:' a {@link LocalizedReference}
-   * will be returned else a {@link Plain} will be provided
+   * Copy this line.
    *
-   * @param string the string to parse
-   * @return the parsed line
+   * @return a new copied instance of this line
    */
   @NonNull
-  static BukkitLine parse(@NonNull String string) {
-    if (string.startsWith("localized:") || string.startsWith("$")) {
-      if (string.startsWith("localized:")) {
-        string = string.substring(10);
-      } else if (string.startsWith("$")) {
-        string = string.substring(1);
-      }
-      return BukkitLine.localized(string);
-    }
-    return BukkitLine.of(string);
-  }
+  BukkitLine copy();
 
   /**
    * Build the line as a {@link Result} for commands.
@@ -272,6 +277,20 @@ public interface BukkitLine extends Line {
     return new ArgumentProviderException();
   }
 
+  /**
+   * Format this sample using a locale.
+   *
+   * @param locale the locale to format this sample with
+   * @return this line formatted
+   */
+  @NonNull
+  default BukkitLine formatSample(@NonNull Locale locale) {
+    Starbox.getModules()
+        .get(LanguageModule.class)
+        .ifPresent(module -> module.getSampleFormatter().format(locale, this));
+    return this;
+  }
+
   /** This is a {@link BukkitLine} which uses a message obtained from {@link LanguageModule}. */
   class Localized implements BukkitLine {
 
@@ -391,6 +410,19 @@ public interface BukkitLine extends Line {
     }
   }
 
+  /** Represents a formatter which can format {@link BukkitLine} using {@link Locale}. */
+  interface LocalizedFormatter {
+    /**
+     * Format the line.
+     *
+     * @param locale the locale to format the line with
+     * @param line the line to format
+     * @return the formatted line
+     */
+    @NonNull
+    BukkitLine format(@NonNull Locale locale, @NonNull BukkitLine line);
+  }
+
   /** A {@link BukkitLine} that references a language key to be built into {@link Localized}. */
   class LocalizedReference implements BukkitLine {
 
@@ -411,7 +443,7 @@ public interface BukkitLine extends Line {
         @NonNull List<Object> objects,
         @NonNull Map<String, String> placeholders,
         @NonNull List<Formatter> formatters,
-        String key) {
+        @NonNull String key) {
       this.objects = objects;
       this.placeholders = placeholders;
       this.formatters = formatters;
@@ -421,7 +453,7 @@ public interface BukkitLine extends Line {
     /**
      * Get the {@link Localized} that this references to.
      *
-     * @param locale the locale to get the raw mesage
+     * @param locale the locale to get the raw message
      * @return the {@link Localized}
      */
     public @NonNull Localized asLocalized(@NonNull Locale locale) {

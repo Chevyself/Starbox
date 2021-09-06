@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
 import lombok.NonNull;
+import me.googas.starbox.BukkitLanguage;
 import me.googas.starbox.BukkitLine;
 import org.bukkit.OfflinePlayer;
 
@@ -63,6 +64,12 @@ public class ScoreboardLine {
    */
   @NonNull
   public String build(@NonNull OfflinePlayer player) {
-    return this.child.asTextWithPlaceholders(player).orElse("");
+    BukkitLine line = child;
+    if (child instanceof BukkitLine.LocalizedReference) {
+      line = ((BukkitLine.LocalizedReference) child).asLocalized(BukkitLanguage.getOfflineLocale(player));
+    }
+    return line.formatSample(BukkitLanguage.getOfflineLocale(player))
+            .asTextWithPlaceholders(player)
+            .orElse(" ");
   }
 }
