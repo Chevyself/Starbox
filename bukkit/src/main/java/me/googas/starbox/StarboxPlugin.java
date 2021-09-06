@@ -63,7 +63,7 @@ public class StarboxPlugin extends JavaPlugin {
     modules.engage(
         new UIModule(),
         new LanguageModule()
-            .registerAll(this, BukkitYamlLanguage.of(this, "language", "language_sample")),
+            .registerAll(this, BukkitYamlLanguage.of(this, "lang/sample", "lang/en")),
         new PlaceholderModule().registerAll(this, new Placeholder.Name(), new Placeholder.Ping()));
     // Command registration
     // Parents

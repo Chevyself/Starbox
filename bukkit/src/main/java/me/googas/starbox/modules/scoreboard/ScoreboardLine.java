@@ -66,10 +66,12 @@ public class ScoreboardLine {
   public String build(@NonNull OfflinePlayer player) {
     BukkitLine line = child;
     if (child instanceof BukkitLine.LocalizedReference) {
-      line = ((BukkitLine.LocalizedReference) child).asLocalized(BukkitLanguage.getOfflineLocale(player));
+      line =
+          ((BukkitLine.LocalizedReference) child)
+              .asLocalized(BukkitLanguage.getOfflineLocale(player));
     }
     return line.formatSample(BukkitLanguage.getOfflineLocale(player))
-            .asTextWithPlaceholders(player)
-            .orElse(" ");
+        .asTextWithPlaceholders(player)
+        .orElse(" ");
   }
 }

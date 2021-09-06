@@ -1,0 +1,76 @@
+language: es
+# Invalids
+invalid:
+  hover-action: "$error No existe la acción &4&o{0}"
+  click-event: "$error No existe el evento &4&o{0}"
+  color: "$error No existe el color &4&o{0}"
+  enchantment: "$error No existe el encantamiento &4&o{0}"
+  format-retention: "$error No existe la retención de formato &4&o{0}"
+# Results for /componentBuilder
+component-builder:
+  reset: "&dEl constructor ha sido reiniciado"
+  spaces:
+    less-than-1: "&6El número no puede ser menos de 1"
+    success: "&dEspacio anexado"
+  append: "&7Texto anexado &r{0}"
+  color: "&dColor anexado"
+  colors: "&dAhora tienes el libro de color"
+  event: "&dEvento aplicado"
+  modify: "&dModificación aplicada"
+  export:
+    success: "&7Constructor ha sido exportado en &d{0}"
+    not: "&6No se ha podido exportar el constructor"
+  import:
+    success: "&7Importado constructor de &d{0}"
+    no-file: "&6El archivo &e{0}&c no se ha encontrado"
+# Results for /itemBuilder
+item-builder:
+  build: "&dAhora tienes el ítem en tu inventario"
+  material: "&dEl material ahora es {0}"
+  amount: "&dLa cantidad ahora es {0}"
+  name: "&7El nombre es ahora &r{0}"
+  lore: "&7La leyenda es ahora &5&o{0}"
+  unbreakable: "&dIrrompible es ahora {0}"
+  not-skull: "&6El material actual no es una cabeza"
+  owner: "&7El dueño ahora es &d{0}"
+  skin: "&7La skin es ahora &r{0}"
+  reset: "&dEl constructor ha sido reiniciado"
+  enchant:
+    done: "&7Encantado &d{0}&7 en &d{1}"
+    removed: "&7Removido &d{0}"
+  export:
+    success: "&7Constructor ha sido exportado en &d{0}"
+    not: "&6No se ha podido exportar el constructor"
+  import:
+    success: "&7Importado constructor de &d{0}"
+    not: "&6No se ha podido cargar el constructor de &e{0}"
+    no-file: "&6El archivo &e{0}&c no se ha encontrado"
+# Results for /scoreboard
+scoreboard:
+  rate: "&dVelocidad cambiada a {0}"
+  title: "&7Título cambiado a &r{0}"
+  insert:
+    contains: "&e{0}&6 ya esta en el marcador"
+    added: "&d{0}&7 ha sido agregado al marcador"
+  eject: "&d{0}&7 ha sido sacado del cargador"
+  add: "&dLínea ha sido agregada"
+  set:
+    less-0: "&6La posición no puede ser menor que 0"
+    more-14: "&6La posición no puede ser mayor que 14"
+    done: "&7Línea ha sido puesta en &d{0}"
+  update:
+    all: "&7Marcador ha sido actualizado"
+    unique: "&7Position &d{0}&7 has been updated"
+  refresh:
+    contains: "&6Position &d{0}&7 does refresh"
+    added: "&7Position &d{0}&7 will automatically refresh"
+  fix:
+    added: "&7Position &d{0}&7 will no longer automatically refresh"
+    not: "&6Position &d{0}&6 is fixed"
+# Parent Command
+subcommands:
+  empty-children: "&6There's no sub-commands or you might not be allowed to use them"
+  bottom: "&6You must use a sub-command"
+  sample:
+    title: "Subcommands"
+    select: "Select command"

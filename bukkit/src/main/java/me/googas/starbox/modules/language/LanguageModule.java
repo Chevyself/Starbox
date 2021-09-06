@@ -105,7 +105,14 @@ public class LanguageModule implements Module {
             })
         .filter(raw -> !raw.equals(key))
         .findFirst()
-        .orElse(key);
+        .orElseGet(
+            () -> {
+              if (locale.getLanguage().equals("en")) {
+                return key;
+              } else {
+                return this.getRaw(Locale.ENGLISH, key);
+              }
+            });
   }
 
   @Override

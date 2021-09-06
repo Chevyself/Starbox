@@ -57,7 +57,7 @@ scoreboard:
   set:
     less-0: "&6Position cannot be less than 0"
     more-14: "&6Position cannot be more than 14"
-    done: "&7Like has been set in &d{0}"
+    done: "&7Line has been set in &d{0}"
   update:
     all: "&7Scoreboard has been updated"
     unique: "&7Position &d{0}&7 has been updated"
