@@ -5,7 +5,10 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
+import lombok.NonNull;
 import me.googas.starbox.math.geometry.Box;
 import me.googas.starbox.math.geometry.Cylinder;
 import me.googas.starbox.math.geometry.Shape;
@@ -13,7 +16,7 @@ import me.googas.starbox.math.geometry.SinglePoint;
 import me.googas.starbox.math.geometry.Sphere;
 
 /** Deserializes {@link Shape} from json. */
-public class ShapeDeserializer implements JsonDeserializer<Shape> {
+public class ShapeDeserializer implements JsonDeserializer<Shape>, JsonSerializer<Shape> {
 
   @Override
   public Shape deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
@@ -32,5 +35,10 @@ public class ShapeDeserializer implements JsonDeserializer<Shape> {
     } else {
       throw new JsonParseException("Your input does not match a known shape in: " + object);
     }
+  }
+
+  @Override
+  public JsonElement serialize(Shape shape, Type type, @NonNull JsonSerializationContext context) {
+    return context.serialize(shape);
   }
 }

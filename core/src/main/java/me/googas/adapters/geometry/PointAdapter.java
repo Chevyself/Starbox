@@ -44,7 +44,7 @@ public class PointAdapter implements JsonSerializer<Point>, JsonDeserializer<Poi
 
   @Override
   public JsonElement serialize(
-      Point point, Type type, JsonSerializationContext jsonSerializationContext) {
+      @NonNull Point point, Type type, JsonSerializationContext jsonSerializationContext) {
     JsonObject object = new JsonObject();
     if (Double.isInfinite(point.getX())) {
       object.addProperty("x", PointAdapter.infiniteToJson(point.getX()));
@@ -61,12 +61,14 @@ public class PointAdapter implements JsonSerializer<Point>, JsonDeserializer<Poi
     } else {
       object.addProperty("z", point.getZ());
     }
-    return null;
+    return object;
   }
 
   @Override
   public Point deserialize(
-      JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext)
+      @NonNull JsonElement jsonElement,
+      Type type,
+      JsonDeserializationContext jsonDeserializationContext)
       throws JsonParseException {
     JsonObject object = jsonElement.getAsJsonObject();
     return new Point(
