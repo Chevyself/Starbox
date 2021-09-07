@@ -73,7 +73,7 @@ public class PointAdapter implements JsonSerializer<Point>, JsonDeserializer<Poi
     JsonObject object = jsonElement.getAsJsonObject();
     return new Point(
         PointAdapter.fromJson(object.get("x")),
-        PointAdapter.fromJson(object.get("z")),
-        PointAdapter.fromJson(object.get("y")));
+        PointAdapter.fromJson(object.get("y")),
+        PointAdapter.fromJson(object.get("z")));
   }
 }
