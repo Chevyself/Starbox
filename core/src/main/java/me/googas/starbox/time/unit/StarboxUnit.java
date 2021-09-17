@@ -91,7 +91,7 @@ public interface StarboxUnit extends TemporalUnit {
 
   @Override
   default <R extends Temporal> R addTo(R temporal, long amount) {
-    temporal.plus(amount, this);
+    temporal.plus(this.getDuration());
     return temporal;
   }
 
