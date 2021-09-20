@@ -2,6 +2,7 @@ package me.googas.net.sockets.json;
 
 import com.google.gson.Gson;
 import lombok.NonNull;
+import me.googas.net.api.Messenger;
 import me.googas.net.sockets.json.exception.JsonExternalCommunicationException;
 import me.googas.net.sockets.json.exception.JsonInternalCommunicationException;
 
@@ -27,7 +28,7 @@ public interface JsonReceptor {
    * @throws JsonInternalCommunicationException if the receptor could not be executed due to a fail
    *     in this messenger
    */
-  Object execute(JsonMessenger messenger, @NonNull ReceivedJsonRequest request, @NonNull Gson gson)
+  Object execute(Messenger messenger, @NonNull ReceivedJsonRequest request, @NonNull Gson gson)
       throws JsonExternalCommunicationException, JsonInternalCommunicationException;
 
   /**

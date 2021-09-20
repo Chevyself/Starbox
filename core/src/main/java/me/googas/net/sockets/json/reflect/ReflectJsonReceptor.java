@@ -8,6 +8,7 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.NonNull;
+import me.googas.net.api.Messenger;
 import me.googas.net.sockets.json.JsonMessenger;
 import me.googas.net.sockets.json.JsonReceptor;
 import me.googas.net.sockets.json.ParamName;
@@ -88,7 +89,7 @@ public class ReflectJsonReceptor implements JsonReceptor {
 
   @NonNull
   private Object[] getParameters(
-      @NonNull JsonMessenger messenger, @NonNull ReceivedJsonRequest request, @NonNull Gson gson)
+      @NonNull Messenger messenger, @NonNull ReceivedJsonRequest request, @NonNull Gson gson)
       throws JsonExternalCommunicationException {
     if (this.getParameters().isEmpty()) {
       return new Object[0];
@@ -97,7 +98,7 @@ public class ReflectJsonReceptor implements JsonReceptor {
 
       for (int i = 0; i < this.getParameters().size(); i++) {
         JsonReceptorParameter<?> parameter = this.getParameters().get(i);
-        if (parameter.getClazz().isAssignableFrom(JsonMessenger.class)) {
+        if (parameter.getClazz().isAssignableFrom(Messenger.class)) {
           objects[i] = messenger;
         } else if (request.getParameters().containsKey(parameter.getName())) {
           try {
@@ -123,7 +124,7 @@ public class ReflectJsonReceptor implements JsonReceptor {
 
   @Override
   public Object execute(
-      JsonMessenger messenger, @NonNull ReceivedJsonRequest request, @NonNull Gson gson)
+      Messenger messenger, @NonNull ReceivedJsonRequest request, @NonNull Gson gson)
       throws JsonExternalCommunicationException, JsonInternalCommunicationException {
     try {
       return this.method.invoke(this.object, this.getParameters(messenger, request, gson));
