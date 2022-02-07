@@ -71,7 +71,7 @@ public interface ResponsiveMessageController {
   void removeMessage(Guild guild, @NonNull ResponsiveMessage message);
 
   /**
-   * Whether or not bots can use this responsive message.
+   * Whether bots can use this responsive message.
    *
    * @return true if they can
    */

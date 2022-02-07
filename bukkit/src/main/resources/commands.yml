@@ -1,3 +1,4 @@
+# This file does not have use yet. The plan is to be able to parse this file into working commands.
 mappings:
   Player: org.bukkit.entity.Player
   String: java.lang.String
