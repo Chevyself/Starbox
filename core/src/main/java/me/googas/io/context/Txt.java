@@ -57,6 +57,7 @@ public class Txt implements FileContext<String> {
               FileWriter writer = file.getPreparedWriter(append);
               writer.write(string);
               writer.flush();
+              atomicWriter.set(writer);
               return true;
             })
         .next(
