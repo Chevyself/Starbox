@@ -77,8 +77,9 @@ public class Txt implements FileContext<String> {
               StringBuilder builder = new StringBuilder();
               String line;
               while ((line = reader.readLine()) != null) {
-                builder.append(line);
+                builder.append(line).append("\n");
               }
+              builder.deleteCharAt(builder.length() - 1);
               atomicReader.set(reader);
               return builder.toString();
             })
